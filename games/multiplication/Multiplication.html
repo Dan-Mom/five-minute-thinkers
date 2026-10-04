@@ -209,6 +209,21 @@ const TOTAL_LEVELS = LEVELS.length;
 const STORAGE_KEY = "mathfacts_progress_v1";
 const HIDE_TIMER_KEY = "mathfacts_hide_timer_v1";
 let hideTimer = false; try{ hideTimer = localStorage.getItem(HIDE_TIMER_KEY) === "1"; }catch(e){}
+
+/* Five-Minute Thinkers passport: when the site opens this game with ?profile=<animal>, that animal is the player (no name is asked)
+   and every finished level is reported as a learning event: queued in localStorage and sent to the site that opened us (same schema as the lessons). */
+const FMT = (()=>{ try{
+  const q = new URLSearchParams(location.search); let p = q.get("profile"), h = q.get("host"), o = null;
+  p = p && /^[A-Za-z0-9_.-]{1,40}$/.test(p) && p !== "guest" ? p : null;
+  try{ o = h ? new URL(h).origin : null; }catch(e){ o = null; }
+  return { profile:p, host:/^https?:/.test(o||"") ? o : null, session:Math.random().toString(36).slice(2,10) };
+}catch(e){ return {}; } })();
+function fmtHook(name, data){
+  if(!FMT.profile) return;
+  const ev = { schema:1, lesson_id:"math.g3.times-tables", event:name, ts:new Date().toISOString().replace(/\.\d+Z$/,"Z"), session:FMT.session, profile:FMT.profile, data:data||{} };
+  try{ const a = JSON.parse(localStorage.getItem("lp_events_v1")||"[]"); a.push(ev); localStorage.setItem("lp_events_v1", JSON.stringify(a.slice(-500))); }catch(e){}
+  try{ if(FMT.host && window.parent !== window) window.parent.postMessage({ type:"learning-event", event:ev }, FMT.host); }catch(e){}
+}
 function loadAllProgress(){
   try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; }catch(e){ return {}; }
 }
@@ -453,9 +468,9 @@ function renderLevels(){
     <p class="sub" style="margin:0 0 16px;">Play any level, in any order — higher levels earn more points per answer.</p>
     <div class="grid">${cards}</div>
     <div class="row">
-      <button class="btn secondary small" id="switchBtn">Switch kid</button>
+      ${FMT.profile ? "" : '<button class="btn secondary small" id="switchBtn">Switch kid</button>'}
     </div>`;
-  document.getElementById("switchBtn").addEventListener("click", renderHome);
+  const sw = document.getElementById("switchBtn"); if(sw) sw.addEventListener("click", renderHome);
   document.querySelectorAll(".lvl-card").forEach(el=>{
     el.addEventListener("click", ()=> startLevel(parseInt(el.dataset.level)) );
     el.addEventListener("keydown", (e)=>{ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); startLevel(parseInt(el.dataset.level)); } });
@@ -675,6 +690,7 @@ function finishLevel(){
   const wasFullyDone = Object.keys(rec.levelBestTimes).length === TOTAL_LEVELS;
 
   const resolved = session.missedQueue.length === 0;   // false when the child chose "No, I'm done" with questions still wrong
+  const hadBest = rec.levelBestTimes[n]!=null;
   const isNewBestTime = resolved && (rec.levelBestTimes[n]==null || timeSec < rec.levelBestTimes[n]);
   if(isNewBestTime) rec.levelBestTimes[n] = timeSec;
   if(rec.levelPoints[n]==null || session.pointsThisLevel > rec.levelPoints[n]){
@@ -686,6 +702,10 @@ function finishLevel(){
   if(justCompletedAll) rec.timesFullyCompleted++;
 
   saveKidRecord(session.name, rec);
+  if(resolved){
+    fmtHook("activity_completed", { unit:"level"+n, activity:"level"+n, attempts:session.round, hints:0, repeat:hadBest });
+    if(nowFullyDone) fmtHook("unit_completed", { unit:"all-levels", stars_total:TOTAL_LEVELS });
+  }
 
   const totalTimeSoFar = Object.values(rec.levelBestTimes).reduce((a,b)=>a+b,0);
   const totalPointsSoFar = Object.values(rec.levelPoints).reduce((a,b)=>a+b,0);
@@ -781,7 +801,11 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-renderHome();
+if(FMT.profile){
+  session.name = FMT.profile.charAt(0).toUpperCase()+FMT.profile.slice(1);   // the passport animal, never a typed name
+  session.rec = getKidRecord(session.name);
+  renderLevels();
+} else renderHome();
 </script>
 <script>(function backPill() {
   try { if (window.parent !== window) return; } catch (e) { return; }

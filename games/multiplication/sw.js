@@ -9,7 +9,7 @@
  * wipes the games' offline files.)
  */
 const CACHE_PREFIX = "ttc-cache-";
-const CACHE_NAME = CACHE_PREFIX + "20261004";
+const CACHE_NAME = CACHE_PREFIX + "20261005";
 
 const PRECACHE_URLS = [
   "./Multiplication.html",
