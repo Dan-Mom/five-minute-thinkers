@@ -1333,5 +1333,13 @@ window.addEventListener("orientationchange", syncStageHeight);
 
 render();
 </script>
-</body>
+<script>(function backPill() {
+  try { if (window.parent !== window) return; } catch (e) { return; }
+  var m = /[?&]home=([^&]*)/.exec(location.search || ''); if (!m) return;
+  var h; try { h = decodeURIComponent(m[1]); } catch (e) { return; }
+  if (!/^[A-Za-z0-9._%~/-]+$/.test(h) || h.indexOf('//') >= 0) return;
+  var a = document.createElement('a'); a.href = h; a.textContent = '← 总览 Home';
+  a.setAttribute('style', 'position:fixed;left:10px;bottom:10px;z-index:2147483647;background:#1f5f99;color:#fff;font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.35);opacity:.92');
+  document.body.appendChild(a);
+})()</script></body>
 </html>

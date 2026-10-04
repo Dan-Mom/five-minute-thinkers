@@ -2005,6 +2005,23 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   }
   function findStep(id) { for (var i = 0; i < steps.length; i++) if (steps[i].id === id) return steps[i]; return null; }
 
+  /* ---------------- leaving the lesson ---------------- */
+  function homeTarget() {
+    var inFrame = false; try { inFrame = !!global.parent && global.parent !== global; } catch (e) { inFrame = true; }
+    if (inFrame) return { frame: true };
+    var m = /[?&]home=([^&]*)/.exec((global.location && global.location.search) || ''), hu = '';
+    try { hu = m ? decodeURIComponent(m[1]) : ''; } catch (e) { hu = ''; }
+    if (hu && /^[\w.\-\/%~]+$/.test(hu) && hu.indexOf('//') < 0) return { url: hu };   /* a relative file link only - never a scheme such as javascript: */
+    if (global.history && global.history.length > 1) return { back: true };
+    return null;
+  }
+  function goHome(how) {
+    try { sessionEnd(); } catch (e) { /* the save is best-effort */ }
+    if (how.frame) { try { global.parent.postMessage({ fmpHome: true }, '*'); } catch (e) { /* ignore */ } }
+    else if (how.url) global.location.href = how.url;
+    else if (how.back) global.history.back();
+  }
+
   /* ---------------- shell ---------------- */
   var shell = {};
   function buildShell() {
@@ -2016,6 +2033,13 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     shell.langSeg = h('div', { class: 'fmp-seg', role: 'group', 'aria-label': 'Language' });
     shell.rm = h('button', { class: 'fmp-tool', type: 'button', 'aria-label': UI.reduce, onclick: toggleRM }, h('span', { class: 'fmp-long' }, UI.reduce), h('span', { class: 'fmp-short' }, 'Motion'));
     var headerKids = [shell.title, shell.levels, shell.langSeg];
+    /* a way OUT of the lesson (a child who wants to stop had none): inside the lesson menu's pop-up it asks the menu to close; opened
+       from the menu with ?home=<relative link> it goes back to that page; otherwise it uses the browser's own Back when there is one */
+    var homeHow = homeTarget();
+    if (!HOSTED && homeHow) {
+      shell.home = h('button', { class: 'fmp-tool fmp-home', type: 'button', 'aria-label': 'Leave the lesson and go back to all lessons', onclick: function () { goHome(homeHow); } }, h('span', { class: 'fmp-long' }, '← All lessons'), h('span', { class: 'fmp-short' }, '← Home'));
+      headerKids.unshift(shell.home);
+    }
     if (!HOSTED) {
       /* review (code, round 2): a shared-device hand-off (sibling B taps the screen after sibling A finishes) had no way back to the
          Who-picker short of reloading the page - which silently resumed A's save under B's fingers. This button flushes the session
