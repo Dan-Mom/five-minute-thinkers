@@ -3,217 +3,314 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What Matters Now</title>
+<title>What Matters Now: five-minute lessons where your child does the thinking</title>
+<meta name="description" content="Interactive five-minute lessons in math, science and everyday smarts for ages 6 to 10. Free to try, no sign-up, nothing collected.">
+<meta name="theme-color" content="#7ccbff">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   color-scheme:light;
-  --ink:#1d2b4f; --mute:#4f5d7e; --page:#fff6e3; --card:#ffffff;
+  --ink:#1d2b4f; --mute:#4a587a; --page:#fff6e3; --card:#fff;
   --orange:#d95b00; --orange-s:#ffe2c4; --orange-m:#ff9a3d;
   --pink:#d6246e;   --pink-s:#ffd8ea;   --pink-m:#ff6fa8;
   --teal:#0b8a7c;   --teal-s:#c8f3ec;   --teal-m:#2fd0bd;
   --green:#1f8f45;  --green-s:#d3f4dd;  --green-m:#4fd37c;
   --purple:#6d3fd8; --purple-s:#e4dbff; --purple-m:#a07cff;
   --blue:#1b6fd1;   --blue-s:#d5e9ff;   --blue-m:#4fa8ff;
-  --gray:#4b5a7a;   --gray-s:#e6eaf2;   --gray-m:#8a97b3;
-  --display:"Baloo 2","Nunito","Trebuchet MS","Segoe UI Rounded",ui-rounded,system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
-  --body:"Nunito","Trebuchet MS",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
+  --display:"Baloo 2","Nunito","Trebuchet MS","Segoe UI Rounded",ui-rounded,system-ui,sans-serif;
+  --body:"Nunito","Trebuchet MS",system-ui,sans-serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--page);color:var(--ink);font:700 17px/1.45 var(--body);overflow-x:hidden}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--page);color:var(--ink);font:700 18px/1.55 var(--body);overflow-x:hidden}
 button,a{font-family:inherit}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
 .c-orange{--c:var(--orange);--cs:var(--orange-s);--cm:var(--orange-m)}
 .c-pink{--c:var(--pink);--cs:var(--pink-s);--cm:var(--pink-m)}
 .c-teal{--c:var(--teal);--cs:var(--teal-s);--cm:var(--teal-m)}
 .c-green{--c:var(--green);--cs:var(--green-s);--cm:var(--green-m)}
 .c-purple{--c:var(--purple);--cs:var(--purple-s);--cm:var(--purple-m)}
 .c-blue{--c:var(--blue);--cs:var(--blue-s);--cm:var(--blue-m)}
-.c-gray{--c:var(--gray);--cs:var(--gray-s);--cm:var(--gray-m)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;background:rgba(255,246,227,.94);backdrop-filter:blur(6px);border-bottom:2px solid #f1dfb8}
+.top .wrap{display:flex;align-items:center;gap:14px;min-height:62px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:800 22px var(--display);cursor:pointer;border:0;background:none;padding:0}
+.brand svg{width:44px;height:44px}
+.top nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.top nav a{min-height:44px;display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;color:var(--ink);text-decoration:none;font:800 17px var(--display);cursor:pointer}
+.top nav a:hover{background:#ffe9bd}
+@media (max-width:560px){.brand span{display:none}.top nav a{padding:6px 10px;font-size:16px}}
 
 /* ---------- hero ---------- */
-.hero{position:relative;background:linear-gradient(180deg,#7ccbff 0%,#b9e6ff 55%,#fff0c9 100%);padding:28px 16px 70px;overflow:hidden}
-.hero .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85;filter:blur(.3px);animation:drift 40s linear infinite}
+.hero{position:relative;background:linear-gradient(180deg,#7ccbff 0%,#b9e6ff 60%,#fff0c9 100%);padding:34px 0 84px;overflow:hidden}
+.hero .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85;animation:drift 60s linear infinite}
 .hero .cloud::before,.hero .cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
-.cloud.a{width:120px;height:34px;top:22px;left:-140px}.cloud.a::before{width:52px;height:52px;left:18px;top:-24px}.cloud.a::after{width:40px;height:40px;left:62px;top:-16px}
-.cloud.b{width:90px;height:26px;top:96px;left:-120px;animation-duration:55s;animation-delay:-18s}.cloud.b::before{width:40px;height:40px;left:12px;top:-18px}.cloud.b::after{width:30px;height:30px;left:46px;top:-12px}
-.cloud.c{width:140px;height:38px;top:50px;left:-160px;animation-duration:70s;animation-delay:-40s}.cloud.c::before{width:60px;height:60px;left:22px;top:-28px}.cloud.c::after{width:46px;height:46px;left:76px;top:-18px}
+.cloud.a{width:120px;height:34px;top:26px;left:-140px}.cloud.a::before{width:52px;height:52px;left:18px;top:-24px}.cloud.a::after{width:40px;height:40px;left:62px;top:-16px}
+.cloud.b{width:90px;height:26px;top:300px;left:-120px;animation-duration:80s;animation-delay:-30s}.cloud.b::before{width:40px;height:40px;left:12px;top:-18px}.cloud.b::after{width:30px;height:30px;left:46px;top:-12px}
 @keyframes drift{to{transform:translateX(calc(100vw + 360px))}}
-.spark{position:absolute;font-size:26px;animation:floaty 5s ease-in-out infinite;opacity:.9}
-@keyframes floaty{50%{transform:translateY(-12px) rotate(8deg)}}
-.hero-in{position:relative;max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
-.mascot{width:158px;height:158px;flex:0 0 auto;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 8px 0 rgba(31,42,68,.12))}
-@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
-.hero h1{margin:0;font:800 clamp(34px,6vw,56px)/1.02 var(--display);color:#fff;text-shadow:0 4px 0 #1b6fd1,0 8px 0 rgba(27,111,209,.35);letter-spacing:.5px}
-.hero .tag{margin:10px 0 0;font:700 clamp(17px,2.4vw,21px)/1.35 var(--body);color:#12306b;max-width:560px}
-.hero .tag small{display:block;font-weight:700;color:#2a4a8a;font-size:.88em;margin-top:2px}
-.starbar{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:#fff;color:var(--ink);border-radius:999px;padding:8px 18px;font:800 18px var(--display);box-shadow:0 4px 0 rgba(31,42,68,.14)}
-.starbar .big{font-size:24px;animation:pop 2.4s ease-in-out infinite}
-@keyframes pop{50%{transform:scale(1.18) rotate(10deg)}}
-.wave{position:absolute;left:0;right:0;bottom:-1px;height:48px;display:block;width:100%}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:center}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:800;color:#fff;text-shadow:0 4px 0 #1b6fd1,0 8px 0 rgba(27,111,209,.3)}
+.hero .sub{margin:16px 0 0;font:700 clamp(18px,2.3vw,22px)/1.45 var(--body);color:#12306b;max-width:560px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{min-height:56px;border:0;border-radius:18px;padding:10px 26px;font:800 22px var(--display);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,box-shadow .1s}
+.btn.main{background:var(--orange);color:#fff;box-shadow:0 6px 0 #8f3c00}
+.btn.main:hover{transform:translateY(-2px);box-shadow:0 8px 0 #8f3c00}
+.btn.main:active{transform:translateY(3px);box-shadow:0 2px 0 #8f3c00}
+.btn.alt{background:#fff;color:var(--blue);box-shadow:0 6px 0 rgba(20,40,90,.22)}
+.btn.alt:hover{transform:translateY(-2px)}
+.btn.c{background:var(--c);color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.btn.c:hover{transform:translateY(-2px)}
+.btn.ghost{background:#fff;color:var(--c,var(--blue));border:3px solid var(--cs,#d5e9ff);min-height:48px;font-size:19px;padding:6px 16px;box-shadow:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.chip{background:rgba(255,255,255,.92);color:#12306b;border-radius:999px;padding:5px 14px;font:800 15px var(--display)}
+.mascot-box{position:relative;display:flex;justify-content:center}
+.mascot{width:clamp(180px,26vw,300px);animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 10px 0 rgba(31,42,68,.12))}
+@keyframes bob{50%{transform:translateY(-9px) rotate(-2deg)}}
+.bubble{position:absolute;top:-6px;right:2%;background:#fff;color:var(--ink);border-radius:20px;padding:10px 16px;font:800 17px/1.25 var(--display);box-shadow:0 5px 0 rgba(20,40,90,.16);max-width:210px}
+.bubble::after{content:"";position:absolute;left:34px;bottom:-12px;border:12px solid transparent;border-top-color:#fff;border-bottom:0}
+.wave{position:absolute;left:0;right:0;bottom:-1px;height:54px;width:100%;display:block}
+@media (max-width:760px){.cloud.b{display:none}.hero-grid{grid-template-columns:1fr}.mascot-box{order:-1}.bubble{display:none}.hero{padding-top:20px}}
 
-/* ---------- layout ---------- */
-main{max-width:1080px;margin:0 auto;padding:6px 16px 40px;min-height:50vh}
-h2.sect{font:800 clamp(24px,4vw,32px)/1.1 var(--display);margin:6px 0 4px}
-.lead{margin:0 0 18px;color:var(--mute);font-weight:700}
+/* ---------- sections ---------- */
+section.block{padding:34px 0 8px}
+section.block h2{font-size:clamp(28px,4vw,38px);font-weight:800}
+.lead{margin:6px 0 20px;color:var(--mute);font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border:3px solid var(--cs);border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--cs),0 12px 22px rgba(20,30,60,.08);transition:transform .15s}
+.card:hover{transform:translateY(-4px)}
+.card .art{height:112px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--cs),#fff 140%);font-size:60px;position:relative}
+.card .art span.e{filter:drop-shadow(0 5px 0 rgba(0,0,0,.12));display:inline-block}
+.tag{position:absolute;top:10px;left:10px;background:#fff;color:var(--c);border-radius:999px;padding:2px 10px;font:800 13px var(--display)}
+.tag.right{left:auto;right:10px;background:#ffd23f;color:#5a3d00}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:22px}
+.card p{margin:0;font-size:16px;font-weight:700;color:var(--mute);line-height:1.45;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.m{font:800 13.5px var(--display);background:var(--cs);color:var(--c);border-radius:999px;padding:2px 11px}
+.actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:6px}
+.actions .btn{flex:1;min-width:110px;font-size:20px;min-height:50px}
+.card.feature .art{height:132px;font-size:72px}
 
-/* ---------- world tiles ---------- */
-.worlds{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,236px),1fr));gap:18px;margin-top:8px}
-.world{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;cursor:pointer;color:#fff;border-radius:28px;padding:20px 20px 18px;min-height:230px;background:linear-gradient(150deg,var(--cm) 0%,var(--c) 100%);box-shadow:0 8px 0 rgba(20,30,60,.22),0 18px 28px rgba(20,30,60,.12);transition:transform .15s,box-shadow .15s;overflow:hidden;font:inherit}
-.world:hover{transform:translateY(-5px) rotate(-.6deg);box-shadow:0 13px 0 rgba(20,30,60,.2),0 24px 32px rgba(20,30,60,.14)}
-.world:active{transform:translateY(3px);box-shadow:0 4px 0 rgba(20,30,60,.22)}
-.world .bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.16)}
-.world .b1{width:150px;height:150px;right:-40px;top:-40px}.world .b2{width:90px;height:90px;right:60px;bottom:-34px}
-.world .em{font-size:76px;line-height:1;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18));animation:bob 3.4s ease-in-out infinite;display:inline-block;width:fit-content}
-.world:nth-child(2) .em{animation-delay:-.8s}.world:nth-child(3) .em{animation-delay:-1.6s}.world:nth-child(4) .em{animation-delay:-2.4s}
-.world h3{margin:6px 0 0;font:800 28px/1.05 var(--display);text-shadow:0 2px 0 rgba(0,0,0,.18)}
-.world p{margin:0;font-weight:700;font-size:16px;opacity:.97}
-.world .zh{font-size:14px;opacity:.9}
-.world .foot{margin-top:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px}
-.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);color:var(--c);border-radius:999px;padding:6px 14px;font:800 16px var(--display)}
-.go{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--c);font-size:24px;font-weight:800}
+/* video */
+.vrow{display:flex;gap:16px;overflow-x:auto;padding:4px 4px 16px;scroll-snap-type:x proximity}
+.vcard{flex:0 0 min(300px,80vw);scroll-snap-align:start;border:0;padding:0;text-align:left;background:var(--card);border-radius:20px;box-shadow:0 6px 0 var(--blue-s),0 12px 22px rgba(20,30,60,.08);overflow:hidden;cursor:pointer;font:inherit;color:inherit}
+.vcard .th{position:relative;aspect-ratio:16/9;background:#12306b center/cover}
+.vcard .th::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.6)}
+.vcard b{display:block;padding:10px 14px 14px;font:800 18px/1.2 var(--display)}
+.soon{display:flex;align-items:center;gap:18px;background:#fff;border:3px dashed #9bc7f5;border-radius:24px;padding:18px 22px}
+.soon svg{width:84px;height:84px;flex:0 0 auto}
+.soon b{font:800 22px var(--display);display:block}
+.soon p{margin:2px 0 0;color:var(--mute)}
 
-/* ---------- inside a world ---------- */
-.crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 8px}
-.back{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:8px 18px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:800 18px var(--display);cursor:pointer;box-shadow:0 4px 0 rgba(20,30,60,.18);transition:transform .12s}
-.back:hover{transform:translateY(-2px)}
-.world-title{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
-.world-title .em{font-size:54px;line-height:1}
-.world-title h2{margin:0;font:800 clamp(30px,5vw,42px)/1 var(--display);color:var(--c)}
-.group-h{display:inline-flex;align-items:center;gap:10px;margin:26px 0 12px;background:var(--cs);color:var(--c);border-radius:999px;padding:7px 18px;font:800 20px var(--display)}
-.group-h small{font:700 15px var(--body);color:var(--mute)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,255px),1fr));gap:16px}
-.card{position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--cs),0 12px 22px rgba(20,30,60,.1);border:3px solid var(--cs);transition:transform .15s,box-shadow .15s;animation:rise .45s both}
-.card:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 10px 0 var(--cs),0 18px 26px rgba(20,30,60,.12)}
-@keyframes rise{from{opacity:0;transform:translateY(14px)}}
-.card .art{display:flex;align-items:center;justify-content:center;height:104px;background:linear-gradient(150deg,var(--cs),#fff 140%);font-size:58px;position:relative}
-.card .art span{filter:drop-shadow(0 5px 0 rgba(0,0,0,.12));display:inline-block;transition:transform .2s}
-.card:hover .art span{transform:scale(1.14) rotate(-6deg)}
-.card .ribbon{position:absolute;top:10px;right:10px;background:#ffd23f;color:#5a3d00;border-radius:999px;padding:3px 10px;font:800 13px var(--display);box-shadow:0 2px 0 rgba(0,0,0,.15)}
-.card .body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
-.card h3{margin:0;font:800 21px/1.12 var(--display)}
-.card .zh{margin:0;color:var(--mute);font-size:14.5px;font-weight:700;line-height:1.4}
-.card .tags{display:flex;gap:6px;flex-wrap:wrap}
-.tag-chip{font-size:12.5px;font-weight:800;border-radius:999px;padding:2px 10px;background:var(--cs);color:var(--c)}
-.tag-chip.low{background:#eceff5;color:#4b5a7a}
-.actions{margin-top:auto;display:flex;gap:8px;align-items:center;padding-top:8px;flex-wrap:wrap}
-.play{flex:1;min-height:52px;border:0;border-radius:16px;background:var(--c);color:#fff;font:800 22px var(--display);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .1s,box-shadow .1s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-width:130px}
-.play:hover{transform:translateY(-2px);box-shadow:0 7px 0 rgba(0,0,0,.25)}
-.play:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
-.play[aria-disabled=true]{background:#b8c0d2;box-shadow:0 5px 0 rgba(0,0,0,.12);pointer-events:none}
-.tab{min-height:48px;min-width:48px;border:3px solid var(--cs);background:#fff;color:var(--c);border-radius:14px;font:800 20px var(--display);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
-.tab:hover{background:var(--cs)}
-.note{margin:6px 0 0;font-size:13px;color:var(--mute)}
-.area{background:#fff;border-radius:22px;padding:16px 18px;margin:0 0 14px;box-shadow:0 5px 0 var(--cs);border:3px solid var(--cs)}
-.area h3{margin:0 0 4px;font:800 21px var(--display)}
-.area .next{margin:10px 0 0;padding:10px 12px;background:var(--cs);border-radius:14px;font-size:15px}
-footer{max-width:1080px;margin:0 auto;padding:6px 16px 40px;color:var(--mute);font-size:14px;font-weight:700;text-align:center}
+/* subject tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;cursor:pointer;color:#fff;border-radius:26px;padding:18px;min-height:196px;background:linear-gradient(150deg,var(--cm),var(--c));box-shadow:0 7px 0 rgba(20,30,60,.22),0 16px 26px rgba(20,30,60,.1);overflow:hidden;font:inherit;transition:transform .15s}
+.tile:hover{transform:translateY(-4px) rotate(-.5deg)}
+.tile::before{content:"";position:absolute;right:-34px;top:-34px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.16)}
+.tile .e{font-size:58px;line-height:1;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18));width:fit-content}
+.tile h3{font-size:24px;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.tile p{margin:0;font-size:15px;opacity:.97}
+.tile .n{margin-top:auto;background:#fff;color:var(--c);border-radius:999px;padding:4px 12px;font:800 15px var(--display);width:fit-content}
+
+/* how / promises / about */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
+.step{background:#fff;border-radius:24px;padding:18px;box-shadow:0 6px 0 #f1dfb8;text-align:center}
+.step .e{font-size:46px}.step h3{font-size:24px;margin:4px 0}.step p{margin:0;color:var(--mute);font-size:16.5px}
+.promises{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:18px}
+.promise{display:flex;align-items:center;gap:10px;background:var(--green-s);color:#145d2d;border-radius:18px;padding:12px 16px;font:800 17px var(--display)}
+.about{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;background:#fff;border-radius:28px;padding:22px;box-shadow:0 6px 0 #f1dfb8;margin-top:6px}
+.about svg{width:140px}
+.about h2{font-size:30px}.about p{margin:8px 0 0;color:var(--mute)}
+@media (max-width:640px){.about{grid-template-columns:1fr;text-align:center}.about svg{margin:0 auto}}
+footer{margin-top:44px;padding:26px 0 40px;text-align:center;color:var(--mute);font-size:15px;border-top:2px solid #f1dfb8}
+
+/* ---------- inner pages ---------- */
+.crumb{padding:18px 0 4px}
+.back{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:6px 18px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:800 18px var(--display);cursor:pointer;box-shadow:0 4px 0 rgba(20,30,60,.16)}
+.page-head{display:flex;align-items:center;gap:16px;margin:10px 0 4px}
+.page-head .e{font-size:62px;line-height:1}
+.page-head h1{font-size:clamp(30px,5vw,46px);color:var(--c)}
+.topic{display:inline-flex;margin:26px 0 12px;background:var(--cs);color:var(--c);border-radius:999px;padding:6px 18px;font:800 21px var(--display)}
+.proj{display:grid;grid-template-columns:1.3fr .7fr;gap:22px;margin-top:14px;align-items:start}
+.proj .box{background:#fff;border-radius:26px;padding:20px;box-shadow:0 6px 0 var(--cs);border:3px solid var(--cs)}
+.proj h2{font-size:24px;margin-bottom:8px}
+.embed{position:relative;aspect-ratio:16/9;background:#12306b;border-radius:20px;overflow:hidden}
+.embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.vlist button{min-height:46px;text-align:left;border:3px solid var(--cs);background:#fff;border-radius:14px;padding:8px 14px;font:800 17px var(--display);cursor:pointer;color:var(--ink)}
+.vlist button[aria-current=true]{background:var(--cs)}
+.tip{margin-top:12px;background:var(--cs);border-radius:18px;padding:12px 16px;font-size:16.5px}
+@media (max-width:820px){.proj{grid-template-columns:1fr}}
 
 /* ---------- play window ---------- */
-#viewer{position:fixed;inset:0;background:rgba(18,30,70,.62);display:none;z-index:50;flex-direction:column;padding:10px}
+#viewer{position:fixed;inset:0;background:rgba(18,30,70,.62);display:none;z-index:60;flex-direction:column;padding:10px}
 #viewer.on{display:flex}
 #viewer .bar{display:flex;gap:10px;align-items:center;background:var(--c,#1b6fd1);color:#fff;border-radius:20px 20px 0 0;padding:8px 10px}
 #viewer .bar b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 20px var(--display)}
-#viewer .vb{min-height:48px;border:0;border-radius:14px;padding:6px 18px;font:800 18px var(--display);cursor:pointer;background:#fff;color:var(--c,#1b6fd1);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+#viewer .vb{min-height:48px;border:0;border-radius:14px;padding:6px 18px;font:800 18px var(--display);cursor:pointer;background:#fff;color:var(--c,#1b6fd1);text-decoration:none;display:inline-flex;align-items:center}
 #viewer iframe{flex:1;border:0;background:#fff;width:100%;border-radius:0 0 20px 20px}
 :focus-visible{outline:4px solid #ffd23f;outline-offset:2px;box-shadow:0 0 0 2px #1d2b4f}
-@media (max-width:560px){.spark{display:none}.hero{padding-bottom:60px}.mascot{width:96px;height:96px}.world{min-height:200px}.world .em{font-size:64px}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header class="hero">
-  <div class="cloud a" aria-hidden="true"></div><div class="cloud b" aria-hidden="true"></div><div class="cloud c" aria-hidden="true"></div>
-  <span class="spark" style="left:6%;top:48%" aria-hidden="true">⭐</span>
-  <span class="spark" style="right:8%;top:20%;animation-delay:-1.5s" aria-hidden="true">✨</span>
-  <span class="spark" style="right:22%;top:62%;animation-delay:-3s" aria-hidden="true">🌈</span>
-  <div class="hero-in">
-    <div class="mascot" id="mascot" aria-hidden="true"></div>
-    <div>
-      <h1>What Matters Now</h1>
-      <p class="tag">Little lessons, big thinking. Pick a world and start playing!<small id="zhTag">选一个世界，开始玩吧！</small></p>
-      <div class="starbar" aria-live="polite"><span class="big" aria-hidden="true">⭐</span><span><span id="starN">0</span> played so far</span></div>
-    </div>
-  </div>
-  <svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C150 60 300 0 450 24 C600 48 750 4 900 26 C1050 48 1130 12 1200 28 L1200 60 L0 60Z" fill="#fff6e3"/></svg>
-</header>
-<main id="main"></main>
-<footer id="foot"></footer>
+<header class="top"><div class="wrap">
+  <button class="brand" id="logo" type="button" aria-label="What Matters Now, home"><span id="logoSvg" aria-hidden="true"></span><span>What Matters Now</span></button>
+  <nav aria-label="Main">
+    <a data-go="subjects">Lessons</a><a data-go="watch">Videos</a><a data-go="about">About</a>
+  </nav>
+</div></header>
+<div id="app"></div>
+<footer><div class="wrap" id="foot"></div></footer>
 <div id="viewer" role="dialog" aria-modal="true" aria-label="Lesson window">
-  <div class="bar"><button class="vb" id="vx" type="button">← Back</button><b id="vt"></b><a class="vb" id="vnew" target="_blank" rel="noopener">↗ New tab</a></div>
-  <iframe id="vf" title="Lesson"></iframe>
+  <div class="bar"><button class="vb" id="vx" type="button">← Back</button><b id="vt"></b><a class="vb" id="vnew" target="_blank" rel="noopener">New tab ↗</a></div>
+  <iframe id="vf" title="Lesson" allow="autoplay; fullscreen; encrypted-media"></iframe>
 </div>
 <script>
-var DATA={"generated":"2026-10-04","v":1791120392441,"sections":[{"id":"math","zh":"数学课","icon":"➕","count":24,"intro":"英文互动数学课，每课约 5 分钟，约 7–9 岁。点开就能玩，进度存在你这台电脑的浏览器里。","groups":[{"zh":"数与加减乘除","en":"Numbers and the four operations","items":[{"id":"ten-composition","title":"Cou-Cou Packs Ten","zh":"10 的拆分：两个数合起来是 10，顺序可以换。","status":"自检过","tone":"mid","href":"lessons/ten-composition.html","meta":"223 KB","emoji":"🔟","color":"orange"},{"id":"tens-and-ones","title":"Cou-Cou Bundles Tens","zh":"几个十和几个一；10 个一换成 1 个十。","status":"自检过","tone":"mid","href":"lessons/tens-and-ones.html","meta":"219 KB","emoji":"🧱","color":"orange"},{"id":"make-ten-addition","title":"Cou-Cou’s Make-Ten Trick","zh":"凑十法：8 + 5 先凑成 10 再加 3。","status":"自检过","tone":"mid","href":"lessons/make-ten-addition.html","meta":"219 KB","emoji":"➕","color":"orange"},{"id":"subtract-through-ten","title":"Cou-Cou’s Break-the-Ten Trick","zh":"破十法：14 − 8 先减到 10 再减剩下的。","status":"已审核","tone":"good","href":"lessons/subtract-through-ten.html","meta":"220 KB","emoji":"🎈","color":"orange"},{"id":"add-regroup","title":"Cou-Cou Trades Up","zh":"两位数加法进位：满十进一。","status":"已审核","tone":"good","href":"lessons/add-regroup.html","meta":"226 KB","emoji":"🎒","color":"orange"},{"id":"subtract-regroup","title":"Cou-Cou Trades Back","zh":"两位数减法借位：退一当十。","status":"已审核","tone":"good","href":"lessons/subtract-regroup.html","meta":"226 KB","emoji":"🪙","color":"orange"},{"id":"multiplication-arrays","title":"Cou-Cou’s Cookie Trays","zh":"用点阵理解乘法：几行、每行几个，交换后总数不变。","status":"自检过","tone":"mid","href":"lessons/multiplication-arrays.html","meta":"221 KB","emoji":"🟧","color":"orange"},{"id":"division-sharing","title":"Cou-Cou’s Fair Share","zh":"平均分：除法就是分成相同的几份。","status":"已审核","tone":"good","href":"lessons/division-sharing.html","meta":"219 KB","emoji":"🍕","color":"orange"},{"id":"area-model-multiply","title":"Cou-Cou’s Split-the-Tray Trick","zh":"面积模型：把长方形拆开算乘法。","status":"已审核","tone":"good","href":"lessons/area-model-multiply.html","meta":"223 KB","emoji":"📐","color":"orange"},{"id":"multiply-regroup","title":"Cou-Cou’s Carry-the-Ten Trick","zh":"多位数乘一位数的进位。","status":"已审核","tone":"good","href":"lessons/multiply-regroup.html","meta":"224 KB","emoji":"✖️","color":"orange"},{"id":"mult-div-inverse","title":"Cou-Cou’s Fact Family","zh":"乘法和除法互为逆运算。","status":"已审核","tone":"good","href":"lessons/mult-div-inverse.html","meta":"227 KB","emoji":"🔄","color":"orange"},{"id":"add-sub-inverse","title":"Cou-Cou’s Undo Trick","zh":"加法和减法互为逆运算，用来验算。","status":"已审核","tone":"good","href":"lessons/add-sub-inverse.html","meta":"225 KB","emoji":"↔️","color":"orange"},{"id":"times-strategies","title":"Cou-Cou’s Fact Tricks","zh":"乘法口诀的策略：拆成已经会的口诀。","status":"已审核","tone":"good","href":"lessons/times-strategies.html","meta":"224 KB","emoji":"🧩","color":"orange"},{"id":"division-remainders","title":"Cou-Cou’s Leftovers","zh":"有余数的除法：分不完的还剩几个。","status":"已审核","tone":"good","href":"lessons/division-remainders.html","meta":"226 KB","emoji":"🍪","color":"orange"},{"id":"odd-numbers-squares","title":"Cou-Cou’s Growing Squares","zh":"规律：连续奇数相加等于平方数。","status":"已审核","tone":"good","href":"lessons/odd-numbers-squares.html","meta":"221 KB","emoji":"🟩","color":"orange"}],"color":"orange"},{"zh":"分数与小数","en":"Fractions and decimals","items":[{"id":"fraction-intro","title":"Cou-Cou’s Fair Shares","zh":"分数启蒙：平均分成几份、取几份；份数越多，每份越小。","status":"已审核","tone":"good","href":"lessons/fraction-intro.html","meta":"222 KB","emoji":"🍰","color":"pink"},{"id":"decimals-intro","title":"Cou-Cou’s Decimal Squares","zh":"小数：十分位和百分位，0.4 和 0.35 谁大。","status":"已审核","tone":"good","href":"lessons/decimals-intro.html","meta":"239 KB","emoji":"💧","color":"pink"},{"id":"fraction-decimal-link","title":"Cou-Cou’s Two Names","zh":"同一个量的两个名字：3/10 = 0.3，63/100 = 0.63。","status":"已审核","tone":"good","href":"lessons/fraction-decimal-link.html","meta":"253 KB","emoji":"🔗","color":"pink"},{"id":"fraction-add","title":"Cou-Cou’s Fraction Add-Ups","zh":"同分母分数相加：上面相加，下面不变。","status":"已审核","tone":"good","href":"lessons/fraction-add.html","meta":"253 KB","emoji":"🍫","color":"pink"},{"id":"fraction-compare","title":"Cou-Cou’s Fraction Showdown","zh":"比较分数：切成同样大的块来比，或者和 1/2 比。","status":"已审核","tone":"good","href":"lessons/fraction-compare.html","meta":"257 KB","emoji":"⚖️","color":"pink"}],"color":"pink"},{"zh":"时间与钱","en":"Time and money","items":[{"id":"telling-time","title":"Cou-Cou’s Clock Time","zh":"认钟表：整点、半点，到几分钟。","status":"已审核","tone":"good","href":"lessons/telling-time.html","meta":"226 KB","emoji":"🕒","color":"teal"},{"id":"elapsed-time","title":"Cou-Cou’s Time Hops","zh":"经过的时间：从几点到几点过了多久。","status":"已审核","tone":"good","href":"lessons/elapsed-time.html","meta":"229 KB","emoji":"⏳","color":"teal"},{"id":"calendar-weeks","title":"Cou-Cou’s Calendar Weeks","zh":"日历和星期：每 7 天回到同一个星期几。","status":"已审核","tone":"good","href":"lessons/calendar-weeks.html","meta":"229 KB","emoji":"📅","color":"teal"},{"id":"counting-coins","title":"Cou-Cou’s Coin Jar","zh":"美国硬币：数钱、找零、最少硬币。","status":"已审核","tone":"good","href":"lessons/counting-coins.html","meta":"233 KB","emoji":"💰","color":"teal"}],"color":"teal"}],"en":"Math Land","emoji":"🧮","color":"orange","tag":"Numbers, fractions, time and money"},{"id":"sci","zh":"科学与生活","icon":"🔬","count":10,"intro":"标签侦探系列、历史谜题、地理、理财、生物课。中英双语。","groups":[{"zh":"","en":"","items":[{"id":"sugar-label-detective","title":"The Sugar Detective","zh":"糖侦探：食物标签里的隐藏糖 · 读营养标签","status":"可试玩","tone":"mid","href":"sci/sugar-label-detective.html","meta":"606 KB","emoji":"🍬","color":"green"},{"id":"fat-label-detective","title":"Fat Detective","zh":"脂肪侦探：友好脂肪和悠着点脂肪 · 读脂肪标签","status":"可试玩","tone":"mid","href":"sci/fat-label-detective.html","meta":"91 KB","emoji":"🥑","color":"green"},{"id":"color-label-detective","title":"The Color Detective","zh":"色素侦探：蓝莓味冰棍为什么是蓝的 · 读色素标签","status":"可试玩","tone":"mid","href":"sci/color-label-detective.html","meta":"96 KB","emoji":"🫐","color":"green"},{"id":"warning-label-detective","title":"The Warning Label Detective","zh":"警告标签侦探：“致癌警告”到底什么意思 · 加州 Prop 65 警告","status":"可试玩","tone":"mid","href":"sci/warning-label-detective.html","meta":"93 KB","emoji":"⚠️","color":"green"},{"id":"package-claims-detective","title":"The Package Claims Detective","zh":"包装话术侦探：“树上熟”“太阳晒干” · 读包装广告话（带配音视频）","status":"待复核","tone":"mid","href":"sci/package-claims-detective.html","meta":"12.5 MB","emoji":"📦","color":"green"},{"id":"vitamin-c","title":"The Scurvy Mystery","zh":"坏血病之谜：水手为什么会生病 · 维生素 C 与公平测试","status":"可试玩","tone":"mid","href":"sci/vitamin-c.html","meta":"55 KB","emoji":"🍊","color":"green"},{"id":"continents-and-oceans","title":"The Invisible Borders of Continents and Oceans","zh":"七大洲四大洋的隐形边界 · 地理","status":"可试玩","tone":"mid","href":"sci/continents-and-oceans.html","meta":"181 KB","emoji":"🌍","color":"green"},{"id":"travel-piggy-bank","title":"The Travel Piggy Bank","zh":"旅行储蓄罐：利滚利 · 复利（理财启蒙）","status":"可试玩","tone":"mid","href":"sci/travel-piggy-bank.html","meta":"82 KB","emoji":"🐷","color":"green"},{"id":"tooth-timeline","title":"The Tooth Timeline","zh":"换牙时间线 · 人体","status":"可试玩","tone":"mid","href":"sci/tooth-timeline.html","meta":"607 KB","emoji":"🦷","color":"green"},{"title":"Splinter · Bio 01","zh":"Splinter 生物课（含配音和视频）· 生物","status":"已在线","tone":"good","href":"https://dan-mom.github.io/Sci/Splinter.html","meta":"在线页","emoji":"🪵","color":"green"}],"color":"green"}],"en":"Science Lab","emoji":"🔬","color":"green","tag":"Detectives, mysteries and discoveries"},{"id":"games","zh":"游戏与应用","icon":"🎮","count":2,"intro":"能直接玩的小应用。","groups":[{"zh":"","en":"","items":[{"title":"魔方小探险 · Little Cube Quest","zh":"20 关中英双语引导课，真魔方 + 慢动作示范 + 小问题","status":"等你走一遍","tone":"mid","href":"games/cube.html","meta":"9.6 MB","note":"文件大（含配音），第一次打开要等几秒","emoji":"🧊","color":"purple"},{"title":"罗马数字王国 · Roman Numeral Kingdom","zh":"小游戏，女儿已一次通关；本地已修，等你说“发布”才推 GitHub","status":"已完成","tone":"good","href":"games/roman/index.html","meta":"140 KB","emoji":"🏰","color":"purple"}],"color":"purple"}],"en":"Game Zone","emoji":"🎮","color":"purple","tag":"Cubes, kingdoms and puzzles"},{"id":"brand","zh":"品牌与视频","icon":"🎬","count":2,"intro":"What Matters Now 频道：品牌蓝图、动态数据图、已发布的视频。","groups":[{"zh":"","en":"","items":[{"title":"亿万富翁榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/billionaire-race.html","meta":"183 KB","video":false,"emoji":"💰","color":"blue"},{"title":"互联网流量榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/internet-traffic-race.html","meta":"39 KB","video":false,"emoji":"🌐","color":"blue"}],"color":"blue"}],"en":"Show Time","emoji":"🎬","color":"blue","tag":"Charts that race!"}],"site":true};
+var DATA={"v":1791121250543,"generated":"2026-10-04","site":{"title":"What Matters Now","tagline":"Five-minute lessons where your child does the thinking.","sub":"Interactive math, science and everyday-smarts lessons for ages 6 to 10. Free to try, no sign-up.","subjects":[{"id":"math","name":"Math","emoji":"🧮","color":"orange","blurb":"Numbers, fractions, time and money, built with pictures and hands-on tools."},{"id":"science","name":"Science and the World","emoji":"🔬","color":"green","blurb":"The human body, history mysteries and our planet."},{"id":"food","name":"Food and Health Detectives","emoji":"🕵️","color":"pink","blurb":"Reading labels and spotting what packages really say."},{"id":"games","name":"Games and Puzzles","emoji":"🧊","color":"purple","blurb":"STEAM projects, cubes and kingdoms to explore."},{"id":"money","name":"Money Smarts","emoji":"🐷","color":"teal","blurb":"Saving, interest and how money grows."}],"how":[{"emoji":"🤔","title":"Predict","text":"Your child makes a guess first."},{"emoji":"🖐️","title":"Try it","text":"They explore with pictures and tools they can move."},{"emoji":"💬","title":"Explain","text":"They say why in their own words. The thinking stays theirs."}],"promises":["No accounts and no ads","Nothing about your child is collected","Progress stays on your own device","About five minutes a lesson"],"about":{"title":"Made by a mom, with a very good dog","text":"We are a North America family. I am a CPA by training and a mom of two curious kids. I build these lessons with AI, then test them with my own children. Our dog Cou-Cou keeps everyone company.","note":"DRAFT: Dan to confirm the wording."},"channel":{"name":"","url":""},"disclaimer":"Educational use. Lessons are a work in progress and we welcome feedback."},"projects":[{"id":"ten-composition","emoji":"🔟","title":"Cou-Cou Packs Ten","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Help Cou-Cou pack ten apples on a tray and discover the partner of every number.","href":"lessons/ten-composition.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"tens-and-ones","emoji":"🧱","title":"Cou-Cou Bundles Tens","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Stick ten cubes together and discover how every two-digit number is built from tens and ones.","href":"lessons/tens-and-ones.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"make-ten-addition","emoji":"➕","title":"Cou-Cou’s Make-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Fill a ten frame first and add across ten — the fastest way to add 8 + 5.","href":"lessons/make-ten-addition.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"subtract-through-ten","emoji":"🎈","title":"Cou-Cou’s Break-the-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Give away the loose apples first, then break open the ten — the fastest way to subtract across ten.","href":"lessons/subtract-through-ten.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"add-regroup","emoji":"🎒","title":"Cou-Cou Trades Up","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"When the ones (or tens) add up to ten or more, trade ten ones for one ten (or ten tens for one hundred) to carry it into the next place.","href":"lessons/add-regroup.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"subtract-regroup","emoji":"🪙","title":"Cou-Cou Trades Back","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"When a place is too small to subtract from, trade one of the next place for ten of this place (a ten for ten ones, or a hundred for ten tens) before you subtract.","href":"lessons/subtract-regroup.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"multiplication-arrays","emoji":"🟧","title":"Cou-Cou’s Cookie Trays","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"Line cookies up in rows and discover what multiplication really means.","href":"lessons/multiplication-arrays.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"division-sharing","emoji":"🍕","title":"Cou-Cou’s Fair Share","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"Share cookies out equally and discover what division really means.","href":"lessons/division-sharing.html","status":"live","featured":true,"access":"free","note":"","videos":[]},{"id":"area-model-multiply","emoji":"📐","title":"Cou-Cou’s Split-the-Tray Trick","subject":"math","topic":"Numbers and operations","ages":"8-9","minutes":5,"blurb":"Split a big tray into a tens part and a ones part to multiply two-digit numbers fast.","href":"lessons/area-model-multiply.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"multiply-regroup","emoji":"✖️","title":"Cou-Cou’s Carry-the-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"9-10","minutes":5,"blurb":"When a part adds up to ten or more, trade ten ones for one ten (or ten tens for one hundred) to carry it into the next place.","href":"lessons/multiply-regroup.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"mult-div-inverse","emoji":"🔄","title":"Cou-Cou’s Fact Family","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Discover that one tray tells four number stories — and that division undoes multiplication.","href":"lessons/mult-div-inverse.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"add-sub-inverse","emoji":"↔️","title":"Cou-Cou’s Undo Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Add, then undo it — and discover that subtraction can check addition.","href":"lessons/add-sub-inverse.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"times-strategies","emoji":"🧩","title":"Cou-Cou’s Fact Tricks","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Split a hard times fact into easy ones you already know — and add them back together.","href":"lessons/times-strategies.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"division-remainders","emoji":"🍪","title":"Cou-Cou’s Leftovers","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Share things out equally and find out what to do with the ones left over.","href":"lessons/division-remainders.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"odd-numbers-squares","emoji":"🟩","title":"Cou-Cou’s Growing Squares","subject":"math","topic":"Numbers and operations","ages":"8-10","minutes":5,"blurb":"Wrap a square in layers of 1, 3, 5, 7... and discover why the total is always a perfect square.","href":"lessons/odd-numbers-squares.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"fraction-intro","emoji":"🍰","title":"Cou-Cou’s Fair Shares","subject":"math","topic":"Fractions and decimals","ages":"7-8","minutes":5,"blurb":"Cutting a whole into equal-size parts names a fraction: more equal parts always means smaller pieces.","href":"lessons/fraction-intro.html","status":"live","featured":true,"access":"free","note":"","videos":[]},{"id":"decimals-intro","emoji":"💧","title":"Cou-Cou’s Decimal Squares","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"A decimal is a number written with a point, like 0.3 (3 tenths of one whole): tenths and hundredths on a square, and why a longer decimal is not always a bigger one.","href":"lessons/decimals-intro.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"fraction-decimal-link","emoji":"🔗","title":"Cou-Cou’s Two Names","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"One amount can have two names: a fraction and a decimal. Tenths and hundredths on a bar and a square show why 3/10 and 0.3, or 63/100 and 0.63, are the same.","href":"lessons/fraction-decimal-link.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"fraction-add","emoji":"🍫","title":"Cou-Cou’s Fraction Add-Ups","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"When pieces are the same size you can just count them together: 1/5 + 2/5 = 3/5, and the bottom number stays the same.","href":"lessons/fraction-add.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"fraction-compare","emoji":"⚖️","title":"Cou-Cou’s Fraction Showdown","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"Which fraction is bigger? With pieces of the same size, count them; with different pieces, cut both into the same size first (or compare with 1/2).","href":"lessons/fraction-compare.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"telling-time","emoji":"🕒","title":"Cou-Cou’s Clock Time","subject":"math","topic":"Time and money","ages":"6-9","minutes":5,"blurb":"Read the short hand and the long hand, and tell the time on an analog clock.","href":"lessons/telling-time.html","status":"live","featured":true,"access":"free","note":"","videos":[]},{"id":"elapsed-time","emoji":"⏳","title":"Cou-Cou’s Time Hops","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"Find out how long things take, and what time they will end, by hopping through the time.","href":"lessons/elapsed-time.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"calendar-weeks","emoji":"📅","title":"Cou-Cou’s Calendar Weeks","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"A week is 7 days: find the same day of the week again, and work out days far ahead.","href":"lessons/calendar-weeks.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"counting-coins","emoji":"💰","title":"Cou-Cou’s Coin Jar","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"Know your US coins, count a mixed tray, use the fewest coins and work out change.","href":"lessons/counting-coins.html","status":"live","featured":false,"access":"free","note":"","videos":[]},{"id":"sugar-label-detective","emoji":"🍬","title":"The Sugar Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Is the sweetest food the one with the most sugar? Kids learn to read the nutrition label instead of trusting taste or words like \"natural\".","href":"sci/sugar-label-detective.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"fat-label-detective","emoji":"🥑","title":"The Fat Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Not all fat is the same. Kids sort \"friendlier\" fats from \"go-easy\" fats and learn what the fat lines on a label really tell you.","href":"sci/fat-label-detective.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"color-label-detective","emoji":"🫐","title":"The Color Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Why is a \"blue raspberry\" popsicle blue? Kids find the colour on the ingredient list and learn what the dye names mean.","href":"sci/color-label-detective.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"warning-label-detective","emoji":"⚠️","title":"The Warning Label Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"What does a California \"cancer warning\" sticker really mean? A calm look at why the label exists: it is a required notice about tiny trace amounts, not a sign the food is poison.","href":"sci/warning-label-detective.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"package-claims-detective","emoji":"📦","title":"The Package Claims Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"\"Tree ripened\", \"sun-dried\", \"natural\": what does a package claim actually promise? Kids practise telling a claim from a fact. Includes narrated video.","href":"sci/package-claims-detective.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"vitamin-c","emoji":"🍊","title":"The Scurvy Mystery","subject":"science","topic":"Health and history","ages":"6-9","minutes":5,"blurb":"Why did sailors get sick on long voyages, and why did fruit make them better? A true story that teaches fair testing.","href":"sci/vitamin-c.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"tooth-timeline","emoji":"🦷","title":"The Tooth Timeline","subject":"science","topic":"The human body","ages":"6-9","minutes":5,"blurb":"Why did her first tooth fall out at 8 when friends lost theirs at 5? Kids learn the order of baby teeth and the wide range of normal.","href":"sci/tooth-timeline.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"continents-and-oceans","emoji":"🌍","title":"The Invisible Borders of Continents and Oceans","subject":"science","topic":"Earth and geography","ages":"6-9","minutes":5,"blurb":"Where does one continent end and an ocean begin? Kids test the rules behind the 7 continents and 4 oceans.","href":"sci/continents-and-oceans.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"travel-piggy-bank","emoji":"🐷","title":"The Travel Piggy Bank","subject":"money","topic":"Saving and interest","ages":"6-9","minutes":5,"blurb":"How does interest earn interest? Kids watch a travel piggy bank grow and discover compounding, with no percentages needed at first.","href":"sci/travel-piggy-bank.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"splinter","emoji":"🪵","title":"Where Did the Splinter Go?","subject":"science","topic":"The human body","ages":"6-9","minutes":5,"blurb":"A tiny splinter vanishes from a fingertip. A short tour of how skin renews itself and how the body's guards help. Includes narrated video.","href":"https://dan-mom.github.io/Sci/Splinter.html","status":"beta","featured":false,"access":"free","note":"","videos":[]},{"id":"cube","emoji":"🧊","title":"Little Cube Quest","subject":"games","topic":"Puzzles and STEAM","ages":"7-10","minutes":5,"blurb":"Twenty guided lessons to solve a 2x2 cube with a real cube in hand: watch a slow demo, try it, answer a small question.","href":"games/cube.html","status":"beta","featured":false,"access":"free","note":"Large file: the first load takes a few seconds.","videos":[]},{"id":"roman-numerals","emoji":"🏰","title":"Roman Numeral Kingdom","subject":"games","topic":"Puzzles and STEAM","ages":"7-10","minutes":5,"blurb":"A kingdom-building game that teaches Roman numerals through exploring, building and unlocking, with short gentle checkpoints.","href":"games/roman/index.html","status":"live","featured":false,"access":"free","note":"","videos":[]}]};
+var DOG='<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="118" rx="34" ry="3.6" fill="rgba(31,42,68,.16)"/><path d="M33 34 C14 33 6 58 12 79 C28 75 40 60 42 42 Z" fill="#232733" stroke="#0b0e16" stroke-width="3.5" stroke-linejoin="round"/><path d="M87 34 C106 33 114 58 108 79 C92 75 80 60 78 42 Z" fill="#232733" stroke="#0b0e16" stroke-width="3.5" stroke-linejoin="round"/><path d="M36 94 Q60 124 84 94 Q80 114 60 116 Q40 114 36 94Z" fill="#fff" stroke="#0b0e16" stroke-width="3" stroke-linejoin="round"/><ellipse cx="60" cy="62" rx="38" ry="35" fill="#232733" stroke="#0b0e16" stroke-width="3.5"/><path d="M60 27 C49 39 49 52 52 66 L46 86 C53 98 67 98 74 86 L68 66 C71 52 71 39 60 27Z" fill="#fff"/><ellipse cx="60" cy="83" rx="17" ry="13" fill="#fff"/><path d="M33 45 Q42 36 51 43" fill="none" stroke="#b9c1d3" stroke-width="3" stroke-linecap="round"/><path d="M69 43 Q78 36 87 45" fill="none" stroke="#b9c1d3" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="59" r="8.4" fill="#fff"/><circle cx="78" cy="59" r="8.4" fill="#fff"/><circle cx="43" cy="60" r="6" fill="#5a3a1e"/><circle cx="77" cy="60" r="6" fill="#5a3a1e"/><circle cx="43" cy="60" r="3.2" fill="#0b0e16"/><circle cx="77" cy="60" r="3.2" fill="#0b0e16"/><circle cx="44.8" cy="57.6" r="2.4" fill="#fff"/><circle cx="78.8" cy="57.6" r="2.4" fill="#fff"/><circle cx="41" cy="62.6" r="1.1" fill="#fff"/><circle cx="75" cy="62.6" r="1.1" fill="#fff"/><ellipse cx="27" cy="77" rx="6.5" ry="4.2" fill="#ff8fa3" opacity=".8"/><ellipse cx="93" cy="77" rx="6.5" ry="4.2" fill="#ff8fa3" opacity=".8"/><ellipse cx="60" cy="77" rx="8.5" ry="6" fill="#0b0e16"/><ellipse cx="57.5" cy="75.2" rx="2.6" ry="1.4" fill="#fff" opacity=".6"/><path d="M46 87 Q60 118 74 87 Q60 94 46 87Z" fill="#7a1f2e" stroke="#232733" stroke-width="3" stroke-linejoin="round"/><path d="M52 98 Q60 112 68 98 Q60 92 52 98Z" fill="#ff7a90"/><path d="M60 83 V89" stroke="#232733" stroke-width="3" stroke-linecap="round"/><path d="M42 85 Q45 91 48 88 M78 85 Q75 91 72 88" fill="none" stroke="#232733" stroke-width="2.6" stroke-linecap="round"/><path d="M32 106 Q60 121 88 106" fill="none" stroke="#e8453c" stroke-width="7.5" stroke-linecap="round"/><circle cx="60" cy="116" r="4.6" fill="#ffd23f" stroke="#b8860b" stroke-width="2"/></svg>';
+var S=DATA.site,P=DATA.projects,app=document.getElementById('app'),V=document.getElementById('viewer'),VF=document.getElementById('vf');
+var EMO_SUBJ={};S.subjects.forEach(function(s){EMO_SUBJ[s.id]=s});
 function E(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e}
+function svg(cls){var d=E('span',cls);d.innerHTML=DOG;return d}
 function seenGet(){try{return JSON.parse(localStorage.getItem('wmn-seen')||'{}')}catch(e){return{}}}
 function seenSet(k){try{var s=seenGet();s[k]=1;localStorage.setItem('wmn-seen',JSON.stringify(s))}catch(e){}}
-var HUB=decodeURIComponent((location.pathname.split('/').pop())||'')||'index.html';
-function withHome(h){if(/^https?:/.test(h))return h;var d=h.split('/').length-1,up='';for(var i=0;i<d;i++)up+='../';return h+'?home='+encodeURIComponent(up+HUB).replace(/%2F/g,'/')+'&v='+DATA.v}
-var main=document.getElementById('main'),V=document.getElementById('viewer'),VF=document.getElementById('vf');
-/* mascot (the same orange box that guides the math lessons) */
-document.getElementById('mascot').innerHTML='<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="118" rx="34" ry="3.6" fill="rgba(31,42,68,.16)"/><path d="M33 34 C14 33 6 58 12 79 C28 75 40 60 42 42 Z" fill="#232733" stroke="#0b0e16" stroke-width="3.5" stroke-linejoin="round"/><path d="M87 34 C106 33 114 58 108 79 C92 75 80 60 78 42 Z" fill="#232733" stroke="#0b0e16" stroke-width="3.5" stroke-linejoin="round"/><path d="M36 94 Q60 124 84 94 Q80 114 60 116 Q40 114 36 94Z" fill="#fff" stroke="#0b0e16" stroke-width="3" stroke-linejoin="round"/><ellipse cx="60" cy="62" rx="38" ry="35" fill="#232733" stroke="#0b0e16" stroke-width="3.5"/><path d="M60 27 C49 39 49 52 52 66 L46 86 C53 98 67 98 74 86 L68 66 C71 52 71 39 60 27Z" fill="#fff"/><ellipse cx="60" cy="83" rx="17" ry="13" fill="#fff"/><path d="M33 45 Q42 36 51 43" fill="none" stroke="#b9c1d3" stroke-width="3" stroke-linecap="round"/><path d="M69 43 Q78 36 87 45" fill="none" stroke="#b9c1d3" stroke-width="3" stroke-linecap="round"/><circle cx="42" cy="59" r="8.4" fill="#fff"/><circle cx="78" cy="59" r="8.4" fill="#fff"/><circle cx="43" cy="60" r="6" fill="#5a3a1e"/><circle cx="77" cy="60" r="6" fill="#5a3a1e"/><circle cx="43" cy="60" r="3.2" fill="#0b0e16"/><circle cx="77" cy="60" r="3.2" fill="#0b0e16"/><circle cx="44.8" cy="57.6" r="2.4" fill="#fff"/><circle cx="78.8" cy="57.6" r="2.4" fill="#fff"/><circle cx="41" cy="62.6" r="1.1" fill="#fff"/><circle cx="75" cy="62.6" r="1.1" fill="#fff"/><ellipse cx="27" cy="77" rx="6.5" ry="4.2" fill="#ff8fa3" opacity=".8"/><ellipse cx="93" cy="77" rx="6.5" ry="4.2" fill="#ff8fa3" opacity=".8"/><ellipse cx="60" cy="77" rx="8.5" ry="6" fill="#0b0e16"/><ellipse cx="57.5" cy="75.2" rx="2.6" ry="1.4" fill="#fff" opacity=".6"/><path d="M46 87 Q60 118 74 87 Q60 94 46 87Z" fill="#7a1f2e" stroke="#232733" stroke-width="3" stroke-linejoin="round"/><path d="M52 98 Q60 112 68 98 Q60 92 52 98Z" fill="#ff7a90"/><path d="M60 83 V89" stroke="#232733" stroke-width="3" stroke-linecap="round"/><path d="M42 85 Q45 91 48 88 M78 85 Q75 91 72 88" fill="none" stroke="#232733" stroke-width="2.6" stroke-linecap="round"/><path d="M32 106 Q60 121 88 106" fill="none" stroke="#e8453c" stroke-width="7.5" stroke-linecap="round"/><circle cx="60" cy="116" r="4.6" fill="#ffd23f" stroke="#b8860b" stroke-width="2"/></svg>';
+function proj(id){for(var i=0;i<P.length;i++)if(P[i].id===id)return P[i];return null}
+function ageText(a){return a?('Ages '+a.replace('-','–')):''}
+function withHome(h){if(/^https?:/.test(h))return h;var d=h.split('/').length-1,up='';for(var i=0;i<d;i++)up+='../';return h+'?home='+encodeURIComponent(up+'index.html').replace(/%2F/g,'/')+'&v='+DATA.v}
+function allVideos(){var a=[];P.forEach(function(p){p.videos.forEach(function(v){a.push({p:p,v:v})})});a.sort(function(x,y){return (y.v.date||'').localeCompare(x.v.date||'')});return a}
+document.getElementById('logoSvg').innerHTML=DOG;
+document.getElementById('foot').textContent=(S.disclaimer||'')+'  ·  What Matters Now';
 
-function allItems(){var a=[];DATA.sections.forEach(function(s){(s.groups||[]).forEach(function(g){g.items.forEach(function(i){a.push(i)})})});return a}
-function updateStars(){var s=seenGet(),n=0;allItems().forEach(function(i){if(i.href&&s[i.href])n++});document.getElementById('starN').textContent=n+' of '+allItems().filter(function(i){return i.href}).length}
-function sec(id){for(var i=0;i<DATA.sections.length;i++)if(DATA.sections[i].id===id)return DATA.sections[i];return null}
-
-function renderHome(){
-  main.innerHTML='';
-  main.appendChild(E('h2','sect','Choose your world'));
-  main.appendChild(E('p','lead','Every world has lessons and games you can play right now.'));
-  var wr=E('div','worlds');
-  DATA.sections.forEach(function(s){
-    var b=E('button','world c-'+s.color);b.type='button';b.setAttribute('aria-label',s.en+' - '+s.count+' things to play');
-    b.appendChild(E('span','bubble b1'));b.appendChild(E('span','bubble b2'));
-    b.appendChild(E('span','em',s.emoji));b.appendChild(E('h3',null,s.en));b.appendChild(E('p',null,s.tag));b.appendChild(E('p','zh',s.zh));
-    var f=E('div','foot');f.appendChild(E('span','pill',s.count+(s.areas?' projects':' to play')));f.appendChild(E('span','go','→'));b.appendChild(f);
-    b.onclick=function(){location.hash=s.id};wr.appendChild(b)});
-  main.appendChild(wr);
-}
-function card(it,g,idx){
-  var c=E('div','card c-'+(it.color||g.color));c.style.animationDelay=(Math.min(idx,12)*35)+'ms';
-  var art=E('div','art');art.appendChild(E('span',null,it.emoji||'⭐'));
-  var seen=it.href&&seenGet()[it.href];if(seen)art.appendChild(E('span','ribbon','⭐ Played'));
-  c.appendChild(art);
-  var b=E('div','body');b.appendChild(E('h3',null,it.title));if(it.zh)b.appendChild(E('p','zh',it.zh));
-  if(!DATA.site&&it.status){var tg=E('div','tags');tg.appendChild(E('span','tag-chip'+(it.tone==='low'?' low':''),it.status));if(it.meta)tg.appendChild(E('span','tag-chip low',it.meta));b.appendChild(tg)}
-  var ac=E('div','actions');
-  if(it.href){
-    var p=E('button','play','▶ Play');p.type='button';p.onclick=function(){openIt(it)};ac.appendChild(p);
-    if(DATA.site||DATA.cur==='math'){var a=E('a','tab','↗');a.href=withHome(it.href);a.target='_blank';a.rel='noopener';a.setAttribute('aria-label','Open '+it.title+' in a new tab');a.title='Open in a new tab';a.onclick=function(){seenSet(it.href)};ac.appendChild(a)}
-  }else{var d=E('span','play','Coming soon');d.setAttribute('aria-disabled','true');ac.appendChild(d)}
-  b.appendChild(ac);if(it.note)b.appendChild(E('p','note',it.note));c.appendChild(b);return c}
-function renderWorld(s){
-  DATA.cur=s.id;main.innerHTML='';main.className='c-'+s.color;
-  var cr=E('div','crumb');var bk=E('button','back','← All worlds');bk.type='button';bk.onclick=function(){location.hash=''};cr.appendChild(bk);main.appendChild(cr);
-  var t=E('div','world-title');t.appendChild(E('span','em',s.emoji));var h=E('h2',null,s.en);t.appendChild(h);main.appendChild(t);
-  main.appendChild(E('p','lead',s.tag+'  ·  '+s.zh));
-  if(s.areas){s.areas.forEach(function(a){var d=E('div','area c-'+s.color);d.appendChild(E('h3',null,a.title));d.appendChild(E('p','zh',a.zh));var tg=E('div','tags');tg.appendChild(E('span','tag-chip',a.status));if(a.waiting)tg.appendChild(E('span','tag-chip low',a.waiting));if(a.updated)tg.appendChild(E('span','tag-chip low','updated '+a.updated));d.appendChild(tg);if(a.next)d.appendChild(E('p','next','Next: '+a.next));if(a.extra)d.appendChild(E('p','note',a.extra));main.appendChild(d)});return}
-  var idx=0;
-  s.groups.forEach(function(g){
-    if(g.en||g.zh){var gh=E('div','group-h c-'+g.color,g.en||g.zh);if(g.en&&g.zh)gh.appendChild(E('small',null,g.zh));main.appendChild(gh)}
-    var gr=E('div','grid c-'+g.color);g.items.forEach(function(it){gr.appendChild(card(it,g,idx++))});main.appendChild(gr)});
-  if(s.id==='math'&&!DATA.site)main.appendChild(E('p','note','Math lessons also have a private backup on GitHub (Dan-Mom/five-minute-math).'))}
-function route(){
-  var id=(location.hash||'').replace('#','');var s=id&&sec(id);
-  main.className='';DATA.cur=null;
-  if(s)renderWorld(s);else renderHome();
-  updateStars();window.scrollTo(0,0)}
-function openIt(it){
-  seenSet(it.href);document.getElementById('vt').textContent=it.title;
-  var bar=V.querySelector('.bar');V.style.setProperty('--c',getComputedStyle(main.firstChild&&main.className?main:document.body).getPropertyValue('--c')||'#1b6fd1');
-  document.getElementById('vnew').href=withHome(it.href);
-  if(it.video){window.open(it.href,'_blank');return}
-  VF.src=/^https?:/.test(it.href)?it.href:it.href+'?v='+DATA.v;V.classList.add('on');document.getElementById('vx').focus()}
+/* ---------- player / video windows ---------- */
+function openLesson(p){
+  if(!p.href)return;seenSet(p.id);
+  V.style.setProperty('--c',({orange:'#d95b00',pink:'#d6246e',teal:'#0b8a7c',green:'#1f8f45',purple:'#6d3fd8',blue:'#1b6fd1'})[(EMO_SUBJ[p.subject]||{}).color]||'#1b6fd1');
+  document.getElementById('vt').textContent=p.title;document.getElementById('vnew').style.display='';document.getElementById('vnew').href=withHome(p.href);
+  VF.src=/^https?:/.test(p.href)?p.href:p.href+'?v='+DATA.v;V.classList.add('on');document.getElementById('vx').focus()}
 function closeV(){V.classList.remove('on');VF.src='about:blank';route()}
 document.getElementById('vx').onclick=closeV;
 document.addEventListener('keydown',function(e){if(e.key==='Escape'&&V.classList.contains('on'))closeV()});
 window.addEventListener('message',function(e){if(e.data&&e.data.fmpHome&&V.classList.contains('on'))closeV()});
+function ytSrc(id,auto){return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0'+(auto?'&autoplay=1':'')}
+function openVideo(item){
+  V.style.setProperty('--c','#1b6fd1');document.getElementById('vt').textContent=item.v.title;document.getElementById('vnew').style.display='none';
+  VF.src=ytSrc(item.v.youtube,true);V.classList.add('on');document.getElementById('vx').focus()}
+
+/* ---------- pieces ---------- */
+function card(p,feature){
+  var sub=EMO_SUBJ[p.subject]||{color:'blue'};var c=E('article','card c-'+sub.color+(feature?' feature':''));
+  var art=E('div','art');art.appendChild(E('span','e',p.emoji||sub.emoji||'⭐'));
+  if(p.status==='beta')art.appendChild(E('span','tag','Beta'));
+  var seen=seenGet()[p.id];if(seen)art.appendChild(E('span','tag right','✓ Tried'));
+  c.appendChild(art);
+  var b=E('div','body');b.appendChild(E('h3',null,p.title));b.appendChild(E('p',null,p.blurb));
+  var m=E('div','meta');if(p.ages)m.appendChild(E('span','m',ageText(p.ages)));m.appendChild(E('span','m',p.minutes+' min'));if(p.videos.length)m.appendChild(E('span','m','▶ Video'));b.appendChild(m);
+  var a=E('div','actions');
+  if(p.href){var pl=E('button','btn c','▶ Play');pl.type='button';pl.onclick=function(){openLesson(p)};a.appendChild(pl)}
+  else{var cs=E('span','btn ghost','Coming soon');cs.setAttribute('aria-disabled','true');a.appendChild(cs)}
+  var d=E('a','btn ghost','Details');d.href='#/p/'+p.id;a.appendChild(d);
+  b.appendChild(a);c.appendChild(b);return c}
+function videoCards(list){
+  var row=E('div','vrow');
+  list.forEach(function(it){var b=E('button','vcard');b.type='button';b.setAttribute('aria-label','Play video: '+it.v.title);
+    var th=E('div','th');th.style.backgroundImage='url(https://i.ytimg.com/vi/'+encodeURIComponent(it.v.youtube)+'/hqdefault.jpg)';b.appendChild(th);b.appendChild(E('b',null,it.v.title));b.onclick=function(){openVideo(it)};row.appendChild(b)});
+  return row}
+function soon(text,sub){var d=E('div','soon');d.appendChild(svg(''));var t=E('div');t.appendChild(E('b',null,text));t.appendChild(E('p',null,sub));d.appendChild(t);return d}
+
+/* ---------- views ---------- */
+function home(){
+  app.innerHTML='';
+  var hero=E('section','hero');['cloud a','cloud b'].forEach(function(c){var x=E('div',c);x.setAttribute('aria-hidden','true');hero.appendChild(x)});
+  var w=E('div','wrap hero-grid');var left=E('div');
+  left.appendChild(E('h1',null,S.tagline));left.appendChild(E('p','sub',S.sub));
+  var cta=E('div','cta');
+  var feat=P.filter(function(p){return p.featured&&p.href});var first=feat[0]||P.filter(function(p){return p.href})[0];
+  var b1=E('button','btn main','▶ Try a free lesson');b1.type='button';b1.onclick=function(){if(first)openLesson(first)};cta.appendChild(b1);
+  var b2=E('a','btn alt','Watch videos');b2.href='#/watch';cta.appendChild(b2);left.appendChild(cta);
+  var ch=E('div','chips');ch.appendChild(E('span','chip','Ages 6 to 10'));(S.promises||[]).slice(0,3).forEach(function(t){ch.appendChild(E('span','chip',t))});left.appendChild(ch);
+  var right=E('div','mascot-box');var m=svg('mascot');right.appendChild(m);right.appendChild(E('div','bubble',"Hi, I'm Cou-Cou! Let's think it through."));
+  w.appendChild(left);w.appendChild(right);hero.appendChild(w);
+  hero.insertAdjacentHTML('beforeend','<svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C150 60 300 0 450 24 C600 48 750 4 900 26 C1050 48 1130 12 1200 28 L1200 60 L0 60Z" fill="#fff6e3"/></svg>');
+  app.appendChild(hero);
+  // try one now
+  var s1=E('section','block wrap');s1.id='try';s1.appendChild(E('h2',null,'Try one now'));s1.appendChild(E('p','lead','Each lesson takes about five minutes. Sit beside your child for the first one.'));
+  var g=E('div','grid');feat.forEach(function(p){g.appendChild(card(p,true))});s1.appendChild(g);if(feat.length)app.appendChild(s1);
+  // watch
+  var s2=E('section','block wrap');s2.id='watch';s2.appendChild(E('h2',null,'Watch'));
+  var vids=allVideos();
+  if(vids.length){s2.appendChild(E('p','lead','Short talks and lesson walk-throughs.'));s2.appendChild(videoCards(vids.slice(0,8)));var all=E('a','btn ghost c-blue','All videos →');all.href='#/watch';s2.appendChild(all)}
+  else s2.appendChild(soon('Our first videos are on the way','Short English talks and screen-recorded lesson walk-throughs will appear here.'));
+  app.appendChild(s2);
+  // subjects
+  var s3=E('section','block wrap');s3.id='subjects';s3.appendChild(E('h2',null,'Browse by subject'));s3.appendChild(E('p','lead','Pick a subject, then pick a lesson.'));
+  var t=E('div','tiles');
+  S.subjects.forEach(function(s){var n=P.filter(function(p){return p.subject===s.id}).length;if(!n)return;
+    var b=E('button','tile c-'+s.color);b.type='button';b.appendChild(E('span','e',s.emoji));b.appendChild(E('h3',null,s.name));b.appendChild(E('p',null,s.blurb));b.appendChild(E('span','n',n+(n===1?' lesson':' lessons')));b.onclick=function(){location.hash='#/s/'+s.id};t.appendChild(b)});
+  s3.appendChild(t);app.appendChild(s3);
+  // how it works
+  var s4=E('section','block wrap');s4.appendChild(E('h2',null,'How a lesson works'));s4.appendChild(E('p','lead','Not a video to watch. A short activity to think through.'));
+  var st=E('div','steps');(S.how||[]).forEach(function(x){var d=E('div','step');d.appendChild(E('div','e',x.emoji));d.appendChild(E('h3',null,x.title));d.appendChild(E('p',null,x.text));st.appendChild(d)});s4.appendChild(st);
+  var pr=E('div','promises');(S.promises||[]).forEach(function(t){pr.appendChild(E('div','promise','✓ '+t))});s4.appendChild(pr);app.appendChild(s4);
+  // about
+  var s5=E('section','block wrap');s5.id='about';var ab=E('div','about');ab.appendChild(svg(''));var tx=E('div');tx.appendChild(E('h2',null,S.about.title));tx.appendChild(E('p',null,S.about.text));
+  if(S.channel&&S.channel.url){var cl=E('a','btn ghost c-blue',S.channel.name||'Our channel');cl.href=S.channel.url;cl.target='_blank';cl.rel='noopener';cl.style.marginTop='12px';tx.appendChild(cl)}
+  ab.appendChild(tx);s5.appendChild(ab);app.appendChild(s5)}
+
+function subject(id){
+  var s=EMO_SUBJ[id];app.innerHTML='';if(!s){home();return}
+  var w=E('div','wrap c-'+s.color);var cr=E('div','crumb');var bk=E('button','back','← All subjects');bk.type='button';bk.onclick=function(){location.hash='#/subjects'};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e',s.emoji));h.appendChild(E('h1',null,s.name));w.appendChild(h);w.appendChild(E('p','lead',s.blurb));
+  var list=P.filter(function(p){return p.subject===id});var topics=[];list.forEach(function(p){if(topics.indexOf(p.topic)<0)topics.push(p.topic)});
+  topics.forEach(function(tp){if(tp&&topics.length>1)w.appendChild(E('div','topic',tp));var g=E('div','grid');list.filter(function(p){return p.topic===tp}).forEach(function(p){g.appendChild(card(p))});w.appendChild(g)});
+  app.appendChild(w)}
+
+function project(id){
+  var p=proj(id);app.innerHTML='';if(!p){home();return}
+  var s=EMO_SUBJ[p.subject]||{color:'blue',name:''};var w=E('div','wrap c-'+s.color);
+  var cr=E('div','crumb');var bk=E('button','back','← '+(s.name||'Back'));bk.type='button';bk.onclick=function(){location.hash='#/s/'+p.subject};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e',p.emoji||s.emoji));h.appendChild(E('h1',null,p.title));w.appendChild(h);
+  var m=E('div','meta');if(p.ages)m.appendChild(E('span','m',ageText(p.ages)));m.appendChild(E('span','m',p.minutes+' min'));if(p.status==='beta')m.appendChild(E('span','m','Beta'));w.appendChild(m);
+  var g=E('div','proj');var L=E('div');var R=E('div');
+  // video
+  var vb=E('div','box');vb.appendChild(E('h2',null,'Watch'));
+  if(p.videos.length){var em=E('div','embed');var fr=E('iframe');fr.title=p.videos[0].title;fr.allow='accelerometer; encrypted-media; picture-in-picture; fullscreen';fr.allowFullscreen=true;fr.src=ytSrc(p.videos[0].youtube,false);em.appendChild(fr);vb.appendChild(em);
+    if(p.videos.length>1){var vl=E('div','vlist');p.videos.forEach(function(v,i){var b=E('button',null,v.title);b.type='button';b.setAttribute('aria-current',String(i===0));b.onclick=function(){fr.src=ytSrc(v.youtube,true);[].forEach.call(vl.children,function(x,j){x.setAttribute('aria-current',String(j===i))})};vl.appendChild(b)});vb.appendChild(vl)}}
+  else vb.appendChild(soon('Video coming soon','A short talk and a screen walk-through of this lesson.'));
+  L.appendChild(vb);
+  var about=E('div','box');about.style.marginTop='18px';about.appendChild(E('h2',null,'What your child does'));about.appendChild(E('p',null,p.blurb));if(p.note)about.appendChild(E('p','tip',p.note));
+  about.appendChild(E('div','tip','Tip: after the lesson, ask "How did you know?" The explaining is where the learning sticks.'));L.appendChild(about);
+  // play
+  var pb=E('div','box');pb.appendChild(E('h2',null,'Play the lesson'));
+  if(p.href){var b=E('button','btn c','▶ Start ('+p.minutes+' min)');b.type='button';b.style.width='100%';b.onclick=function(){openLesson(p)};pb.appendChild(b);
+    var nt=E('a','btn ghost','Open in a new tab ↗');nt.href=withHome(p.href);nt.target='_blank';nt.rel='noopener';nt.style.cssText='width:100%;margin-top:10px';pb.appendChild(nt)}
+  else pb.appendChild(E('p',null,'This lesson is still being built.'));
+  R.appendChild(pb);
+  var rel=P.filter(function(x){return x.subject===p.subject&&x.id!==p.id&&x.topic===p.topic}).slice(0,3);
+  if(rel.length){var rb=E('div','box');rb.style.marginTop='18px';rb.appendChild(E('h2',null,'More like this'));rel.forEach(function(x){var a=E('a','btn ghost',x.title);a.href='#/p/'+x.id;a.style.cssText='width:100%;margin-top:8px;justify-content:flex-start;text-align:left;font-size:17px';rb.appendChild(a)});R.appendChild(rb)}
+  g.appendChild(L);g.appendChild(R);w.appendChild(g);app.appendChild(w)}
+
+function watch(){
+  app.innerHTML='';var w=E('div','wrap c-blue');var cr=E('div','crumb');var bk=E('button','back','← Home');bk.type='button';bk.onclick=function(){location.hash=''};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e','🎬'));h.appendChild(E('h1',null,'Videos'));w.appendChild(h);
+  var v=allVideos();
+  if(v.length){w.appendChild(E('p','lead','Short English talks and lesson walk-throughs.'));var g=E('div','grid');v.forEach(function(it){var c=E('article','card c-blue');var th=E('button','vcard');th.type='button';th.style.cssText='flex:none;width:100%;border-radius:0;box-shadow:none;background:none';var im=E('div','th');im.style.backgroundImage='url(https://i.ytimg.com/vi/'+encodeURIComponent(it.v.youtube)+'/hqdefault.jpg)';th.appendChild(im);th.onclick=function(){openVideo(it)};c.appendChild(th);var b=E('div','body');b.appendChild(E('h3',null,it.v.title));var a=E('a','btn ghost','Lesson: '+it.p.title);a.href='#/p/'+it.p.id;b.appendChild(a);c.appendChild(b);g.appendChild(c)});w.appendChild(g)}
+  else{w.appendChild(E('p','lead','Short English talks and screen-recorded lesson walk-throughs.'));w.appendChild(soon('Our first videos are on the way','Check back soon. In the meantime, try a lesson!'));var t=E('button','btn main','▶ Try a free lesson');t.type='button';t.style.marginTop='18px';var first=P.filter(function(p){return p.featured&&p.href})[0]||P.filter(function(p){return p.href})[0];t.onclick=function(){if(first)openLesson(first)};w.appendChild(t)}
+  app.appendChild(w)}
+
+function route(){
+  var h=(location.hash||'').replace(/^#\/?/,'').split('/');var k=h[0];
+  if(k==='s')subject(h[1]);else if(k==='p')project(h[1]);else if(k==='watch')watch();
+  else{home();if(k==='subjects'||k==='about'){var el=document.getElementById(k);if(el)el.scrollIntoView();return}}
+  window.scrollTo(0,0);var hh=app.querySelector('h1');if(hh){hh.setAttribute('tabindex','-1');hh.focus({preventScroll:true})}}
+document.getElementById('logo').onclick=function(){if(location.hash)location.hash='';else{route()}};
+[].forEach.call(document.querySelectorAll('[data-go]'),function(a){a.onclick=function(){var t=a.getAttribute('data-go');if(t==='watch'){location.hash='#/watch';return}
+  if(!location.hash||location.hash==='#'){var el=document.getElementById(t);if(el)el.scrollIntoView()}else{location.hash='#/'+t}}});
 window.addEventListener('hashchange',route);
-document.getElementById('foot').textContent=(DATA.site?'Test version':'Your full overview (includes work in progress)')+' · updated '+DATA.generated;
 route();
 </script>
 </body>
