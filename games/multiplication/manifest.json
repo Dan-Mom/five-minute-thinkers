@@ -1,0 +1,15 @@
+{
+  "name": "Times Tables Challenge",
+  "short_name": "Times Tables",
+  "description": "600-question multiplication practice, 20 levels, timed with points.",
+  "start_url": "./Multiplication.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#FBF7EE",
+  "theme_color": "#2E2E52",
+  "icons": [
+    { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "./icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

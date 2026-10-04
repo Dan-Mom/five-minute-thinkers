@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+  <!-- ===== 装到 iPad 桌面上用的（PWA）。原课件没有这一段。 ===== -->
+  <link rel="manifest" href="manifest.webmanifest" />
+  <meta name="theme-color" content="#24344a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="5分钟科学" />
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
+  <title>手指上的倒刺去哪儿了？· Lesson Player Preview</title>
+  <style>
+    * { box-sizing: border-box; }
+    :root {
+      --ink: #24344a;
+      --muted: #68788e;
+      --cream: #fff9ec;
+      --sky: #e9f7ff;
+      --orange: #f5a338;
+      --orange-dark: #d9751d;
+      --yellow: #fff1bc;
+      --green: #58b96b;
+      --red: #ef5a5a;
+      --blue: #70c7e8;
+      --white: #ffffff;
+    }
+
+    /* 2026-08-31：Dan 要看真实的整屏 App 效果，不要套在一个"手机/iPad 模型"里——
+       打开这个文件直接就是 App 本身，铺满整个浏览器窗口（以后真机上就是铺满整个屏幕）。
+       之前那圈深色机身、假的 9:41 状态栏都是我自己加的演示装饰，现在去掉了。
+       2026-08-31 再改：Dan 要求手机/iPad/任何屏幕尺寸打开都要能自动适配——
+       这里不再强制卡死 100vh + overflow:hidden（那样小屏幕内容装不下就会被硬裁掉看不见），
+       改成"背景至少铺满一屏高，内容多了就让整个页面自然往下滚"，保证任何屏幕、任何方向都不会丢内容。 */
+    html, body {
+      margin: 0;
+    }
+
+    body {
+      font-size: 32px;
+      color: var(--ink);
+      font-family: "Microsoft YaHei", "PingFang SC", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+      background: linear-gradient(180deg, var(--cream), var(--sky));
+    }
+
+    .screen {
+      width: 100%;
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .lesson-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 9px clamp(14px, 3vw, 28px) 12px;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid rgba(79, 122, 149, 0.16);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .mini-mascot {
+      width: 45px;
+      height: 40px;
+      flex: 0 0 auto;
+      border-radius: 13px;
+      background: var(--orange);
+      border: 3px solid var(--orange-dark);
+      position: relative;
+      box-shadow: inset 0 -5px 0 #e98b28;
+    }
+
+    .mini-mascot::before {
+      content: "•  •";
+      position: absolute;
+      inset: 6px 0 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .mini-mascot::after {
+      content: "⌣";
+      position: absolute;
+      inset: 15px 0 0;
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy strong,
+    .brand-copy span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand-copy strong { font-size: 14px; }
+    .brand-copy span { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .lesson-progress {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 22px;
+      font-weight: 800;
+      flex: 0 0 auto;
+    }
+
+    .progress-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #d9e4ea;
+    }
+
+    .progress-dot.active { background: var(--orange); }
+
+    .app-content {
+      flex: 1;
+      width: 100%;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 15px clamp(14px, 3vw, 28px) clamp(18px, 3vh, 32px);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .voice-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .voice-label {
+      font-size: 24px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .voice-label span {
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .voice-toggle {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(0, 1fr);
+      padding: 4px;
+      border-radius: 16px;
+      background: #dfeff6;
+      gap: 3px;
+      flex: 1;
+      max-width: 340px;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .voice-choice {
+      min-height: 37px;
+      border: 0;
+      border-radius: 12px;
+      background: transparent;
+      color: #53657b;
+      font-size: 22px;
+      font-weight: 900;
+      padding: 7px 8px;
+    }
+
+    .voice-choice[aria-pressed="true"] {
+      color: var(--ink);
+      background: var(--white);
+      box-shadow: 0 5px 14px rgba(52, 85, 104, 0.13);
+    }
+
+    .lesson-title {
+      text-align: center;
+      line-height: 1.16;
+    }
+
+    .lesson-title h2 {
+      margin: 0;
+      font-size: clamp(40px, 6vw, 56px);
+    }
+
+    .lesson-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 26px;
+      font-weight: 800;
+    }
+
+    .video-view,
+    .quiz-view,
+    .result-view {
+      min-height: 0;
+      flex: 1;
+    }
+
+    .video-view {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .video-stage {
+      min-height: 0;
+      flex: 1;
+      width: 100%;
+      border-radius: 25px;
+      overflow: hidden;
+      background: linear-gradient(145deg, #d5eef9, #fff5d8);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: inset 0 0 0 1px rgba(72, 116, 140, 0.13);
+    }
+
+    video {
+      width: 100%;
+      max-height: 100%;
+      /* 2026-08-31：视频改成 16:9 横屏（原来是 9:16 竖屏），这里同步改比例，
+         否则会把横屏视频硬塞进竖屏画框，两边被裁掉一截 */
+      aspect-ratio: 16 / 9;
+      object-fit: contain;
+      background: #eaf7ff;
+    }
+
+    .video-actions {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .secondary-action,
+    .primary-action {
+      min-height: 42px;
+      border-radius: 999px;
+      padding: 10px 20px;
+      font-weight: 900;
+    }
+
+    .secondary-action {
+      border: 2px solid rgba(82, 118, 139, 0.18);
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.75);
+    }
+
+    .primary-action {
+      border: 0;
+      color: var(--white);
+      background: var(--orange);
+      box-shadow: 0 8px 18px rgba(217, 117, 29, 0.28);
+    }
+
+    .quiz-view {
+      display: none;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .quiz-view.active,
+    .result-view.active { display: flex; }
+
+    .question-meter {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .meter-track {
+      height: 9px;
+      border-radius: 999px;
+      background: #d8e8ef;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      width: 33.33%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--orange);
+      transition: width 240ms ease;
+    }
+
+    .question-count {
+      color: var(--muted);
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .question-card {
+      padding: 18px 20px;
+      border-radius: 24px;
+      background: var(--yellow);
+      text-align: center;
+    }
+
+    .question-card h3 {
+      margin: 0;
+      font-size: clamp(34px, 5.6vw, 48px);
+      line-height: 1.3;
+    }
+
+    .question-card p {
+      margin: 7px 0 0;
+      color: #5f6c7e;
+      font-size: 26px;
+      line-height: 1.35;
+      font-weight: 800;
+    }
+
+    .options {
+      display: grid;
+      gap: 8px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 54px;
+      padding: 10px 15px;
+      border-radius: 18px;
+      border: 2px solid #d5e5ec;
+      background: rgba(255, 255, 255, 0.93);
+      color: var(--ink);
+      text-align: left;
+    }
+
+    .option:hover { border-color: var(--blue); }
+    .option strong, .option span { display: block; }
+    .option strong { font-size: 28px; }
+    .option span { color: var(--muted); font-size: 22px; margin-top: 2px; }
+    .option.correct { border-color: var(--green); background: #e8f8ec; }
+    .option.wrong { border-color: var(--red); background: #fff0f0; }
+
+    .feedback {
+      min-height: 47px;
+      padding: 9px 13px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.76);
+      text-align: center;
+      font-size: 24px;
+      line-height: 1.35;
+      font-weight: 800;
+      color: var(--muted);
+    }
+
+    .feedback.success { color: #2f7e42; background: #e8f8ec; }
+    .feedback.retry { color: #b14848; background: #fff0f0; }
+    .next-row { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
+    .next-question, .prev-question { visibility: hidden; }
+    .next-question.visible, .prev-question.visible { visibility: visible; }
+
+    .result-view {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      gap: 14px;
+      padding: 20px;
+    }
+
+    .result-mascot {
+      width: 130px;
+      height: 112px;
+      border-radius: 35px;
+      background: var(--orange);
+      border: 7px solid var(--orange-dark);
+      box-shadow: inset 0 -12px 0 #e98b28;
+      display: grid;
+      place-items: center;
+      font-size: 42px;
+      font-weight: 900;
+    }
+
+    .result-view h3 { margin: 0; font-size: 52px; }
+    .result-view p { margin: 0; color: var(--muted); font-weight: 800; line-height: 1.45; }
+    .stars { color: #f4bd2c; font-size: 32px; letter-spacing: 5px; }
+
+    .unsupported {
+      display: none;
+      color: #a04b4b;
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .unsupported.visible { display: block; }
+
+    @media (max-width: 620px) {
+      .app-content { padding-inline: 14px; }
+      .lesson-bar { padding-inline: 14px; }
+      .voice-row { align-items: stretch; flex-direction: column; }
+      .voice-toggle { max-width: none; width: 100%; }
+      .video-stage { min-height: 260px; }
+    }
+  
+    /* ===== iPad 样品追加：装到桌面之后才用得上的几条 ===== */
+    /* iPad 底部那条细长的 home 指示条不要压住内容 */
+    body { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    /* 下载按钮做成跟旁边「语言 / 声音」一模一样，不另起一套样式 */
+    .offline-toggle .voice-choice[data-state="busy"] { opacity: .8; }
+    .offline-toggle .voice-choice[data-state="done"] { color: var(--green); }
+    .offline-toggle .voice-choice[data-state="fail"] { color: var(--red); }
+      /* 2026-09-19：顶上两个阶段圆点改成可以点的，用来在视频和练习之间来回跳 */
+    .progress-dot[role="button"] { cursor: pointer; }
+    .progress-dot[role="button"]:focus-visible {
+      outline: 3px solid var(--orange-dark);
+      outline-offset: 3px;
+    }
+      /* 2026-09-19：练习时右边的提示栏。默认收着——三道题的原话基本就是答案，
+       直接摊开就等于把答案给了孩子（Dan 2026-09-19 定：点了才展开）。 */
+    .quiz-main {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 11px;
+      align-items: start;
+    }
+    @media (min-width: 760px) {
+      .quiz-main { grid-template-columns: 1fr minmax(210px, 280px); }
+    }
+    .hint-panel {
+      background: var(--sky);
+      border-radius: 16px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .hint-toggle, .hint-replay { width: 100%; min-height: 44px; }
+    .hint-body { display: flex; flex-direction: column; gap: 10px; }
+    .hint-quote {
+      margin: 0;
+      font-size: clamp(18px, 2.4vw, 22px);
+      line-height: 1.5;
+      color: var(--ink);
+    }
+    .hint-quote::before { content: "\201C"; }
+    .hint-quote::after { content: "\201D"; }
+  </style>
+</head>
+<body>
+  <div class="screen" aria-label="Lesson player app">
+        <header class="lesson-bar">
+          <div class="brand">
+            <div class="mini-mascot" aria-hidden="true"></div>
+          </div>
+          <div class="lesson-progress" aria-label="Lesson stage">
+            <span class="progress-dot active" id="videoDot" role="button" tabindex="0"
+                  title="学习" aria-label="回到视频"></span>
+            <span class="progress-dot" id="quizDot" role="button" tabindex="0"
+                  title="练习" aria-label="去练习"></span>
+            <span id="stageLabel">学习</span>
+          </div>
+        </header>
+
+        <div class="app-content">
+          <div class="voice-row">
+            <div class="voice-label" id="langLabel">语言</div>
+            <div class="voice-toggle" role="group" aria-label="Language">
+              <button type="button" class="voice-choice" data-lang="zh" aria-pressed="true">中文</button>
+              <button type="button" class="voice-choice" data-lang="en" aria-pressed="false">English</button>
+            </div>
+            <div class="voice-toggle sound-toggle" role="group" aria-label="Sound">
+              <button type="button" class="voice-choice" id="muteToggle" aria-pressed="false">🔊 <span id="muteLabel">声音</span></button>
+            </div>
+            <div class="voice-toggle offline-toggle" role="group" aria-label="Offline" id="offlineGroup" style="display:none">
+              <button type="button" class="voice-choice" id="offlineBtn">⬇ <span id="offlineLabel">下载课程</span></button>
+            </div>
+          </div>
+
+          <div class="lesson-title" id="lessonTitle">
+            <h2 id="lessonTitleText">手指上的倒刺去哪儿了？</h2>
+          </div>
+
+          <section class="video-view" id="videoView">
+            <div class="video-stage">
+              <video id="lessonVideo" src="out/bio-01-splinter-zh.mp4" poster="out/bio-01-splinter-poster.jpg" controls playsinline preload="metadata"></video>
+            </div>
+            <div class="video-actions">
+              <button type="button" class="secondary-action" id="startPractice">开始练习</button>
+            </div>
+          </section>
+
+          <section class="quiz-view" id="quizView" aria-live="polite">
+            <div class="question-meter">
+              <div class="meter-track" aria-hidden="true"><div class="meter-fill" id="meterFill"></div></div>
+              <div class="question-count" id="questionCount">1 / 3</div>
+            </div>
+            <div class="quiz-main">
+              <article class="question-card">
+                <h3 id="questionText"></h3>
+              </article>
+              <aside class="hint-panel">
+                <button type="button" class="secondary-action hint-toggle" id="hintToggle"
+                        aria-expanded="false" aria-controls="hintBody">💡 <span id="hintToggleLabel">看提示</span></button>
+                <div class="hint-body" id="hintBody" hidden>
+                  <p class="hint-quote" id="hintQuote"></p>
+                  <button type="button" class="secondary-action hint-replay" id="hintReplay">▶ <span id="hintReplayLabel">回看这一段</span></button>
+                </div>
+              </aside>
+            </div>
+            <div class="options" id="options"></div>
+            <div class="feedback" id="feedback">选择一个答案</div>
+            <div class="next-row">
+              <button type="button" class="secondary-action prev-question" id="prevQuestion">上一题</button>
+              <button type="button" class="primary-action next-question" id="nextQuestion">下一题</button>
+            </div>
+          </section>
+
+          <section class="result-view" id="resultView" aria-live="polite">
+            <div class="result-mascot" aria-hidden="true">•ᴗ•</div>
+            <div class="stars" aria-label="Three stars">★ ★ ★</div>
+            <h3 id="resultTitle">完成啦！</h3>
+            <p id="scoreText"></p>
+            <button type="button" class="primary-action" id="replayLesson">再学一次</button>
+          </section>
+        </div>
+  </div>
+
+  <script>
+    // 题目内容跟 out/bio-01-splinter.json 保持一致（2026-08-31 对齐版）
+    const quiz = [
+      {
+        qZh: "皮肤细胞在做什么工作？",
+        qEn: "What job are skin cells doing?",
+        optionsZh: ["一直不变", "像传送带一样不断更新、往外搬", "只在生病时工作"],
+        optionsEn: [
+          "They never change",
+          "They constantly renew and move outward, like a conveyor belt",
+          "They only work when you're sick"
+        ],
+        answer: 1,
+        whyZh: "皮肤细胞不断新陈代谢，老细胞往外推。",
+        whyEn: "Skin cells are constantly renewing, pushing older cells outward."
+      },
+      {
+        qZh: "发现倒刺这个“不速之客”，谁最先去处理？",
+        qEn: "Who responds first when the splinter, an “uninvited guest,” shows up?",
+        optionsZh: ["白细胞小卫兵", "牙齿", "头发"],
+        optionsEn: ["White blood cell guards", "Teeth", "Hair"],
+        answer: 0,
+        whyZh: "白细胞是身体的免疫卫兵。",
+        whyEn: "White blood cells are the body's immune guards."
+      },
+      {
+        qZh: "手指扎倒刺后有点红肿，这是为什么？",
+        qEn: "Why does the finger look a little red and swollen after getting a splinter?",
+        optionsZh: ["身体在正常修复、白细胞在工作", "没有原因", "说明伤口坏掉了"],
+        optionsEn: [
+          "The body is repairing itself normally and white blood cells are working",
+          "There's no reason",
+          "It means the wound has gone bad"
+        ],
+        answer: 0,
+        whyZh: "轻微红肿是免疫反应的正常表现。",
+        whyEn: "Mild redness and swelling is a normal sign of the immune response."
+      }
+    ];
+
+    // 朗读文本按本集实际的 5 段结构 + 时间轴对齐（0:00-0:10 / 0:10-1:00 / 1:00-1:30 / 1:30-1:50 / 1:50-2:00）
+    // 视频总长 120 秒，时间点必须小于 120，不然浏览器还没播到那儿视频就已经结束了
+    const narration = {
+      zh: [
+        {start: 0, text: "哎呀！手指被小刺扎到啦，好疼呀！爸爸妈妈说别担心，过几天就好啦。可是这根小刺到底去哪儿了呢？跟凑凑一起看看吧！"},
+        {start: 10, text: "皮肤是一座不停盖新楼、拆旧楼的房子。皮肤细胞小卫兵每天都在造新细胞，把旧细胞一层一层往外推，像传送带一样。"},
+        {start: 23, text: "小刺是个不速之客，卡在了皮肤的旧楼层里，伤口这才会有一点红红肿肿的。"},
+        {start: 36, text: "白细胞小卫兵马上赶来，把小刺团团围住，开始清理这个不速之客！"},
+        {start: 49, text: "一部分被传送带顶出皮肤外面，一部分被白细胞分解吸收掉啦！"},
+        {start: 60, text: "来跟一次真实的小刺，看它怎么消失。第一天，小刺卡进了皮肤里，白细胞小卫兵马上赶来站岗，伤口有一点红肿。"},
+        {start: 70, text: "接下来的几天，皮肤传送带不停地把旧细胞往外推，悄悄地把小刺也一起顶了出来。"},
+        {start: 81, text: "小刺跟着掉皮一起掉出来了，也可能已经被白细胞分解吸收啦！伤口也不红肿了。"},
+        {start: 90, text: "练习时间到啦！如果手指又扎了一根小刺，猜猜看，身体会先做哪一步呢？你能猜出来吗？去 App 里试试看！"},
+        {start: 110, text: "身体每天都在悄悄修复自己：皮肤不停更新，白细胞小卫兵随时待命保护你！下集见！"}
+      ],
+      en: [
+        {start: 0, text: "Ouch! A splinter poked my finger — it hurts! Mom and Dad said don't worry, it'll be fine in a few days. But where did the splinter actually go? Let's find out with CouCou!"},
+        {start: 10, text: "Skin is like a building that's always building new floors and tearing down old ones. Skin-cell guards make new cells every day, pushing the old ones outward layer by layer — just like a conveyor belt."},
+        {start: 23, text: "The splinter is an uninvited guest stuck in an old floor of skin — that's why the spot looks a little red and swollen."},
+        {start: 36, text: "White blood cell guards rush over, surround the splinter, and start clearing out the intruder!"},
+        {start: 49, text: "Part of it gets pushed out by the skin's conveyor belt, and part gets broken down and absorbed by the white blood cells!"},
+        {start: 60, text: "Let's follow one real splinter and watch it disappear. Day one: the splinter got stuck in the skin. White blood cell guards rush in to stand watch, and the spot looks a little red and swollen."},
+        {start: 70, text: "Over the next few days, the skin's conveyor belt keeps pushing old cells outward, quietly carrying the splinter out with them."},
+        {start: 81, text: "The splinter flaked off along with the old skin — or it may have already been broken down by the white blood cells! The redness is gone too."},
+        {start: 90, text: "Practice time! If your finger gets poked by another splinter, guess what your body does first? Can you guess it? Try it in the app!"},
+        {start: 110, text: "Your body quietly repairs itself every day: skin keeps renewing, and white blood cell guards are always standing by to protect you! See you next time!"}
+      ]
+    };
+
+    const video = document.getElementById("lessonVideo");
+    // 进过练习没有。用来决定视频页那个按钮写「开始练习」还是「继续练习」。
+    // 2026-09-19 修「进了练习回不去视频」时加的。
+    let quizVisited = false;
+    const videoView = document.getElementById("videoView");
+    const quizView = document.getElementById("quizView");
+    const resultView = document.getElementById("resultView");
+    const lessonTitle = document.getElementById("lessonTitle");
+    const lessonTitleText = document.getElementById("lessonTitleText");
+    const stageLabel = document.getElementById("stageLabel");
+    const videoDot = document.getElementById("videoDot");
+    const quizDot = document.getElementById("quizDot");
+    const questionText = document.getElementById("questionText");
+    const options = document.getElementById("options");
+    const feedback = document.getElementById("feedback");
+    const nextQuestion = document.getElementById("nextQuestion");
+    const prevQuestion = document.getElementById("prevQuestion");
+    const hintToggle = document.getElementById("hintToggle");
+    const hintToggleLabel = document.getElementById("hintToggleLabel");
+    const hintBody = document.getElementById("hintBody");
+    const hintQuote = document.getElementById("hintQuote");
+    const hintReplayLabel = document.getElementById("hintReplayLabel");
+    const hintReplay = document.getElementById("hintReplay");
+    const meterFill = document.getElementById("meterFill");
+    const questionCount = document.getElementById("questionCount");
+    const scoreText = document.getElementById("scoreText");
+    const langLabel = document.getElementById("langLabel");
+    const muteToggle = document.getElementById("muteToggle");
+    const muteLabel = document.getElementById("muteLabel");
+    const resultTitle = document.getElementById("resultTitle");
+    const startPracticeBtn = document.getElementById("startPractice");
+    const replayLessonBtn = document.getElementById("replayLesson");
+
+    // ── 2026-09-14 改版（Dan 的四条要求）──────────────────────────────
+    // 1) 中文档只出中文，英文档只出英文，两边完全分开，但随时可切。
+    // 2) 静音改成独立开关，跟语言无关。原来「静音」和语言挤在同一组里，
+    //    切语言时界面看不出变化，声音还会两条叠着响。
+    // 3) 练习加了「上一题」后退，后退重答不会重复计分。
+    // 4) 所有声音都用和视频里完全相同的配音嗓音：
+    //    中文 zh-CN-XiaoxiaoNeural，英文 en-US-JennyNeural（温柔女声），
+    //    语速 -5%，响度 -16 LUFS，预生成在 out/quiz-voice/。
+    //    原来练习题用的是浏览器自带朗读，英文默认是男声，和视频不是一个人。
+    // ──────────────────────────────────────────────────────────────────
+    const UI = {
+      zh: {
+        lang: "语言", sound: "声音", mutedWord: "静音",
+        title: "手指上的倒刺去哪儿了？",
+        stageLearn: "学习", stageQuiz: "练习", stageDone: "完成",
+        start: "开始练习", resume: "继续练习", backToVideo: "⬅ 回到视频",
+        hintShow: "看提示", hintHide: "收起提示", hintReplay: "回看这一段",
+        choose: "选择一个答案",
+        prev: "上一题", next: "下一题", results: "看结果",
+        retry: "再想一想，你可以再试一次。", correct: "答对了！",
+        resultTitle: "完成啦！", replay: "再学一次",
+        score: function (n, total) { return "第一次就答对 " + n + " / " + total + " 题"; }
+      },
+      en: {
+        lang: "Language", sound: "Sound", mutedWord: "Muted",
+        title: "Where Does a Splinter Go?",
+        stageLearn: "Learn", stageQuiz: "Practice", stageDone: "Complete",
+        start: "Start Practice", resume: "Continue Practice", backToVideo: "⬅ Back to Video",
+        hintShow: "Show Hint", hintHide: "Hide Hint", hintReplay: "Replay This Part",
+        choose: "Choose an answer",
+        prev: "Previous", next: "Next", results: "See Results",
+        retry: "Think again - you can try once more.", correct: "Correct! ",
+        resultTitle: "You did it!", replay: "Replay Lesson",
+        score: function (n, total) { return n + " of " + total + " correct on the first try"; }
+      }
+    };
+
+    /* 每道题对应视频里的哪一句原话、在第几秒。
+       文字直接取自 audio-src/narration-script.json，一个字没有改写。 */
+    const HINTS = [
+      {
+        at: 11.0,
+        zh: "皮肤细胞小卫兵每天都在造新细胞，把旧细胞一层一层往外推，像传送带一样。",
+        en: "Skin-cell guards make new cells every day, pushing the old ones outward, layer by layer, just like a conveyor belt."
+      },
+      {
+        at: 35.83,
+        zh: "白细胞小卫兵马上赶来，把小刺团团围住，开始清理这个不速之客！",
+        en: "White blood cell guards rush over, surround the splinter, and start clearing out the intruder!"
+      },
+      {
+        at: 60.67,
+        zh: "第一天，小刺卡进了皮肤里。白细胞小卫兵马上赶来站岗，伤口有一点红肿。",
+        en: "Day one. The splinter got stuck in the skin. White blood cell guards rush in to stand watch, and the spot looks a little red."
+      }
+    ];
+
+    const VIDEO_SOURCES = { zh: "out/bio-01-splinter-zh.mp4", en: "out/bio-01-splinter-en.mp4" };
+    const ICON_SOUND = "🔊 ";
+    const ICON_MUTED = "🔇 ";
+
+    let lang = "zh";
+    let muted = false;
+    let currentQuestion = 0;
+    let firstTry = true;
+    let locked = false;
+    const answered = [];
+
+    function t() { return UI[lang]; }
+    function q() { return quiz[currentQuestion]; }
+    function qText(item) { return lang === "zh" ? item.qZh : item.qEn; }
+    function qOptions(item) { return lang === "zh" ? item.optionsZh : item.optionsEn; }
+    function qWhy(item) { return lang === "zh" ? item.whyZh : item.whyEn; }
+    function score() {
+      return answered.filter(function (a) { return a === "first"; }).length;
+    }
+
+    const quizVoice = new Audio();
+    quizVoice.preload = "none";
+
+    function stopVoice() {
+      try { quizVoice.pause(); quizVoice.currentTime = 0; } catch (err) {}
+    }
+
+    function playVoice(key) {
+      stopVoice();
+      if (muted) return;
+      quizVoice.src = "out/quiz-voice/" + lang + "-" + key + ".mp3";
+      const go = quizVoice.play();
+      if (go && go.catch) go.catch(function () {});
+    }
+
+    function speakQuestion() {
+      if (muted || !quizView.classList.contains("active")) return;
+      playVoice("q" + (currentQuestion + 1));
+    }
+
+    function applyVideoTrack() {
+      const next = VIDEO_SOURCES[lang];
+      video.muted = muted;
+      if (video.getAttribute("src") === next) return;
+      const wasPlaying = !video.paused && !video.ended;
+      const at = video.currentTime;
+      video.setAttribute("src", next);
+      video.load();
+      const restore = function () {
+        video.removeEventListener("loadedmetadata", restore);
+        try { video.currentTime = at; } catch (err) {}
+        if (wasPlaying) {
+          const go = video.play();
+          if (go && go.catch) go.catch(function () {});
+        }
+      };
+      video.addEventListener("loadedmetadata", restore);
+    }
+
+    function applyLanguage() {
+      const d = t();
+      langLabel.textContent = d.lang;
+      muteLabel.textContent = muted ? d.mutedWord : d.sound;
+      muteToggle.firstChild.nodeValue = muted ? ICON_MUTED : ICON_SOUND;
+      muteToggle.setAttribute("aria-pressed", String(muted));
+      lessonTitleText.textContent = d.title;
+      startPracticeBtn.textContent = quizVisited ? d.resume : d.start;
+      videoDot.title = d.stageLearn;
+      quizDot.title = d.stageQuiz;
+      replayLessonBtn.textContent = d.replay;
+      resultTitle.textContent = d.resultTitle;
+      document.querySelectorAll(".voice-choice[data-lang]").forEach(function (button) {
+        button.setAttribute("aria-pressed", String(button.dataset.lang === lang));
+      });
+      if (resultView.classList.contains("active")) {
+        stageLabel.textContent = d.stageDone;
+        scoreText.textContent = d.score(score(), quiz.length);
+      } else if (quizView.classList.contains("active")) {
+        stageLabel.textContent = d.stageQuiz;
+        renderQuestion(true);
+      } else {
+        stageLabel.textContent = d.stageLearn;
+      }
+    }
+
+    function setLanguage(next) {
+      if (next === lang) return;
+      lang = next;
+      stopVoice();
+      applyVideoTrack();
+      applyLanguage();
+      if (quizView.classList.contains("active")) speakQuestion();
+    }
+
+    function setMuted(next) {
+      muted = next;
+      video.muted = muted;
+      if (muted) stopVoice();
+      applyLanguage();
+    }
+
+    document.querySelectorAll(".voice-choice[data-lang]").forEach(function (button) {
+      button.addEventListener("click", function () { setLanguage(button.dataset.lang); });
+    });
+    muteToggle.addEventListener("click", function () { setMuted(!muted); });
+
+    video.addEventListener("pause", stopVoice);
+    video.addEventListener("seeking", stopVoice);
+    video.addEventListener("ended", function () { showPractice(); });
+
+    function showPractice(opts) {
+      video.pause();
+      stopVoice();
+      videoView.style.display = "none";
+      resultView.classList.remove("active");
+      quizView.classList.add("active");
+      lessonTitle.style.display = "none";
+      stageLabel.textContent = t().stageQuiz;
+      videoDot.classList.remove("active");
+      quizDot.classList.add("active");
+      // 从视频退回来再进来时保留进度（Dan 2026-09-19 定：留着，回来接着答）
+      if (!opts || !opts.resume) { currentQuestion = 0; answered.length = 0; }
+      quizVisited = true;
+      renderQuestion();
+    }
+
+    /* 从练习退回视频。答过的题留着，回来接着答。
+       restart=true 时才清空（「再学一次」走这条）。 */
+    function backToVideo(opts) {
+      stopVoice();
+      resultView.classList.remove("active");
+      quizView.classList.remove("active");
+      videoView.style.display = "flex";
+      lessonTitle.style.display = "block";
+      stageLabel.textContent = t().stageLearn;
+      videoDot.classList.add("active");
+      quizDot.classList.remove("active");
+      if (opts && opts.restart) {
+        quizVisited = false;
+        currentQuestion = 0;
+        answered.length = 0;
+        video.currentTime = 0;
+      }
+      startPracticeBtn.textContent = quizVisited ? t().resume : t().start;
+    }
+
+    function renderQuestion(quiet) {
+      const item = q();
+      const d = t();
+      const done = answered[currentQuestion] !== undefined;
+      locked = false;
+      firstTry = !done;
+      questionText.textContent = qText(item);
+      questionCount.textContent = (currentQuestion + 1) + " / " + quiz.length;
+      meterFill.style.width = (((currentQuestion + 1) / quiz.length) * 100) + "%";
+      feedback.className = "feedback";
+      feedback.textContent = d.choose;
+      options.replaceChildren();
+      qOptions(item).forEach(function (label, index) {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        const strong = document.createElement("strong");
+        strong.textContent = label;
+        button.appendChild(strong);
+        button.addEventListener("click", function () { chooseAnswer(button, index); });
+        options.appendChild(button);
+      });
+      nextQuestion.textContent = currentQuestion === quiz.length - 1 ? d.results : d.next;
+      nextQuestion.classList.toggle("visible", done);
+      // 原来第 1 题时这个按钮是隐藏的，于是一进练习就没有任何退路（2026-09-19 修）。
+      // 现在它在第 1 题变成「回到视频」，其余题仍是「上一题」。
+      // 换题就把提示重新收起来，免得上一题展开过、下一题一进来就露答案
+      const hint = HINTS[currentQuestion];
+      hintQuote.textContent = hint ? hint[lang] : "";
+      hintBody.hidden = true;
+      hintToggle.setAttribute("aria-expanded", "false");
+      hintToggleLabel.textContent = d.hintShow;
+      hintReplayLabel.textContent = d.hintReplay;
+      prevQuestion.textContent = currentQuestion > 0 ? d.prev : d.backToVideo;
+      prevQuestion.classList.add("visible");
+      if (!quiet) window.setTimeout(speakQuestion, 200);
+    }
+
+    function chooseAnswer(button, index) {
+      if (locked) return;
+      const item = q();
+      const d = t();
+      if (index !== item.answer) {
+        locked = true;
+        firstTry = false;
+        button.classList.add("wrong");
+        feedback.className = "feedback retry";
+        feedback.textContent = d.retry;
+        playVoice("wrong");
+        window.setTimeout(function () {
+          button.classList.remove("wrong");
+          locked = false;
+        }, 850);
+        return;
+      }
+      locked = true;
+      button.classList.add("correct");
+      if (answered[currentQuestion] === undefined) {
+        answered[currentQuestion] = firstTry ? "first" : "retry";
+      }
+      feedback.className = "feedback success";
+      feedback.textContent = d.correct + qWhy(item);
+      nextQuestion.textContent = currentQuestion === quiz.length - 1 ? d.results : d.next;
+      nextQuestion.classList.add("visible");
+      playVoice("right" + (currentQuestion + 1));
+    }
+
+    function showResults() {
+      stopVoice();
+      quizView.classList.remove("active");
+      resultView.classList.add("active");
+      stageLabel.textContent = t().stageDone;
+      resultTitle.textContent = t().resultTitle;
+      scoreText.textContent = t().score(score(), quiz.length);
+      playVoice("done");
+    }
+
+    nextQuestion.addEventListener("click", function () {
+      if (!nextQuestion.classList.contains("visible")) return;
+      if (currentQuestion === quiz.length - 1) showResults();
+      else {
+        currentQuestion += 1;
+        renderQuestion();
+      }
+    });
+
+    prevQuestion.addEventListener("click", function () {
+      if (currentQuestion === 0) { backToVideo(); return; }
+      currentQuestion -= 1;
+      renderQuestion();
+    });
+
+    hintToggle.addEventListener("click", function () {
+      const open = hintBody.hidden;
+      hintBody.hidden = !open;
+      hintToggle.setAttribute("aria-expanded", String(open));
+      hintToggleLabel.textContent = open ? t().hintHide : t().hintShow;
+    });
+
+    // 跳回视频里这句话出现的那一秒接着放；看完点「继续练习」就回到刚才那一题
+    hintReplay.addEventListener("click", function () {
+      const hint = HINTS[currentQuestion];
+      if (!hint) return;
+      backToVideo();
+      // 视频还没把时间轴读出来时（readyState 0），直接设置播放位置会被浏览器丢掉，
+      // 结果从头开始放。所以先确保时间轴就绪再跳。
+      const go = function () {
+        try { video.currentTime = hint.at; } catch (e) { /* 跳不动就从头放 */ }
+        const playing = video.play();
+        if (playing && playing.catch) playing.catch(function () {});
+      };
+      if (video.readyState >= 1) {
+        go();
+      } else {
+        video.addEventListener("loadedmetadata", go, { once: true });
+        video.load();
+      }
+    });
+
+    startPracticeBtn.addEventListener("click", function () {
+      showPractice({ resume: quizVisited });
+    });
+
+    // 顶上两个圆点：点「学习」回视频，点「练习」去练习（键盘按回车/空格也行）
+    function dotHandler(fn) {
+      return function (e) {
+        if (e.type === "keydown" && e.key !== "Enter" && e.key !== " ") return;
+        e.preventDefault();
+        fn();
+      };
+    }
+    const goVideo = dotHandler(function () { backToVideo(); });
+    const goQuiz = dotHandler(function () { showPractice({ resume: quizVisited }); });
+    videoDot.addEventListener("click", goVideo);
+    videoDot.addEventListener("keydown", goVideo);
+    quizDot.addEventListener("click", goQuiz);
+    quizDot.addEventListener("keydown", goQuiz);
+    replayLessonBtn.addEventListener("click", function () {
+      backToVideo({ restart: true });
+    });
+
+    applyVideoTrack();
+    applyLanguage();
+  </script>
+<script>
+/* ===== iPad 样品追加：离线下载 + 注册离线支持 =====
+   原课件没有这一段。它做两件事：
+   1) 注册 sw.js，让课文和 16 段答题配音装 app 的时候就存到本地；
+   2) 给「下载课程」按钮接上逻辑——点一下把两个视频也存到本地，之后没网也能演示。
+*/
+(function () {
+  var VIDEOS = ['out/bio-01-splinter-zh.mp4', 'out/bio-01-splinter-en.mp4'];
+  var MEDIA_CACHE = 'splinter-media-v1';
+
+  var group = document.getElementById('offlineGroup');
+  var btn = document.getElementById('offlineBtn');
+  var label = document.getElementById('offlineLabel');
+  if (!group || !btn || !label) return;
+
+  // 双击本地文件打开时没有这两样本事，按钮就不要出现，免得点了没反应
+  var supported = ('serviceWorker' in navigator) && ('caches' in window) &&
+                  location.protocol !== 'file:';
+  if (!supported) return;
+  group.style.display = '';
+
+  navigator.serviceWorker.register('sw.js').catch(function () {});
+
+  function set(text, state, disabled) {
+    label.textContent = text;
+    btn.setAttribute('data-state', state || '');
+    btn.disabled = !!disabled;
+  }
+
+  function keyFor(path) { return new URL(path, location.href).pathname; }
+
+  caches.open(MEDIA_CACHE).then(function (cache) {
+    return Promise.all(VIDEOS.map(function (v) { return cache.match(keyFor(v)); }));
+  }).then(function (hits) {
+    if (hits.every(Boolean)) set('已可离线观看', 'done', true);
+  }).catch(function () {});
+
+  btn.addEventListener('click', function () {
+    set('准备中…', 'busy', true);
+
+    caches.open(MEDIA_CACHE).then(function (cache) {
+      var sizes = [];
+      return Promise.all(VIDEOS.map(function (v) {
+        return fetch(v, { method: 'HEAD' })
+          .then(function (r) { return parseInt(r.headers.get('content-length') || '0', 10); })
+          .catch(function () { return 0; });
+      })).then(function (s) {
+        sizes = s;
+        var total = sizes.reduce(function (a, b) { return a + b; }, 0);
+        var fetched = 0;
+        var chain = Promise.resolve();
+
+        VIDEOS.forEach(function (v) {
+          chain = chain.then(function () {
+            return fetch(v).then(function (res) {
+              if (!res.ok) throw new Error('HTTP ' + res.status + ' ' + v);
+
+              // 能一边下一边报进度就报，报不了就静静地下完
+              if (!res.body || !res.body.getReader) {
+                return res.blob().then(function (blob) {
+                  fetched += blob.size;
+                  return cache.put(keyFor(v), new Response(blob, {
+                    headers: { 'Content-Type': 'video/mp4', 'Content-Length': String(blob.size) }
+                  }));
+                });
+              }
+
+              var reader = res.body.getReader();
+              var chunks = [];
+              return (function pump() {
+                return reader.read().then(function (r) {
+                  if (r.done) {
+                    var blob = new Blob(chunks, { type: 'video/mp4' });
+                    return cache.put(keyFor(v), new Response(blob, {
+                      headers: { 'Content-Type': 'video/mp4', 'Content-Length': String(blob.size) }
+                    }));
+                  }
+                  chunks.push(r.value);
+                  fetched += r.value.length;
+                  if (total > 0) {
+                    var pct = Math.min(99, Math.round(fetched / total * 100));
+                    set('下载中 ' + pct + '%', 'busy', true);
+                  }
+                  return pump();
+                });
+              })();
+            });
+          });
+        });
+        return chain;
+      });
+    }).then(function () {
+      set('已可离线观看', 'done', true);
+    }).catch(function () {
+      set('下载没成功，再试一次', 'fail', false);
+    });
+  });
+})();
+</script>
+<script>(function backPill() {
+  try { if (window.parent !== window) return; } catch (e) { return; }
+  var m = /[?&]home=([^&]*)/.exec(location.search || ''); if (!m) return;
+  var h; try { h = decodeURIComponent(m[1]); } catch (e) { return; }
+  if (!/^[A-Za-z0-9._%~/-]+$/.test(h) || h.indexOf('//') >= 0) return;
+  var a = document.createElement('a'); a.href = h; a.textContent = '← 总览 Home';
+  a.setAttribute('style', 'position:fixed;left:10px;bottom:10px;z-index:2147483647;background:#1f5f99;color:#fff;font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.35);opacity:.92');
+  document.body.appendChild(a);
+})()</script></body>
+</html>
