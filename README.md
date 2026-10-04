@@ -1,3 +1,3 @@
-# Cou-Cou's Five-Minute Lessons
+# Five-Minute Thinkers
 
-Interactive five-minute lessons where the child does the thinking. Open index.html or the GitHub Pages link.
+One idea. Five minutes. Your child does the thinking. Open index.html or the GitHub Pages link.
