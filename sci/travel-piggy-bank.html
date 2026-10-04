@@ -1,0 +1,1216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>旅行储蓄罐：利滚利 · The Travel Piggy Bank — review preview</title>
+<style>
+  :root{
+    --ivory:#fbf9f1; --ink:#14312f; --muted:#48605d;
+    --teal:#0f6f6b; --teal-soft:#dcefec;
+    --blue:#2f7fc0; --blue-soft:#e2eefa;
+    --sun:#eab34a; --sun-soft:#fbeecd;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ivory);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif;}
+  #app{max-width:1180px;margin:0 auto;padding:16px 16px 60px;}
+  .note{background:#fff8e1;border:1px solid #e8d38a;border-radius:12px;padding:10px 14px;
+    font-size:13px;color:#5a4a12;margin-bottom:14px;line-height:1.5;}
+  header.top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+    border-bottom:1px solid rgba(20,49,47,.15);padding-bottom:10px;margin-bottom:14px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .name{font-weight:700;font-size:18px;}
+  .brand .sub{font-size:12px;color:var(--muted);}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .segmented{display:flex;border:1px solid rgba(20,49,47,.2);border-radius:999px;padding:3px;background:#fff;}
+  .segmented button{border:none;background:transparent;padding:7px 14px;border-radius:999px;font-size:13px;
+    font-weight:600;cursor:pointer;color:var(--muted);}
+  .segmented button.active{background:var(--teal);color:#fff;}
+  .ghost-btn{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 16px;
+    border-radius:999px;border:1px solid rgba(20,49,47,.3);background:#fff;color:var(--ink);font-size:13px;
+    font-weight:600;cursor:pointer;}
+  .ghost-btn:hover{background:var(--blue-soft);}
+  .primary-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 22px;
+    border-radius:999px;border:none;background:var(--teal);color:#fff;font-size:15px;font-weight:700;cursor:pointer;}
+  .primary-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .primary-btn:hover:not(:disabled){background:#0b5754;}
+  nav.jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .chip{border:1px solid rgba(20,49,47,.25);background:#fff;color:var(--ink);border-radius:999px;
+    padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;}
+  .chip.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .progress{display:flex;gap:5px;margin-bottom:6px;}
+  .progress span{height:6px;flex:1;border-radius:99px;background:rgba(20,49,47,.15);}
+  .progress span.done{background:var(--teal);}
+  .progress span.now{background:var(--blue);}
+  .step-line{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .stage{display:grid;gap:20px;}
+  @media(min-width:880px){ .stage{grid-template-columns:minmax(0,60fr) minmax(0,40fr);align-items:start;} }
+  .visual-panel{border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.8);border-radius:22px;
+    padding:16px;display:flex;flex-direction:column;justify-content:center;min-height:320px;}
+  .visual-panel svg{display:block;margin:0 auto;max-width:340px;width:100%;}
+  .caption{text-align:center;font-size:13px;color:var(--muted);margin-top:8px;}
+  .right-col{display:flex;flex-direction:column;gap:12px;}
+  .narrator{display:flex;gap:10px;border:1px solid rgba(15,111,107,.25);background:rgba(255,255,255,.9);
+    border-radius:16px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .narrator .mascot{flex:none;width:38px;height:38px;}
+  .narrator .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);}
+  .narrator .text p{margin:4px 0 0;font-size:16px;line-height:1.55;}
+  .field-label{font-size:15px;font-weight:700;}
+  .choices{display:grid;gap:9px;}
+  .choice-btn{width:100%;text-align:left;border:2px solid rgba(20,49,47,.25);background:#fff;color:var(--ink);
+    border-radius:16px;padding:12px 16px;font-size:16px;font-weight:500;cursor:pointer;min-height:48px;}
+  .choice-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+  .choice-btn.selected{border-color:var(--teal);background:var(--teal-soft);}
+  .choice-btn.correct{border-color:var(--teal);background:var(--teal-soft);}
+  .choice-btn.wrong{border-color:var(--sun);background:var(--sun-soft);}
+  .choice-btn.inline{display:inline-block;width:auto;text-align:center;margin-right:8px;}
+  .choice-btn:disabled{opacity:.55;cursor:not-allowed;}
+  .feedback{border-radius:16px;border:2px solid;padding:11px 15px;font-size:15px;line-height:1.55;}
+  .feedback.good{border-color:var(--teal);background:var(--teal-soft);}
+  .feedback.hint{border-color:var(--sun);background:var(--sun-soft);}
+  .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;}
+  table.worked{width:100%;border-collapse:collapse;font-size:14px;}
+  table.worked th,table.worked td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(20,49,47,.1);}
+  table.worked thead th{color:var(--teal);border-bottom:2px solid rgba(20,49,47,.2);font-size:13px;}
+  .method-cols{display:flex;gap:10px;flex-wrap:wrap;align-items:stretch;}
+  .method-card{flex:1;min-width:180px;border:2px solid rgba(20,49,47,.2);background:#fff;border-radius:16px;padding:12px 14px;}
+  .method-card h4{margin:0 0 8px;font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--teal);}
+  .method-card dl{margin:0;font-size:14px;}
+  .method-card dt{color:var(--muted);display:inline-block;width:150px;}
+  .cues{display:flex;flex-direction:column;gap:8px;justify-content:center;align-items:center;padding:0 4px;}
+  .cue{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:5px 10px;font-size:12px;font-weight:700;}
+  .cue.same{background:var(--teal-soft);color:var(--ink);}
+  .cue.diff{background:var(--sun-soft);color:var(--ink);}
+  .dots{display:flex;gap:6px;margin-top:10px;}
+  .dots button{width:24px;height:24px;border-radius:999px;border:1px solid rgba(20,49,47,.3);background:#fff;
+    font-size:11px;font-weight:700;cursor:pointer;color:var(--muted);}
+  .dots button.now{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .dots button.done{background:var(--teal-soft);border-color:var(--teal);color:var(--ink);}
+  .footer-nav{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:22px;
+    border-top:1px solid rgba(20,49,47,.15);padding-top:14px;}
+  .kv{display:grid;grid-template-columns:180px 1fr;gap:4px 10px;font-size:14px;}
+  .kv dt{color:var(--muted);}
+  .kv dd{margin:0;font-weight:600;}
+  .card-viewer{font-size:22px;font-weight:500;line-height:1.5;}
+  .sentence{font-size:17px;line-height:1.8;}
+  .slotbtn{display:inline-block;min-width:80px;min-height:36px;border-radius:12px;border:2px dashed rgba(20,49,47,.4);
+    background:#fff;color:var(--muted);padding:4px 10px;margin:0 4px;cursor:pointer;font-weight:600;}
+  .slotbtn.filled{border-style:solid;border-color:var(--teal);background:var(--teal-soft);color:var(--ink);}
+  .start-screen{max-width:680px;margin:20px auto;}
+  .start-screen h1{font-size:26px;margin:6px 0 2px;}
+  .start-box{border:1px solid rgba(20,49,47,.15);background:#fff;border-radius:18px;padding:18px;margin:16px 0;}
+  .small-muted{font-size:13px;color:var(--muted);}
+  a.file-link{color:var(--teal);}
+  .parent-table dt{font-weight:700;color:var(--muted);font-size:13px;}
+  .parent-table div{display:grid;grid-template-columns:220px 1fr;gap:4px 12px;padding:10px 0;border-bottom:1px solid rgba(20,49,47,.1);}
+  .skill-row{font-size:15px;margin:6px 0;}
+  .skill-row b{font-weight:700;color:var(--teal);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   Static preview build of the Travel Piggy Bank course, per Dan's request:
+   no dev server / localhost — a single HTML file, open directly from disk.
+   All content ported 1:1 from
+   components/lessons/travel-piggy-bank/content.ts (source of truth).
+   Any future change to this course's copy or math should be made in BOTH
+   places (the React source, and here) until/unless this file is retired.
+   ========================================================================= */
+
+function pick(copy, lang){ return lang === "zh" ? copy.zh : copy.en; }
+function pickLeveled(copy, level, lang){ return pick(copy[level], lang); }
+function fillTemplate(text, values){
+  return text.replace(/\{(\w+)\}/g, function(_, k){ return values[k] !== undefined ? values[k] : "{"+k+"}"; });
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+});}
+function formatUsd(cents){
+  var sign = cents < 0 ? "-" : "";
+  return sign + "$" + (Math.abs(cents)/100).toFixed(2);
+}
+
+/* ---- money math (identical to content.ts) ------------------------------ */
+function compoundTable(days, opts){
+  opts = opts || {};
+  var depositCents = opts.depositCents !== undefined ? opts.depositCents : 500;
+  var ratePct = opts.ratePct !== undefined ? opts.ratePct : 1;
+  var table = [], balance = 0;
+  for (var day = 1; day <= days; day++){
+    var interest = Math.round(balance * (ratePct/100));
+    balance = balance + interest + depositCents;
+    table.push({day:day, interestCents:interest, balanceCents:balance});
+  }
+  return table;
+}
+function flatBaseTable(days, opts){
+  opts = opts || {};
+  var depositCents = opts.depositCents !== undefined ? opts.depositCents : 500;
+  var ratePct = opts.ratePct !== undefined ? opts.ratePct : 1;
+  var flatInterest = Math.round(depositCents * (ratePct/100));
+  var table = [], balance = 0;
+  for (var day = 1; day <= days; day++){
+    var interest = day === 1 ? 0 : flatInterest;
+    balance = balance + interest + depositCents;
+    table.push({day:day, interestCents:interest, balanceCents:balance});
+  }
+  return table;
+}
+function lumpSumTable(days, startCents, opts){
+  opts = opts || {};
+  var ratePct = opts.ratePct !== undefined ? opts.ratePct : 1;
+  var table = [], balance = startCents;
+  for (var day = 1; day <= days; day++){
+    var interest = Math.round(balance * (ratePct/100));
+    balance = balance + interest;
+    table.push({day:day, interestCents:interest, balanceCents:balance});
+  }
+  return table;
+}
+var DAD_TABLE_20 = compoundTable(20);
+var MODEL_TABLE_10 = compoundTable(10);
+var FAIR_MIMI_3 = compoundTable(3);
+var FAIR_QIQI_3 = flatBaseTable(3);
+var FAIR_COCO_3 = compoundTable(3, {ratePct:2});
+var MIA_LUMP_TABLE_3 = lumpSumTable(3, 2000);
+function dayOf(day){ return DAD_TABLE_20[Math.max(1, Math.min(day, DAD_TABLE_20.length)) - 1]; }
+function usdCell(entry){
+  var s = "+" + formatUsd(entry.interestCents) + " → " + formatUsd(entry.balanceCents);
+  return {zh:s, en:s};
+}
+
+/* ---- content (ported 1:1 from content.ts) ------------------------------ */
+var SCENE_ORDER = ["hook","observation","model","compare","fairtest","transfer"];
+var SCENE_LABEL = {
+  start:{zh:"开始",en:"Start"},
+  hook:{zh:"第一个猜想",en:"First guess"},
+  observation:{zh:"观察还是猜测",en:"Observe or guess"},
+  model:{zh:"存钱罐模型",en:"The piggy-bank model"},
+  compare:{zh:"比一比",en:"Compare"},
+  fairtest:{zh:"谁算对了",en:"Who calculated it right"},
+  transfer:{zh:"换个情境",en:"Try it elsewhere"},
+  summary:{zh:"总结",en:"Summary"}
+};
+var SCENE_TIME_HINT = {
+  hook:"0:00–0:30", observation:"0:30–1:15", model:"1:15–2:15",
+  compare:"2:15–3:15", fairtest:"3:15–4:10", transfer:"4:10–5:00"
+};
+
+var UI = {
+  brandTitle:{zh:"旅行储蓄罐：利滚利",en:"The Travel Piggy Bank"},
+  brandSubtitle:{zh:"存起来的钱，真的会自己变多吗？",en:"Can money you save actually grow by itself?"},
+  next:{zh:"下一步",en:"Next"}, back:{zh:"上一步",en:"Back"},
+  startOver:{zh:"重新开始",en:"Start over"},
+  levelLabel:{zh:"年级",en:"Level"}, levelA:{zh:"一年级左右",en:"About Grade 1"}, levelB:{zh:"三年级左右",en:"About Grade 3"},
+  langLabel:{zh:"语言",en:"Language"}, langZh:{zh:"中文",en:"中文"}, langEn:{zh:"English",en:"English"},
+  progressStep:{zh:"第 {n} / 6 步",en:"Step {n} of 6"},
+  narrator:{zh:"口袋说",en:"Pocket says"},
+  yourIdeaSaved:{zh:"已记下你的第一个想法（这不是考试）。",en:"Your first idea is saved (this is not a test)."},
+  tryAgain:{zh:"再试一次",en:"Try again"}, check:{zh:"检查一下",en:"Check"},
+  correct:{zh:"对了！",en:"That's it!"}, notYet:{zh:"还没有，看看提示",en:"Not yet — see the hint"},
+  startTitle:{zh:"选择年级和语言（中文或 English），然后开始",en:"Choose a level and language (中文 or English), then begin"},
+  startBegin:{zh:"开始学习",en:"Begin"},
+  startBlurb:{zh:"大约 5 分钟。你要先猜一猜，再动手试一试，最后用自己的话说清楚。",en:"About 5 minutes. You will predict, try things, and then explain the idea in your own words."},
+  noDataNote:{zh:"不收集姓名、声音或图像。进度只存在这台设备上。这是一个假想的家庭小游戏，不是真的银行产品，也不是理财建议。",en:"No name, voice, or photos are collected. Progress stays on this device only. This is a made-up family game, not a real bank product or financial advice."},
+  parentView:{zh:"家长 / 审阅视图",en:"Parent / reviewer view"},
+  backToLesson:{zh:"回到课程",en:"Back to lesson"}
+};
+
+var VISUAL = {
+  piggyHero:{
+    waiting:{zh:"一枚5美元硬币悬在存钱罐投币口上方，还没投进去。",en:"A $5 coin hovers above the piggy bank's slot, not dropped in yet."},
+    dropped:{zh:"硬币已经投进存钱罐，第1天的5美元已经存好。",en:"The coin has dropped into the piggy bank — day 1's $5 is saved."}
+  },
+  model:{zh:"存钱罐模型：第 {day} 天，蓝色是存进去的5美元，金色是今天的利息 {interest}，罐子里一共有 {balance}。",
+    en:"The piggy-bank model: day {day}. Blue is today's $5 deposit, gold is today's interest of {interest}. The jar now holds {balance} in total."},
+  compare:{zh:"两把同样的尺子比金额。第 {day} 天：阿泰花光了，手里有 {spend}；朵朵存起来，有 {save}。",
+    en:"Two identical dollar gauges. Day {day}: Tai spent it all and has {spend}; Duoduo saved and has {save}."},
+  lumpSum:{zh:"米娅的储蓄罐：第 {day} 天，余额是 {balance}，没有新存款，只有金色的利息在悄悄加进来。",
+    en:"Mia's savings jar: day {day}, balance {balance}. No new deposits — only gold interest quietly being added."}
+};
+
+var HOOK = {
+  intro:{A:{zh:"你要出去旅行20天了。爸爸说：每天给你5美元。你可以花掉，也可以存进这个存钱罐。按一下按钮，把第一天的5美元投进去。",
+    en:"You're going on a 20-day trip. Dad says: every day you get $5. Spend it, or drop it in this piggy bank. Press the button to drop day 1's $5 in."},
+    B:{zh:"20天的旅行开始了。爸爸的规则：每天5美元，花掉或存起来都行；存起来的话，每天还多给1%的利息。按按钮，投进第1天的5美元。",
+    en:"A 20-day trip begins. Dad's rule: $5 a day, spend it or save it; saved money also earns 1% interest every day. Press the button to drop day 1's $5 in."}},
+  playButton:{zh:"投进去",en:"Drop it in"}, replayButton:{zh:"再看一次",en:"Watch again"},
+  narrator:{A:{zh:"第1天的5美元存好了。爸爸说，如果你连续存钱，每天还会再给1%的利息。",
+    en:"Day 1's $5 is saved. Dad says if you keep saving, he'll add 1% interest every single day too."},
+    B:{zh:"第1天存了5美元，这天还没有利息（因为还没有“前一天”）。爸爸说以后每天的利息，是按“前一天存了多少”的1%来算。",
+    en:"Day 1: $5 saved, no interest yet (there's no “previous day” yet). Dad says every day after this, interest is 1% of however much was saved the day before."}},
+  guideCaption:{zh:"口袋也很好奇：如果存两天，第2天的利息会不会跟第1天不一样？",en:"Pocket is curious too: if you save for two days, will day 2's interest differ from day 1's?"},
+  question:{zh:"如果你连续存两天，第2天银行“加”的利息，会比第1天更多、更少，还是一样多？",
+    en:"If you save for two days in a row, will day 2's interest be bigger, smaller, or the same as day 1's?"},
+  choices:[
+    {id:"same",label:{zh:"一样多，因为利率一直是1%",en:"The same — the rate is always 1%"}},
+    {id:"bigger",label:{zh:"更多，因为存的钱变多了",en:"Bigger — there's more money saved by then"}},
+    {id:"smaller",label:{zh:"更少，存的时间越长利息反而越少",en:"Smaller — interest shrinks the longer you wait"}},
+    {id:"none",label:{zh:"没有利息，只有花钱才有奖励",en:"There's no interest — only spending is rewarded"}}
+  ]
+};
+function hookChoiceLabel(id, lang){
+  var c = HOOK.choices.find(function(x){return x.id===id;});
+  return c ? pick(c.label, lang) : id;
+}
+
+var OBSERVATION = {
+  narrator:{A:{zh:"把每张卡片放好：这是“观察”（我们知道的事实），还是“猜测”？",en:"Sort each card: is it an observation (a fact we know) or a guess?"},
+    B:{zh:"分类四张卡片。观察是我们知道的事实；猜测是错误的想法；有一张是“可能的解释”，也就是真正的规则。",
+    en:"Sort four cards. An observation is a fact we know; a guess is a mistaken idea; one card is the possible explanation — the real rule."}},
+  buckets:{observation:{zh:"观察",en:"Observation"}, guess:{zh:"猜测",en:"Guess"}, explanation:{zh:"可能的解释（还没证明）",en:"Possible explanation (not proven)"}},
+  cards:[
+    {id:"gives5", text:{zh:"爸爸每天给我5美元。",en:"Dad gives me $5 every day."}, kind:"observation",
+      feedback:{zh:"这是爸爸说过的规则，我们直接知道。这是观察。",en:"This is the rule Dad stated — we know it directly. That's an observation."}},
+    {id:"flat5cents", text:{zh:"如果我存钱，利息每天都是一样的5美分。",en:"If I save, the interest is always the same 5 cents a day."}, kind:"guess",
+      feedback:{zh:"这是我们没验证过的猜测，而且是错的——利息其实会长大。",en:"This is an unverified guess — and it's wrong. The interest actually grows."}},
+    {id:"onCurrentTotal", text:{zh:"利息是按我“目前一共存了多少钱”的1%来算的，不是按最开始的5美元算的。",en:"Interest is 1% of however much I've saved so far in total — not 1% of the first $5."},
+      kind:"explanation", levelBOnly:true,
+      feedback:{zh:"这可能是对的，但还需要用例子来检验。这是可能的解释——也是真正的规则。",en:"This might be right, but it needs checking with examples. It's the possible explanation — and the real rule."}},
+    {id:"onlyNewMoney", text:{zh:"钱只有在我自己又存新钱进去的时候才会变多。",en:"My savings can only grow when I personally add new money."}, kind:"guess", levelBOnly:true,
+      feedback:{zh:"这也是猜测，而且忽略了利息本身也会让钱变多。",en:"This is also a guess — and it misses that the interest itself adds to the pile."}}
+  ],
+  levelBExplainPrompt:{zh:"用一句话说：为什么第2天的利息不是5美分？",en:"In one sentence: why isn't day 2's interest 5 cents?"},
+  levelBExplainChoices:[
+    {id:"currentTotal", correct:true, label:{zh:"利息是按“现在一共存了多少”算的，不是按最开始的5美元算的。",en:"Interest is based on however much is saved right now — not the original $5."}},
+    {id:"randomBonus", correct:false, label:{zh:"利息其实是爸爸随便给的奖励。",en:"The interest is just a random bonus Dad decides to give."}},
+    {id:"sameRateSameCents", correct:false, label:{zh:"第2天的利息也是5美分，因为利率没变。",en:"Day 2's interest is also 5 cents, because the rate didn't change."}}
+  ],
+  wrongCardFeedback:{zh:"再想想：这是我们已经知道的事实，还是一个想法（可能对也可能错）？",en:"Think again: is this something we already know, or an idea that might be right or wrong?"}
+};
+
+var MODEL = {
+  narrator:{A:{zh:"按“存一天”，看看存钱罐里会发生什么。每次都会掉进两样东西：5美元的存款，还有一小把金色的利息。",
+    en:"Press “Save a day” and watch the piggy bank. Two things drop in each time: the $5 deposit, and a small gold bundle of interest."},
+    B:{zh:"按“存一天”往前推进。金色利息 = 1% × 按之前一天的余额。多按几次，看看金色的那部分怎么变化。",
+    en:"Press “Save a day” to advance. Gold interest = 1% × yesterday's balance. Press several times and watch how the gold portion changes."}},
+  saveButton:{zh:"存一天",en:"Save a day"}, resetButton:{zh:"重新开始这个模型",en:"Restart this model"},
+  dayLabel:{zh:"第 {day} 天",en:"Day {day}"}, startLabel:{zh:"还没开始存",en:"Not saved yet"},
+  depositLabel:{zh:"今天存进去的钱",en:"Today's deposit"}, interestLabel:{zh:"今天的利息",en:"Today's interest"},
+  balanceLabel:{zh:"罐子里一共有",en:"Total in the jar"},
+  maxReached:{zh:"已经存满10天啦——接下来10天，罐子会继续用同样的规则长大。",en:"That's 10 days saved — for the rest of the 20-day trip, the jar keeps growing by the same rule."},
+  caption:{zh:"这是一个简化的小模型；现实中的银行账户规则更复杂，但“利息也能生利息”的道理是一样的。",
+    en:"This is a simplified model — real bank accounts are more complex, but the idea that interest can earn more interest is the same."},
+  check:{prompt:{zh:"多按几次以后：今天的利息，有没有比你第一次看到的利息更大？",en:"After pressing a few times: is today's interest bigger than the very first interest you saw?"},
+    choices:[{id:"yes",correct:true,label:{zh:"是的，越来越大",en:"Yes, it keeps getting bigger"}},{id:"no",correct:false,label:{zh:"没有，一直一样大",en:"No, it stays the same size"}}]},
+  checkWrong:{zh:"再按几次“存一天”，比较第2天和第6天的金色利息数字。",en:"Press “Save a day” a few more times and compare the gold interest amount on day 2 vs. day 6."}
+};
+
+var COMPARE = {
+  narrator:{A:{zh:"阿泰每天把5美元都花掉。朵朵每天都存起来，还有利息。20天后，谁的钱更多？先猜，再看。",
+    en:"Tai spends his $5 every single day. Duoduo saves hers, with interest. After 20 days, who has more money? Predict, then watch."},
+    B:{zh:"两人拿到的钱和利率都一样，只是一个花掉、一个存起来。先预测，再快进看 5/10/20 天的结果，用同一把尺子比较。",
+    en:"Both get the same money and the same rate — one spends, one saves. Predict first, then fast-forward through day 5/10/20 and compare on the same scale."}},
+  predictPrompt:{zh:"我猜：",en:"My prediction:"},
+  choices:[
+    {id:"duoduo",label:{zh:"存钱的朵朵会更多",en:"Duoduo (saver) ends up with more"}},
+    {id:"tai",label:{zh:"花钱的阿泰其实更划算",en:"Tai (spender) actually comes out ahead"}},
+    {id:"same",label:{zh:"到最后两人差不多",en:"They end up about the same"}},
+    {id:"unsure",label:{zh:"说不准，要看买了什么",en:"Can't tell — depends what was bought"}}
+  ],
+  run:{zh:"快进看看",en:"Fast-forward"}, runAgain:{zh:"再看一次",en:"Watch again"},
+  taiName:{zh:"阿泰（花钱）",en:"Tai (spends)"}, duoduoName:{zh:"朵朵（存钱）",en:"Duoduo (saves)"},
+  dayLabel:{zh:"第 {n} 天",en:"Day {n}"}, startDayLabel:{zh:"开始",en:"Start"},
+  gaugeCaption:{zh:"手上还有多少钱（两把同样的尺子）",en:"How much cash on hand (both on the same scale)"},
+  gaugeReadout:{zh:"阿泰还有 {spend}，朵朵还有 {save}",en:"Tai has {spend} · Duoduo has {save}"},
+  resultCheckPrompt:{zh:"20天后，朵朵一共攒到了多少钱？",en:"After 20 days, how much has Duoduo saved in total?"},
+  resultChoices:[
+    {id:"100",correct:false,label:{zh:"$100",en:"$100"}},
+    {id:"110",correct:true,label:{zh:"$110左右",en:"About $110"}},
+    {id:"50",correct:false,label:{zh:"$50",en:"$50"}},
+    {id:"0",correct:false,label:{zh:"$0",en:"$0"}}
+  ],
+  explain:{A:{zh:"朵朵每天存的5美元，加上银行给的利息，20天后变成了一百多美元。阿泰花掉的钱，买了东西，但手里一分不剩。",
+    en:"Duoduo's $5 a day, plus the bank's interest, grew to just over a hundred dollars after 20 days. Tai's money bought things, but he has none left in hand."},
+    B:{zh:"两人存/花的钱一样多（每天5美元），利率也一样（1%），唯一的差别是要不要把钱交给银行生利息——正是这一件事，让20天后差了十几美元。",
+    en:"Both handled the same $5 a day at the same 1% rate — the only difference is whether the money was left to earn interest. That one difference is worth over ten dollars after 20 days."}},
+  wrongResult:{zh:"再看一眼：她存的本金一直是100美元没变，但利息有没有跟着长大？",en:"Look again: her deposits alone add up to a fixed $100 — but did the interest keep growing on top of that?"}
+};
+
+var FAIRTEST = {
+  narrator:{A:{zh:"三个小朋友都算了算利息，但只有一个人跟爸爸的规则完全一样。看看每个人的算法，判断对不对。",
+    en:"Three kids each worked out the interest, but only one matches Dad's rule exactly. Check each method — is it right?"},
+    B:{zh:"选出跟爸爸规则完全一样的算法：底数要用“前一天的余额”，利率要是1%，两样都要对。",
+    en:"Pick the method that matches Dad's rule exactly: the base must be “the previous day's balance,” and the rate must be 1% — both have to be right."}},
+  levelA:{
+    ruleHeader:{zh:"爸爸的规则",en:"Dad's rule"}, ruleBase:{zh:"前一天的余额",en:"previous day's balance"}, ruleRate:{zh:"1%",en:"1%"},
+    attrNames:{base:{zh:"算利息用的数字",en:"Number used for interest"}, rate:{zh:"利率",en:"Rate"}},
+    sameCue:{zh:"一样",en:"same"}, diffCue:{zh:"不一样",en:"different"},
+    question:{zh:"这个算法，跟爸爸的规则一样吗？",en:"Does this method match Dad's rule?"},
+    matchButton:{zh:"一样",en:"Matches"}, notMatchButton:{zh:"不一样",en:"Doesn't match"},
+    hint1:{zh:"一样一样地看：算利息用的数字对吗？利率对吗？",en:"Check one by one: is the number used for interest right? Is the rate right?"},
+    hint2:{zh:"爸爸的规则：数字用“前一天的余额”，利率是1%，两样都要对，才算一样。",en:"Dad's rule: the number is “the previous day's balance,” the rate is 1% — both must match."},
+    stepLabel:{zh:"第 {n} / {total} 个算法",en:"Method {n} of {total}"}, nextButton:{zh:"下一个算法",en:"Next method"},
+    wrongMatch:{zh:"再看一次：数字和利率是不是两样都跟爸爸一样？只要有一样不一样，就不算一样。",en:"Look again: are BOTH the number and the rate the same as Dad's? If even one differs, it doesn't match."},
+    wrongNotMatch:{zh:"再看一次：这里数字和利率其实两样都跟爸爸一样。它其实是一样的。",en:"Look again: here both the number and the rate actually match Dad's. It's actually a match."},
+    allDone:{zh:"只有米米的算法两样都对：数字用前一天的余额，利率1%。",en:"Only Mimi's method gets both right: the number is the previous day's balance, and the rate is 1%."},
+    experiments:[
+      {id:"mimi", name:{zh:"米米",en:"Mimi"}, fair:true,
+        attrs:[{key:"base",icon:"🪙",value:{zh:"前一天的余额",en:"previous day's balance"},same:true},{key:"rate",icon:"%",value:{zh:"1%",en:"1%"},same:true}],
+        whyFair:{zh:"她每天都用“前一天存了多少”来算1%，这和爸爸说的完全一样。",en:"She always takes 1% of “however much was saved the day before” — exactly what Dad described."}},
+      {id:"qiqi", name:{zh:"奇奇",en:"Qiqi"}, fair:false,
+        attrs:[{key:"base",icon:"🪙",value:{zh:"固定的第一天5美元",en:"the fixed first $5"},same:false},{key:"rate",icon:"%",value:{zh:"1%",en:"1%"},same:true}],
+        whyNotFair:{zh:"她一直只用第一天的5美元来算，从来没跟着余额一起变大，这和爸爸说的“前一天的余额”不一样。",en:"She keeps using the first day's $5 no matter what — it never grows with the balance, which isn't what Dad described."}},
+      {id:"coco", name:{zh:"可可",en:"Coco"}, fair:false,
+        attrs:[{key:"base",icon:"🪙",value:{zh:"前一天的余额",en:"previous day's balance"},same:true},{key:"rate",icon:"%",value:{zh:"2%",en:"2%"},same:false}],
+        whyNotFair:{zh:"她用对了“前一天的余额”，但把利率改成了2%，这不是爸爸说的1%。",en:"She used the right base (previous day's balance), but changed the rate to 2% — Dad said 1%."}}
+    ]
+  },
+  levelB:{
+    dayHeader:{zh:"天",en:"Day"},
+    options:[
+      {id:"mimi", correct:true, name:{zh:"米米：1% × 前一天的余额",en:"Mimi: 1% × previous day's balance"},
+        rows:[1,2,3].map(function(d){return {day:{zh:"第 "+d+" 天",en:"Day "+d}, mimi:usdCell(FAIR_MIMI_3[d-1]), qiqi:usdCell(FAIR_QIQI_3[d-1]), coco:usdCell(FAIR_COCO_3[d-1])};}),
+        whyRight:{zh:"每一天，米米都用“前一天的余额”乘1%，跟爸爸的规则完全一样。",en:"Every day, Mimi takes 1% of “the previous day's balance” — exactly Dad's rule."}},
+      {id:"qiqi", correct:false, name:{zh:"奇奇：1% × 固定的第一天5美元",en:"Qiqi: 1% × the fixed first $5"},
+        rows:[1,2,3].map(function(d){return {day:{zh:"第 "+d+" 天",en:"Day "+d}, mimi:usdCell(FAIR_MIMI_3[d-1]), qiqi:usdCell(FAIR_QIQI_3[d-1]), coco:usdCell(FAIR_COCO_3[d-1])};}),
+        whyWrong:{zh:"前两天看起来一样，但第3天奇奇的利息还是5美分——她一直只用第一天的5美元，没跟着余额变大。",en:"The first two days look the same, but on day 3 Qiqi's interest is still 5 cents — she keeps using day 1's $5 instead of the growing balance."}},
+      {id:"coco", correct:false, name:{zh:"可可：2% × 前一天的余额",en:"Coco: 2% × previous day's balance"},
+        rows:[1,2,3].map(function(d){return {day:{zh:"第 "+d+" 天",en:"Day "+d}, mimi:usdCell(FAIR_MIMI_3[d-1]), qiqi:usdCell(FAIR_QIQI_3[d-1]), coco:usdCell(FAIR_COCO_3[d-1])};}),
+        whyWrong:{zh:"可可用对了“前一天的余额”，但从第2天起利息就明显更大——她用的利率是2%，不是1%。",en:"Coco used the right base, but her interest is visibly bigger from day 2 on — she used 2%, not 1%."}}
+    ],
+    hint1:{zh:"看看每个人算利息时，用的是“哪一个数字”的百分之几？",en:"Look at which number each person is taking a percentage of."},
+    hint2:{zh:"爸爸的规则是：每天用“前一天存的总数”来算1%，利率一直是1%。检查谁从头到尾都这样做。",en:"Dad's rule: every day, take 1% of the previous day's TOTAL, at a steady 1% rate. Check who did exactly that, every day."},
+    correctNote:{zh:"这就是跟爸爸一样的算法：数字和利率都对。",en:"That's the method matching Dad's rule: both the number and the rate are right."},
+    candidateLabel:{zh:"方案 {n} / {total}",en:"Option {n} of {total}"},
+    pickThis:{zh:"选这个作为正确算法",en:"Choose this as the correct method"}, picked:{zh:"已选这个",en:"Chosen"}
+  }
+};
+
+var TRANSFER = {
+  narrator:{A:{zh:"新情况：表姐米娅已经有20美元存在银行了，银行也是每天给1%的利息。她没有再存新钱。用词卡拼出一句解释。",
+    en:"New situation: cousin Mia already has $20 saved, and her bank also pays 1% interest a day. She adds no new money. Build one sentence to explain it."},
+    B:{zh:"米娅的20美元没有新存款，只靠利息自己长大。先选证据，再用“因为……所以……”完成解释。",
+    en:"Mia's $20 gets no new deposits — it only grows from interest. First pick the evidence, then finish the explanation with “because … so …”."}},
+  aSlots:2,
+  aChips:[
+    {id:"growing", correctSlot:0, text:{zh:"变大",en:"growing"}},
+    {id:"bigger", correctSlot:1, text:{zh:"更多",en:"bigger"}},
+    {id:"shrinking", correctSlot:-1, text:{zh:"变小",en:"shrinking"}},
+    {id:"same", correctSlot:-1, text:{zh:"一样多",en:"the same"}},
+    {id:"vanishing", correctSlot:-1, text:{zh:"消失了",en:"disappearing"}}
+  ],
+  aFramePrefix:{zh:"因为她存的钱一直在",en:"Because her savings keep"},
+  aFrameMiddle:{zh:"，所以第2天的利息比第1天",en:", day 2's interest is"},
+  aFrameSuffix:{zh:"。",en:" than day 1's."},
+  aWrongChip:{zh:"这个词跟“钱自己继续变多”这件事对不上。再想想米娅的余额是怎么变化的。",en:"That word doesn't fit “the money keeps growing on its own.” Think again about how Mia's balance changes."},
+  bEvidencePrompt:{zh:"哪一个是最好的证据？",en:"Which one is the best evidence?"},
+  bEvidenceChoices:[
+    {id:"climbing", correct:true, label:{
+      zh:"米娅的余额从"+formatUsd(2000)+"，涨到"+formatUsd(MIA_LUMP_TABLE_3[0].balanceCents)+"，再涨到"+formatUsd(MIA_LUMP_TABLE_3[1].balanceCents)+"⋯而她没有再存过一分钱。",
+      en:"Mia's balance climbs from "+formatUsd(2000)+" to "+formatUsd(MIA_LUMP_TABLE_3[0].balanceCents)+" to "+formatUsd(MIA_LUMP_TABLE_3[1].balanceCents)+"… and she hasn't added a single cent."}},
+    {id:"feelsRich", correct:false, label:{zh:"米娅觉得自己存的钱够多了。",en:"Mia feels like she's saved enough already."}},
+    {id:"bankPromise", correct:false, label:{zh:"银行说存钱是个好习惯。",en:"The bank says saving is a good habit."}}
+  ],
+  bBecausePrompt:{zh:"因为……",en:"Because …"},
+  bBecauseChoices:[
+    {id:"onBalance", correct:true, label:{zh:"利息是用前一天的余额乘以1%算出来的",en:"interest is 1% of the previous day's balance"}},
+    {id:"goodHabit", correct:false, label:{zh:"存钱是个好习惯",en:"saving is a good habit"}},
+    {id:"bankFeelsGenerous", correct:false, label:{zh:"银行今天心情好",en:"the bank happened to feel generous today"}}
+  ],
+  bSoPrompt:{zh:"所以……",en:"so …"},
+  bSoChoices:[
+    {id:"growsAlone", correct:true, label:{zh:"就算她一分钱都不再存，余额也会自己越滚越大——只是比每天还有新的5美元加入时长得慢一点",
+      en:"even without adding another cent, her balance keeps growing on its own — just more slowly than when a fresh $5 is added every day too"}},
+    {id:"staysSame", correct:false, label:{zh:"她的余额会一直停在20美元",en:"her balance will stay stuck at $20"}},
+    {id:"needsDeposit", correct:false, label:{zh:"她必须每天存新钱，利息才会出现",en:"she must add new money every day for interest to appear"}}
+  ],
+  bWrong:{zh:"再想想：哪一个用到了“前一天的余额”，并且和证据对得上？",en:"Think again: which choice mentions “the previous day's balance” and matches the evidence?"},
+  invisibleCaption:{zh:"看不见的利息，每天都在悄悄工作。",en:"The invisible interest is quietly working every day."},
+  tip:{zh:"提示：先想余额为什么会变，再说结果。",en:"Tip: think about why the balance changes, then say the result."}
+};
+
+var SUMMARY = {
+  title:{zh:"你懂了利滚利",en:"You've cracked compounding"}, coreIdeaLabel:{zh:"核心结论",en:"The core idea"},
+  coreIdea:{A:{zh:"存起来的钱会越滚越大，因为银行给的利息不是只算最开始的5美元，而是算“现在已经存了多少钱”的1%。",
+    en:"Money you save can snowball, because the interest isn't 1% of the first $5 — it's 1% of however much you've already saved."},
+    B:{zh:"利息是按前一天的余额算的，所以哪怕不再存新钱，余额也会自己越长越大——这就是“利滚利”（复利）。",
+    en:"Interest is calculated on the previous day's balance, so even without adding new money, the balance keeps growing on its own — that's compounding."}},
+  yourStartLabel:{zh:"你一开始的想法",en:"Your first idea"}, yourEndLabel:{zh:"你最后的解释",en:"Your explanation now"},
+  teaserLabel:{zh:"下一个问题",en:"Next question"},
+  teaser:{zh:"如果爸爸把利率从1%提高到2%，20天后你会多存多少钱？",en:"If Dad raised the rate from 1% to 2%, how much more would you have saved after 20 days?"},
+  toParentView:{zh:"看家长 / 审阅视图",en:"Open parent / reviewer view"}, replay:{zh:"再做一次",en:"Do it again"},
+  notRecorded:{zh:"（本次未记录）",en:"(not recorded this run)"}
+};
+
+var EVIDENCE_STATE_LABEL = {
+  "not-recorded":{zh:"未记录",en:"Not recorded"}, experienced:{zh:"已体验，还没做对",en:"Engaged, not correct yet"},
+  "with-two-hints":{zh:"用了 2 条提示后做对",en:"Correct after 2 hints"}, "with-one-hint":{zh:"用了 1 条提示后做对",en:"Correct after 1 hint"},
+  "with-support":{zh:"改正之后做对",en:"Correct after a correction"}, independent:{zh:"第一次就独立做对",en:"Correct independently, first try"},
+  transferred:{zh:"用到了新情境",en:"Used it in a new situation"}
+};
+
+var PARENT = {
+  title:{zh:"家长 / 审阅视图",en:"Parent / reviewer view"},
+  demoBanner:{zh:"这是本次样品运行的演示数据，只保存在这台设备上。不收集孩子的姓名、账号或云端资料。这是一个假想的家庭小游戏，不是真的银行产品。",
+    en:"This is demo data from this sample run, stored on this device only. No child name, account, or cloud data is collected. This is a made-up family game, not a real bank product."},
+  rows:{level:{zh:"年级层级",en:"Level"}, language:{zh:"语言模式",en:"Language mode"}, prediction:{zh:"最初的预测（不评分）",en:"Initial prediction (not scored)"},
+    explanation:{zh:"最终解释",en:"Final explanation"}},
+  evidenceTitle:{zh:"学习证据",en:"Learning evidence"},
+  evidenceHint:{zh:"对照《掌握状态》：已体验 → 有提示会做 → 独立会做 → 能迁移 → 复习后稳定。",en:"Against the mastery ladder: experienced → can do with hints → can do independently → can transfer → stable after review."},
+  skills:{
+    prediction:{zh:"对“利息会不会变多”做出预测",en:"Predicting whether interest amounts change"},
+    mechanism:{zh:"知道利息按“现在的总数”算，不是按最初的钱算",en:"Knowing interest is based on the current total, not the original amount"},
+    saving:{zh:"知道存钱比花钱更能积累（有利息帮忙）",en:"Knowing saving accumulates more than spending (with interest helping)"},
+    compounding:{zh:"认出跟规则完全一样的复利算法",en:"Identifying the compound-interest method that matches the rule exactly"},
+    transfer:{zh:"把复利用到新情境（已有储蓄，没有新存款）",en:"Using compounding in a new situation (an existing lump sum, no new deposits)"}
+  },
+  none:{zh:"（未记录）",en:"(not recorded)"}
+};
+
+/* ---- state --------------------------------------------------------------*/
+var STORAGE_KEY = "tpb-static-preview-v1";
+var state = {
+  level:"A", lang:"en", phase:"start", sceneIndex:0,
+  record:{}, startedAt:null, completedAt:null
+};
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) state = Object.assign(state, JSON.parse(raw));
+  }catch(e){}
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+function patchRecord(patch){ state.record = Object.assign({}, state.record, patch); saveState(); render(); }
+function setState(patch){ state = Object.assign({}, state, patch); saveState(); render(); }
+
+/* ---- completion logic (ported from scenes/common.ts) --------------------*/
+function observationCards(level){
+  return OBSERVATION.cards.filter(function(c){ return level === "B" || !c.levelBOnly; });
+}
+function observationDone(r, level){
+  var cards = observationCards(level);
+  var placed = r.observationPlacements || {};
+  var allRight = cards.every(function(c){ return placed[c.id] === c.kind; });
+  var explainOk = level === "A" || (OBSERVATION.levelBExplainChoices.find(function(x){return x.id===r.observationExplainChoice;}) || {}).correct === true;
+  return allRight && explainOk;
+}
+function modelDone(r){
+  return (r.modelDays||0) >= 3 && (MODEL.check.choices.find(function(c){return c.id===r.modelCheckChoice;})||{}).correct === true;
+}
+function compareResultOk(r){ return (COMPARE.resultChoices.find(function(c){return c.id===r.compareResultChoice;})||{}).correct === true; }
+function compareDone(r){ return !!r.comparePrediction && compareResultOk(r); }
+function fairDone(r, level){
+  if (level === "A"){
+    return FAIRTEST.levelA.experiments.every(function(e){
+      return (r.fairAAnswers||{})[e.id] === (e.fair ? "match" : "no-match");
+    });
+  }
+  return (FAIRTEST.levelB.options.find(function(o){return o.id===r.fairChecked;})||{}).correct === true;
+}
+function transferDone(r, level){
+  if (level === "A"){
+    var slots = r.transferSlots || [];
+    if (slots.length !== TRANSFER.aSlots || slots.some(function(s){return s==null;})) return false;
+    return slots.every(function(id, i){ return (TRANSFER.aChips.find(function(c){return c.id===id;})||{}).correctSlot === i; });
+  }
+  var ev = (TRANSFER.bEvidenceChoices.find(function(c){return c.id===r.transferEvidence;})||{}).correct === true;
+  var bc = (TRANSFER.bBecauseChoices.find(function(c){return c.id===r.transferBecause;})||{}).correct === true;
+  var so = (TRANSFER.bSoChoices.find(function(c){return c.id===r.transferSo;})||{}).correct === true;
+  return ev && bc && so;
+}
+function cap(s){ return s.length === 0 ? s : s[0].toUpperCase() + s.slice(1); }
+function deriveExplanation(r, level, lang){
+  if (!transferDone(r, level)) return null;
+  if (level === "A"){
+    var slots = r.transferSlots || [];
+    var sep = lang === "zh" ? "" : " ";
+    var growing = pick(TRANSFER.aChips.find(function(c){return c.id===slots[0];}).text, lang);
+    var bigger = pick(TRANSFER.aChips.find(function(c){return c.id===slots[1];}).text, lang);
+    return pick(TRANSFER.aFramePrefix,lang) + sep + growing + pick(TRANSFER.aFrameMiddle,lang) + sep + bigger + pick(TRANSFER.aFrameSuffix,lang);
+  }
+  var bc = pick(TRANSFER.bBecauseChoices.find(function(c){return c.id===r.transferBecause;}).label, lang);
+  var so = pick(TRANSFER.bSoChoices.find(function(c){return c.id===r.transferSo;}).label, lang);
+  return lang === "zh" ? ("因为"+bc+"，所以"+so+"。") : (cap(bc)+", so "+so+".");
+}
+function isSceneComplete(scene, r, level){
+  switch(scene){
+    case "hook": return !!r.hookPrediction;
+    case "observation": return observationDone(r, level);
+    case "model": return modelDone(r);
+    case "compare": return compareDone(r);
+    case "fairtest": return fairDone(r, level);
+    case "transfer": return transferDone(r, level);
+    default: return false;
+  }
+}
+function evidenceFor(skill, r){
+  switch(skill){
+    case "prediction":
+      if (!r.hookPrediction) return "not-recorded";
+      return r.hookPrediction === "bigger" ? "independent" : "with-support";
+    case "mechanism":
+      if (!r.observationPlacements) return "not-recorded";
+      if (!observationDone(r, state.level)) return "experienced";
+      return r.observationHadWrong ? "with-support" : "independent";
+    case "saving":
+      if (!r.comparePrediction && !r.compareResultChoice) return "not-recorded";
+      if (!compareDone(r)) return "experienced";
+      return r.compareResultHadWrong ? "with-support" : "independent";
+    case "compounding":
+      var touched = state.level === "A" ? (!!r.fairAAnswers && Object.keys(r.fairAAnswers).length>0) : !!r.fairChecked;
+      if (!touched) return "not-recorded";
+      if (!fairDone(r, state.level)) return "experienced";
+      return "independent";
+    case "transfer":
+      var t2 = state.level === "A" ? (r.transferSlots||[]).some(function(s){return s!=null;}) : !!r.transferEvidence;
+      if (!t2) return "not-recorded";
+      if (!transferDone(r, state.level)) return "experienced";
+      return "transferred";
+    default: return "not-recorded";
+  }
+}
+
+/* ---- tiny SVG builders ---------------------------------------------------*/
+var TEAL="#0f6f6b", BLUE="#2f7fc0", GOLD="#eab34a", INK="#14312f";
+function svgPiggyHero(dropped){
+  return '<svg viewBox="0 0 220 170" role="img" aria-label="'+esc(pick(dropped?VISUAL.piggyHero.dropped:VISUAL.piggyHero.waiting, state.lang))+'">'+
+    '<ellipse cx="110" cy="112" rx="78" ry="46" fill="'+GOLD+'" stroke="'+TEAL+'" stroke-width="3"/>'+
+    '<circle cx="60" cy="86" r="10" fill="'+GOLD+'" stroke="'+TEAL+'" stroke-width="3"/>'+
+    '<rect x="58" y="146" width="12" height="14" rx="4" fill="'+GOLD+'" stroke="'+TEAL+'" stroke-width="2"/>'+
+    '<rect x="150" y="146" width="12" height="14" rx="4" fill="'+GOLD+'" stroke="'+TEAL+'" stroke-width="2"/>'+
+    '<circle cx="64" cy="82" r="2.6" fill="'+INK+'"/>'+
+    '<rect x="94" y="70" width="34" height="7" rx="3" fill="'+INK+'" fill-opacity="0.55"/>'+
+    (dropped ?
+      '<text x="110" y="115" font-size="15" font-weight="700" fill="'+INK+'" text-anchor="middle">'+formatUsd(500)+'</text>' :
+      '<circle cx="111" cy="30" r="16" fill="'+BLUE+'" stroke="#fff" stroke-width="2"/><text x="111" y="35" font-size="14" font-weight="700" fill="#fff" text-anchor="middle">$5</text>'
+    )+
+  '</svg>';
+}
+function svgCoinJar(principalCents, interestCents, maxCents, label){
+  var trackTop=20, trackBottom=148, trackH=trackBottom-trackTop;
+  var totalCents = principalCents + interestCents;
+  function pxFor(c){ return Math.max(0, Math.min(trackH, (c/maxCents)*trackH)); }
+  var principalH = pxFor(principalCents);
+  var goldH = interestCents > 0 ? Math.max(2, pxFor(totalCents) - pxFor(principalCents)) : 0;
+  var goldTop = trackBottom - principalH - goldH;
+  var blueTop = trackBottom - principalH;
+  var clipId = "clip"+Math.random().toString(36).slice(2,8);
+  return '<svg viewBox="0 0 220 190" role="img" aria-label="'+esc(label)+'">'+
+    '<path d="M46 20 L40 150 Q40 168 58 168 L162 168 Q180 168 180 150 L174 20" fill="#fff" stroke="'+INK+'" stroke-opacity="0.3" stroke-width="3"/>'+
+    '<line x1="40" y1="'+trackTop+'" x2="180" y2="'+trackTop+'" stroke="'+TEAL+'" stroke-width="2" stroke-dasharray="5 4"/>'+
+    '<clipPath id="'+clipId+'"><path d="M46 20 L40 150 Q40 168 58 168 L162 168 Q180 168 180 150 L174 20 Z"/></clipPath>'+
+    '<g clip-path="url(#'+clipId+')">'+
+    (principalH>0 ? '<rect x="38" y="'+blueTop+'" width="144" height="'+(principalH+20)+'" fill="'+BLUE+'"/>' : '')+
+    (goldH>0 ? '<rect x="38" y="'+goldTop+'" width="144" height="'+(goldH+2)+'" fill="'+GOLD+'"/>' : '')+
+    '</g>'+
+    '<text x="110" y="184" font-size="13" font-weight="700" fill="'+INK+'" text-anchor="middle">'+formatUsd(totalCents)+'</text>'+
+  '</svg>';
+}
+function svgGauge(saveCents, taiLabel, duoduoLabel, dayCue, maxCents, label){
+  var gaugeTop=46, gaugeBottom=152, gaugeH=gaugeBottom-gaugeTop, gaugeW=46, leftX=44, rightX=130;
+  function fillY(c){ return gaugeBottom - Math.min(1, c/maxCents)*gaugeH; }
+  function one(x, cents, name, fill){
+    var y = fillY(cents), cx = x+gaugeW/2;
+    return '<g><rect x="'+x+'" y="'+gaugeTop+'" width="'+gaugeW+'" height="'+gaugeH+'" rx="9" fill="#fff" stroke="'+INK+'" stroke-opacity="0.28" stroke-width="2"/>'+
+      (cents>0 ? '<rect x="'+(x+3)+'" y="'+y+'" width="'+(gaugeW-6)+'" height="'+(gaugeBottom-y)+'" fill="'+fill+'"/>' : '')+
+      '<text x="'+cx+'" y="'+(gaugeBottom+18)+'" font-size="11.5" fill="'+INK+'" text-anchor="middle">'+esc(name)+'</text>'+
+      '<text x="'+cx+'" y="'+(gaugeBottom+33)+'" font-size="12" font-weight="700" fill="'+INK+'" text-anchor="middle">'+formatUsd(cents)+'</text></g>';
+  }
+  return '<svg viewBox="0 0 220 200" role="img" aria-label="'+esc(label)+'">'+
+    '<text x="110" y="16" font-size="11" fill="#48605d" text-anchor="middle">'+esc(dayCue)+'</text>'+
+    '<line x1="30" y1="'+gaugeTop+'" x2="188" y2="'+gaugeTop+'" stroke="'+TEAL+'" stroke-width="1.5" stroke-dasharray="4 4"/>'+
+    one(leftX, 0, taiLabel, INK) + one(rightX, saveCents, duoduoLabel, GOLD)+
+  '</svg>';
+}
+
+/* ---- generic UI fragments -------------------------------------------------*/
+function narratorBox(text, extraHtml){
+  return '<div class="narrator"><svg class="mascot" viewBox="0 0 48 52" aria-hidden="true">'+
+    '<path d="M6 26C6 15 14 7 24 7s18 8 18 19c0 10-7 18-18 18S6 36 6 26Z" fill="'+GOLD+'" stroke="'+TEAL+'" stroke-width="2"/>'+
+    '<path d="M15 9c3-3 15-3 18 0" fill="none" stroke="'+TEAL+'" stroke-width="2" stroke-linecap="round"/>'+
+    '<circle cx="18" cy="28" r="3" fill="#fff"/><circle cx="30" cy="28" r="3" fill="#fff"/>'+
+    '<circle cx="18" cy="28.6" r="1.4" fill="'+INK+'"/><circle cx="30" cy="28.6" r="1.4" fill="'+INK+'"/>'+
+    '<path d="M17 38.5c3.5 2.6 10.5 2.6 14 0" stroke="'+INK+'" stroke-width="2" stroke-linecap="round" fill="none"/>'+
+    '<circle cx="36" cy="14" r="6" fill="'+BLUE+'" stroke="#fff" stroke-width="1.5"/><text x="36" y="17.5" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">$</text>'+
+    '</svg><div><div class="label">'+esc(pick(UI.narrator,state.lang))+'</div><div class="text"><p>'+esc(text).replace(/\n/g,"</p><p>")+'</p></div>'+(extraHtml||"")+'</div></div>';
+}
+function choiceBtn(opts){
+  var cls = "choice-btn"+(opts.inline?" inline":"")+(opts.selected?" selected":"")+(opts.state==="correct"?" correct":"")+(opts.state==="wrong"?" wrong":"");
+  return '<button type="button" class="'+cls+'" data-act="'+opts.act+'" data-val="'+esc(opts.val||"")+'"'+(opts.disabled?" disabled":"")+'>'+opts.label+'</button>';
+}
+function feedbackBox(tone, html){ return '<div class="feedback '+tone+'">'+html+'</div>'; }
+function sceneShell(leftHtml, rightHtml){
+  return '<div class="stage"><div class="visual-panel">'+leftHtml+'</div><div class="right-col">'+rightHtml+'</div></div>';
+}
+
+/* ---- scene renderers -------------------------------------------------- */
+function renderHook(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var dropped = r.hookDropped === true, chosen = r.hookPrediction;
+  var left = '<div>'+svgPiggyHero(dropped)+'<p class="caption"></p></div>';
+  var narrText = dropped ? pickLeveled(HOOK.narrator, level, lang) : pickLeveled(HOOK.intro, level, lang);
+  var extra = dropped ? '<p style="margin-top:8px;font-weight:600;color:#1e5c93;">'+esc(pick(HOOK.guideCaption,lang))+'</p>' : "";
+  var right = narratorBox(narrText, extra);
+  right += '<div class="row">'+(dropped ?
+      '<button class="ghost-btn" data-act="hook-replay">'+esc(pick(HOOK.replayButton,lang))+'</button>' :
+      '<button class="primary-btn" data-act="hook-drop">'+esc(pick(HOOK.playButton,lang))+'</button>')+'</div>';
+  if (dropped){
+    right += '<div class="field-label">'+esc(pick(HOOK.question,lang))+'</div><div class="choices">';
+    HOOK.choices.forEach(function(c){
+      right += choiceBtn({act:"hook-predict", val:c.id, label:esc(pick(c.label,lang)), selected: chosen===c.id});
+    });
+    right += '</div>';
+    if (chosen) right += feedbackBox("good", esc(pick(UI.yourIdeaSaved,lang)));
+  }
+  return sceneShell(left, right);
+}
+
+function renderObservation(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var cards = observationCards(level);
+  var buckets = level === "B" ? ["observation","guess","explanation"] : ["observation","guess"];
+  var placements = r.observationPlacements || {};
+  var explainChoice = r.observationExplainChoice || null;
+  var allPlacedRight = cards.every(function(c){return placements[c.id]===c.kind;});
+  var firstIncomplete = cards.findIndex(function(c){return placements[c.id]!==c.kind;});
+  var idx = r.obsIdx !== undefined ? r.obsIdx : (firstIncomplete === -1 ? cards.length-1 : firstIncomplete);
+  idx = Math.min(idx, cards.length-1);
+  var card = cards[idx];
+  var placed = placements[card.id];
+  var isRight = placed === card.kind, isWrong = !!placed && !isRight;
+
+  var left = '<p style="font-size:12px;font-weight:700;text-transform:uppercase;color:#48605d;">'+(idx+1)+' / '+cards.length+'</p>'+
+    '<p class="card-viewer">“'+esc(pick(card.text,lang))+'”</p>'+
+    '<div class="dots">'+cards.map(function(c,i){
+      var cls = i===idx ? "now" : (placements[c.id]===c.kind ? "done" : "");
+      return '<button data-act="obs-nav" data-val="'+i+'" class="'+cls+'">'+(i+1)+'</button>';
+    }).join("")+'</div>';
+
+  var right = narratorBox(pickLeveled(OBSERVATION.narrator, level, lang));
+  right += '<div class="row">'+buckets.map(function(b){
+    var st = placed===b ? (isRight?"correct":"wrong") : null;
+    return choiceBtn({act:"obs-place", val:b, inline:true, label:esc(pick(OBSERVATION.buckets[b],lang)), selected:placed===b, state:st});
+  }).join("")+'</div>';
+  if (isRight) right += feedbackBox("good", esc(pick(card.feedback,lang)));
+  if (isWrong) right += feedbackBox("hint", esc(pick(OBSERVATION.wrongCardFeedback,lang)));
+  right += '<div class="row">'+
+    '<button class="ghost-btn" data-act="obs-step" data-val="'+Math.max(0,idx-1)+'"'+(idx===0?" disabled":"")+'>'+esc(pick(UI.back,lang))+'</button>'+
+    '<button class="ghost-btn" data-act="obs-step" data-val="'+Math.min(cards.length-1,idx+1)+'"'+(idx>=cards.length-1?" disabled":"")+'>'+esc(pick(UI.next,lang))+'</button>'+
+    '</div>';
+
+  if (level === "B" && allPlacedRight){
+    right += '<div style="border-top:1px solid rgba(20,49,47,.15);padding-top:10px;">'+
+      '<div class="field-label">'+esc(pick(OBSERVATION.levelBExplainPrompt,lang))+'</div><div class="choices">';
+    OBSERVATION.levelBExplainChoices.forEach(function(c){
+      var picked = explainChoice===c.id;
+      right += choiceBtn({act:"obs-explain", val:c.id, label:esc(pick(c.label,lang)), selected:picked, state: picked ? (c.correct?"correct":"wrong") : null});
+    });
+    right += '</div>';
+    var explainOk = (OBSERVATION.levelBExplainChoices.find(function(x){return x.id===explainChoice;})||{}).correct===true;
+    if (explainChoice && !explainOk) right += feedbackBox("hint", esc(pick(OBSERVATION.wrongCardFeedback,lang)));
+    right += '</div>';
+  }
+  if (isSceneComplete("observation", r, level)) right += feedbackBox("good", esc(pick(UI.correct,lang)));
+  return sceneShell(left, right);
+}
+
+function renderModel(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var days = r.modelDays || 0;
+  var entry = days > 0 ? MODEL_TABLE_10[days-1] : null;
+  var balanceCents = entry ? entry.balanceCents : 0;
+  var interestCents = entry ? entry.interestCents : 0;
+  var principalCents = balanceCents - interestCents;
+  var checkChoice = r.modelCheckChoice || null;
+  var checkOk = (MODEL.check.choices.find(function(c){return c.id===checkChoice;})||{}).correct === true;
+  var canCheck = days >= 3;
+  var dayLabel = days>0 ? fillTemplate(pick(MODEL.dayLabel,lang),{day:days}) : pick(MODEL.startLabel,lang);
+  var label = days>0 ? fillTemplate(pick(VISUAL.model,lang),{day:days, interest:formatUsd(interestCents), balance:formatUsd(balanceCents)}) : pick(MODEL.startLabel,lang);
+
+  var left = svgCoinJar(principalCents, interestCents, 12000, label)+
+    '<p class="caption">'+esc(dayLabel)+'</p><p class="caption">'+esc(pick(MODEL.caption,lang))+'</p>';
+
+  var right = narratorBox(pickLeveled(MODEL.narrator, level, lang));
+  right += '<div class="row">'+
+    '<button class="primary-btn" data-act="model-save"'+(days>=10?" disabled":"")+'>'+esc(pick(MODEL.saveButton,lang))+'</button>'+
+    (days>0 ? '<button class="ghost-btn" data-act="model-reset">'+esc(pick(MODEL.resetButton,lang))+'</button>' : "")+
+    '</div>';
+  if (days>=10) right += feedbackBox("hint", esc(pick(MODEL.maxReached,lang)));
+  if (days>0){
+    right += '<dl class="kv">'+
+      '<dt>'+esc(pick(MODEL.depositLabel,lang))+'</dt><dd>'+formatUsd(500)+'</dd>'+
+      '<dt>'+esc(pick(MODEL.interestLabel,lang))+'</dt><dd>'+formatUsd(interestCents)+'</dd>'+
+      '<dt>'+esc(pick(MODEL.balanceLabel,lang))+'</dt><dd>'+formatUsd(balanceCents)+'</dd>'+
+    '</dl>';
+  }
+  if (canCheck){
+    right += '<div class="field-label">'+esc(pick(MODEL.check.prompt,lang))+'</div><div class="row">';
+    MODEL.check.choices.forEach(function(c){
+      var picked = checkChoice===c.id;
+      right += choiceBtn({act:"model-check", val:c.id, inline:true, label:esc(pick(c.label,lang)), selected:picked, state: picked?(c.correct?"correct":"wrong"):null});
+    });
+    right += '</div>';
+    if (checkChoice && !checkOk) right += feedbackBox("hint", esc(pick(MODEL.checkWrong,lang)));
+    if (checkOk) right += feedbackBox("good", esc(pick(UI.correct,lang)));
+  }
+  return sceneShell(left, right);
+}
+
+var TICK_DAYS = [5,10,20];
+function renderCompare(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var prediction = r.comparePrediction || null;
+  var ran = r.compareRan === true;
+  var tickIndex = r.compareTickIndex || 0;
+  var resultChoice = r.compareResultChoice || null;
+  var resultOk = (COMPARE.resultChoices.find(function(c){return c.id===resultChoice;})||{}).correct === true;
+  var currentDay = ran ? TICK_DAYS[tickIndex] : 0;
+  var saveCents = ran ? dayOf(currentDay).balanceCents : 0;
+  var dayCue = ran ? fillTemplate(pick(COMPARE.dayLabel,lang),{n:currentDay}) : pick(COMPARE.startDayLabel,lang);
+  var label = fillTemplate(pick(VISUAL.compare,lang),{day:currentDay, spend:formatUsd(0), save:formatUsd(saveCents)});
+
+  var left = svgGauge(saveCents, pick(COMPARE.taiName,lang), pick(COMPARE.duoduoName,lang), dayCue, 12000, label)+
+    '<p class="caption">'+esc(pick(COMPARE.gaugeCaption,lang))+' — '+esc(fillTemplate(pick(COMPARE.gaugeReadout,lang),{spend:formatUsd(0),save:formatUsd(saveCents)}))+'</p>';
+
+  var right = narratorBox(pickLeveled(COMPARE.narrator, level, lang));
+  right += '<div class="field-label">'+esc(pick(COMPARE.predictPrompt,lang))+'</div><div class="choices">';
+  COMPARE.choices.forEach(function(c){
+    right += choiceBtn({act:"compare-predict", val:c.id, label:esc(pick(c.label,lang)), selected:prediction===c.id});
+  });
+  right += '</div>';
+  if (prediction) right += '<button class="ghost-btn" data-act="compare-run">'+esc(ran?pick(COMPARE.runAgain,lang):pick(COMPARE.run,lang))+'</button>';
+  if (ran && tickIndex >= TICK_DAYS.length-1){
+    right += '<div class="field-label">'+esc(pick(COMPARE.resultCheckPrompt,lang))+'</div><div class="choices">';
+    COMPARE.resultChoices.forEach(function(c){
+      var picked = resultChoice===c.id;
+      right += choiceBtn({act:"compare-result", val:c.id, label:esc(pick(c.label,lang)), selected:picked, state:picked?(c.correct?"correct":"wrong"):null});
+    });
+    right += '</div>';
+    if (resultChoice && !resultOk) right += feedbackBox("hint", esc(pick(COMPARE.wrongResult,lang)));
+  }
+  if (resultOk) right += feedbackBox("good", esc(pickLeveled(COMPARE.explain, level, lang)));
+  return sceneShell(left, right);
+}
+
+function fairMethodCard(header, rows){
+  return '<div class="method-card"><h4>'+esc(header)+'</h4><dl>'+rows.map(function(row){
+    return '<dt>'+esc(row.label)+'</dt><dd style="display:block;margin:0 0 6px 0;">'+row.icon+' '+esc(row.text)+'</dd>';
+  }).join("")+'</dl></div>';
+}
+function renderFairtestA(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var A = FAIRTEST.levelA;
+  var answers = r.fairAAnswers || {};
+  var step = Math.min(r.fairAStep || 0, A.experiments.length-1);
+  var exp = A.experiments[step];
+  var answer = answers[exp.id];
+  var correctAnswer = exp.fair ? "match" : "no-match";
+  var answeredRight = answer === correctAnswer;
+  var allDone = fairDone(r, "A");
+  var ruleRows = [
+    {label:pick(A.attrNames.base,lang), icon:"🪙", text:pick(A.ruleBase,lang)},
+    {label:pick(A.attrNames.rate,lang), icon:"%", text:pick(A.ruleRate,lang)}
+  ];
+  var methodRows = exp.attrs.map(function(at){ return {label:pick(A.attrNames[at.key],lang), icon:at.icon, text:pick(at.value,lang)}; });
+
+  var left = '<p class="caption" style="margin-top:0;">'+esc(fillTemplate(pick(A.stepLabel,lang),{n:step+1,total:A.experiments.length}))+'</p>'+
+    '<div class="method-cols">'+
+      fairMethodCard(pick(A.ruleHeader,lang), ruleRows)+
+      '<div class="cues">'+exp.attrs.map(function(at){
+        return '<span class="cue '+(at.same?"same":"diff")+'">'+(at.same?"= "+esc(pick(A.sameCue,lang)):"≠ "+esc(pick(A.diffCue,lang)))+'</span>';
+      }).join("")+'</div>'+
+      fairMethodCard(pick(exp.name,lang), methodRows)+
+    '</div>';
+
+  var right = narratorBox(pickLeveled(FAIRTEST.narrator, level, lang));
+  right += '<div class="field-label">'+esc(pick(A.question,lang))+'</div><div class="row">'+
+    choiceBtn({act:"fairA-judge", val:"match", inline:true, label:esc(pick(A.matchButton,lang)), selected:answer==="match", state:answer==="match"?(answeredRight?"correct":"wrong"):null})+
+    choiceBtn({act:"fairA-judge", val:"no-match", inline:true, label:esc(pick(A.notMatchButton,lang)), selected:answer==="no-match", state:answer==="no-match"?(answeredRight?"correct":"wrong"):null})+
+    '</div>';
+  if (answer && !answeredRight){
+    right += feedbackBox("hint", esc(pick(answer==="match"?A.wrongMatch:A.wrongNotMatch,lang)));
+    right += '<div class="small-muted">'+esc(pick(A.hint1,lang))+'<br>'+esc(pick(A.hint2,lang))+'</div>';
+  }
+  if (answeredRight) right += feedbackBox("good", esc(pick(exp.fair?(exp.whyFair||A.allDone):(exp.whyNotFair||A.allDone), lang)));
+  if (answeredRight && step < A.experiments.length-1) right += '<button class="primary-btn" data-act="fairA-next">'+esc(pick(A.nextButton,lang))+'</button>';
+  if (allDone) right += feedbackBox("good", esc(pick(A.allDone,lang)));
+  return sceneShell(left, right);
+}
+function renderFairtestB(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var B = FAIRTEST.levelB;
+  var choice = r.fairChoice || null, checked = r.fairChecked || null;
+  var checkedOption = B.options.find(function(o){return o.id===checked;});
+  var isCorrect = checkedOption && checkedOption.correct === true;
+  var viewIdx = r.fairBViewIdx !== undefined ? r.fairBViewIdx : Math.max(0, B.options.findIndex(function(o){return o.id===choice;}));
+  var shown = B.options[Math.min(viewIdx, B.options.length-1)];
+  var shownPicked = choice === shown.id;
+  var shownWasChecked = checked === shown.id;
+
+  var left = '<div class="row" style="justify-content:space-between;">'+
+    '<span class="caption" style="margin:0;">'+esc(fillTemplate(pick(B.candidateLabel,lang),{n:viewIdx+1,total:B.options.length}))+'</span>'+
+    '<span class="dots">'+B.options.map(function(o,i){
+      var cls = i===viewIdx?"now":(choice===o.id?"done":"");
+      return '<button data-act="fairB-view" data-val="'+i+'" class="'+cls+'">'+(i+1)+'</button>';
+    }).join("")+'</span></div>'+
+    '<div style="border:2px solid '+(shownWasChecked?(shown.correct?TEAL:GOLD):(shownPicked?TEAL:"rgba(20,49,47,.2)"))+';border-radius:16px;padding:10px;overflow-x:auto;background:'+(shownWasChecked||shownPicked?(shown.correct||shownPicked?"var(--teal-soft)":"var(--sun-soft)"):"#fff")+';">'+
+    '<table class="worked"><thead><tr><th>'+esc(pick(B.dayHeader,lang))+'</th><th>'+esc(pick(shown.name,lang))+'</th></tr></thead><tbody>'+
+    shown.rows.map(function(row){ return '<tr><th>'+esc(pick(row.day,lang))+'</th><td>'+esc(pick(row[shown.id],lang))+'</td></tr>'; }).join("")+
+    '</tbody></table></div>';
+
+  var right = narratorBox(pickLeveled(FAIRTEST.narrator, level, lang));
+  right += '<div class="row">'+
+    choiceBtn({act:"fairB-pick", val:shown.id, inline:true, label:esc(shownPicked?pick(B.picked,lang):pick(B.pickThis,lang)), selected:shownPicked})+
+    '<button class="primary-btn" data-act="fairB-check"'+((!choice||isCorrect)?" disabled":"")+'>'+esc(pick(UI.check,lang))+'</button>'+
+    '</div>';
+  if (checked && !isCorrect && checkedOption && checkedOption.whyWrong){
+    right += feedbackBox("hint", esc(pick(UI.notYet,lang))+' — '+esc(pick(checkedOption.whyWrong,lang)));
+  }
+  if (checked && !isCorrect){
+    right += '<div class="small-muted">'+esc(pick(B.hint1,lang))+'<br>'+esc(pick(B.hint2,lang))+'</div>';
+  }
+  if (isCorrect){
+    right += feedbackBox("good", esc(pick(B.correctNote,lang))+(checkedOption.whyRight?" "+esc(pick(checkedOption.whyRight,lang)):""));
+  }
+  return sceneShell(left, right);
+}
+function renderFairtest(){ return state.level === "A" ? renderFairtestA() : renderFairtestB(); }
+
+function lumpSumVisual(stateIndex){
+  var states = [{balanceCents:2000,interestCents:0}, MIA_LUMP_TABLE_3[0], MIA_LUMP_TABLE_3[1]];
+  var s = states[stateIndex];
+  var label = fillTemplate(pick(VISUAL.lumpSum,state.lang),{day:stateIndex, balance:formatUsd(s.balanceCents)});
+  return svgCoinJar(s.balanceCents-s.interestCents, s.interestCents, 2500, label)+
+    '<p class="caption">'+esc(pick(TRANSFER.invisibleCaption,state.lang))+'</p>';
+}
+function renderTransferA(){
+  var r = state.record, lang = state.lang;
+  var chips = TRANSFER.aChips;
+  var slots = r.transferSlots || [null,null];
+  var used = {}; slots.forEach(function(id){ if(id) used[id]=true; });
+  var filled = slots.every(function(s){return s!==null;});
+  var distractor = filled && slots.some(function(id){ return (chips.find(function(c){return c.id===id;})||{}).correctSlot===-1; });
+  var correct = transferDone(r, "A");
+  var filledCount = slots.filter(Boolean).length;
+  var stateIdx = correct ? 2 : Math.min(filledCount,1);
+
+  var left = lumpSumVisual(stateIdx);
+  var right = narratorBox(pickLeveled(TRANSFER.narrator, "A", lang));
+  right += '<p class="sentence">'+esc(pick(TRANSFER.aFramePrefix,lang))+' '+
+    '<span class="slotbtn'+(slots[0]?" filled":"")+'" data-act="transferA-clear" data-val="0">'+(slots[0]?esc(pick(chips.find(function(c){return c.id===slots[0];}).text,lang)):"1")+'</span> '+
+    esc(pick(TRANSFER.aFrameMiddle,lang))+' '+
+    '<span class="slotbtn'+(slots[1]?" filled":"")+'" data-act="transferA-clear" data-val="1">'+(slots[1]?esc(pick(chips.find(function(c){return c.id===slots[1];}).text,lang)):"2")+'</span>'+
+    esc(pick(TRANSFER.aFrameSuffix,lang))+'</p>';
+  right += '<div class="row">'+chips.map(function(c){
+    return choiceBtn({act:"transferA-add", val:c.id, inline:true, label:esc(pick(c.text,lang)), disabled:!!used[c.id]});
+  }).join("")+'</div>';
+  if (filled && distractor) right += feedbackBox("hint", esc(pick(TRANSFER.aWrongChip,lang)));
+  if (correct) right += feedbackBox("good", esc(pick(UI.correct,lang)));
+  if (slots.some(Boolean)) right += '<button class="ghost-btn" data-act="transferA-reset">'+esc(pick(UI.tryAgain,lang))+'</button>';
+  right += '<p class="caption">'+esc(pick(TRANSFER.tip,lang))+'</p>';
+  return sceneShell(left, right);
+}
+function renderTransferB(){
+  var r = state.record, lang = state.lang;
+  var evidence = r.transferEvidence || null, because = r.transferBecause || null, so = r.transferSo || null;
+  var evOk = (TRANSFER.bEvidenceChoices.find(function(c){return c.id===evidence;})||{}).correct===true;
+  var bcOk = (TRANSFER.bBecauseChoices.find(function(c){return c.id===because;})||{}).correct===true;
+  var soOk = (TRANSFER.bSoChoices.find(function(c){return c.id===so;})||{}).correct===true;
+  var done = transferDone(r, "B");
+  var anyWrong = (evidence && !evOk) || (because && !bcOk) || (so && !soOk);
+  var steps = [evOk,bcOk,soOk].filter(Boolean).length;
+  var stateIdx = Math.min(steps,2);
+
+  var left = lumpSumVisual(stateIdx);
+  var right = narratorBox(pickLeveled(TRANSFER.narrator, "B", lang));
+  right += '<div class="field-label">'+esc(pick(TRANSFER.bEvidencePrompt,lang))+'</div><div class="choices">';
+  TRANSFER.bEvidenceChoices.forEach(function(c){
+    var picked = evidence===c.id;
+    right += choiceBtn({act:"transferB-evidence", val:c.id, label:esc(pick(c.label,lang)), selected:picked, state:picked?(c.correct?"correct":"wrong"):null});
+  });
+  right += '</div>';
+  if (evOk){
+    right += '<div class="field-label">'+esc(pick(TRANSFER.bBecausePrompt,lang))+'</div><div class="choices">';
+    TRANSFER.bBecauseChoices.forEach(function(c){
+      var picked = because===c.id;
+      right += choiceBtn({act:"transferB-because", val:c.id, label:esc(pick(c.label,lang)), selected:picked, state:picked?(c.correct?"correct":"wrong"):null});
+    });
+    right += '</div>';
+  }
+  if (evOk && bcOk){
+    right += '<div class="field-label">'+esc(pick(TRANSFER.bSoPrompt,lang))+'</div><div class="choices">';
+    TRANSFER.bSoChoices.forEach(function(c){
+      var picked = so===c.id;
+      right += choiceBtn({act:"transferB-so", val:c.id, label:esc(pick(c.label,lang)), selected:picked, state:picked?(c.correct?"correct":"wrong"):null});
+    });
+    right += '</div>';
+  }
+  if (anyWrong) right += feedbackBox("hint", esc(pick(TRANSFER.bWrong,lang)));
+  if (done) right += feedbackBox("good", esc(deriveExplanation(r,"B",lang)));
+  right += '<p class="caption">'+esc(pick(TRANSFER.tip,lang))+'</p>';
+  return sceneShell(left, right);
+}
+function renderTransfer(){ return state.level === "A" ? renderTransferA() : renderTransferB(); }
+
+var SCENE_RENDERERS = {
+  hook:renderHook, observation:renderObservation, model:renderModel,
+  compare:renderCompare, fairtest:renderFairtest, transfer:renderTransfer
+};
+
+/* ---- summary / parent ---------------------------------------------------*/
+function renderSummary(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var start = r.hookPrediction ? hookChoiceLabel(r.hookPrediction, lang) : pick(SUMMARY.notRecorded,lang);
+  var end = deriveExplanation(r, level, lang) || pick(SUMMARY.notRecorded,lang);
+  var html = '<div style="max-width:720px;margin:0 auto;">'+
+    '<h2 style="font-size:24px;">'+esc(pick(SUMMARY.title,lang))+'</h2>'+
+    '<div style="border:2px solid '+TEAL+';background:var(--teal-soft);border-radius:20px;padding:16px;margin-bottom:14px;">'+
+      '<div style="font-size:11px;font-weight:700;text-transform:uppercase;color:'+TEAL+';">'+esc(pick(SUMMARY.coreIdeaLabel,lang))+'</div>'+
+      '<p style="font-size:17px;margin:4px 0 0;">'+esc(pickLeveled(SUMMARY.coreIdea, level, lang))+'</p></div>'+
+    '<div class="row" style="align-items:stretch;">'+
+      '<div style="flex:1;min-width:220px;border:1px solid rgba(20,49,47,.15);background:#fff;border-radius:16px;padding:12px;">'+
+        '<div style="font-weight:700;color:#1e5c93;">'+esc(pick(SUMMARY.yourStartLabel,lang))+'</div><p style="color:#1e5c93;">'+esc(start)+'</p></div>'+
+      '<div style="flex:1;min-width:220px;border:1px solid rgba(20,49,47,.15);background:#fff;border-radius:16px;padding:12px;">'+
+        '<div style="font-weight:700;color:#1e5c93;">'+esc(pick(SUMMARY.yourEndLabel,lang))+'</div><p style="color:#1e5c93;">'+esc(end)+'</p></div>'+
+    '</div>'+
+    feedbackBox("hint", '<b>'+esc(pick(SUMMARY.teaserLabel,lang))+':</b> '+esc(pick(SUMMARY.teaser,lang)))+
+    '<div class="row" style="margin-top:12px;">'+
+      '<button class="primary-btn" data-act="summary-parent">'+esc(pick(SUMMARY.toParentView,lang))+'</button>'+
+      '<button class="ghost-btn" data-act="summary-replay">'+esc(pick(SUMMARY.replay,lang))+'</button></div>'+
+  '</div>';
+  return html;
+}
+function renderParent(){
+  var r = state.record, lang = state.lang, level = state.level;
+  var prediction = r.hookPrediction ? hookChoiceLabel(r.hookPrediction, lang) : pick(PARENT.none,lang);
+  var explanation = deriveExplanation(r, level, lang) || pick(PARENT.none,lang);
+  var rows = [
+    [pick(PARENT.rows.level,lang), level==="A"?pick(UI.levelA,lang):pick(UI.levelB,lang)],
+    [pick(PARENT.rows.language,lang), lang==="zh"?pick(UI.langZh,lang):pick(UI.langEn,lang)],
+    [pick(PARENT.rows.prediction,lang), prediction],
+    [pick(PARENT.rows.explanation,lang), explanation]
+  ];
+  var skills = [["prediction","prediction"],["mechanism","mechanism"],["saving","saving"],["compounding","compounding"],["transfer","transfer"]];
+  var html = '<div style="max-width:820px;margin:0 auto;">'+
+    '<div class="row" style="justify-content:space-between;"><h2 style="font-size:20px;">'+esc(pick(PARENT.title,lang))+'</h2>'+
+    '<button class="ghost-btn" data-act="parent-back">'+esc(pick(UI.backToLesson,lang))+'</button></div>'+
+    '<div style="border:2px solid var(--blue);background:var(--blue-soft);border-radius:16px;padding:12px;margin-bottom:12px;font-size:14px;">'+esc(pick(PARENT.demoBanner,lang))+'</div>'+
+    '<div class="parent-table" style="border:1px solid rgba(20,49,47,.15);background:#fff;border-radius:16px;padding:0 14px;">'+
+    rows.map(function(kv){ return '<div><dt>'+esc(kv[0])+'</dt><dd>'+esc(kv[1])+'</dd></div>'; }).join("")+
+    '</div>'+
+    '<div style="border:1px solid rgba(20,49,47,.15);background:#fff;border-radius:16px;padding:14px;margin-top:12px;">'+
+    '<div style="font-weight:700;">'+esc(pick(PARENT.evidenceTitle,lang))+'</div><div class="small-muted">'+esc(pick(PARENT.evidenceHint,lang))+'</div>'+
+    skills.map(function(sk){
+      var st = evidenceFor(sk[1], r);
+      return '<div class="skill-row">'+esc(pick(PARENT.skills[sk[0]],lang))+' — <b>'+esc(pick(EVIDENCE_STATE_LABEL[st],lang))+'</b></div>';
+    }).join("")+
+    '</div></div>';
+  return html;
+}
+
+/* ---- top-level render ----------------------------------------------------*/
+function render(){
+  var lang = state.lang, level = state.level;
+  document.documentElement.lang = lang === "zh" ? "zh-Hans" : "en";
+  var prog = state;
+  var html = '';
+  html += '<div class="note">'+ (lang==="zh"
+    ? '这是静态审阅文件——不使用任何本地开发服务器。直接在浏览器里打开这个 HTML 文件即可；以后的改动都会写进这一个文件里。'
+    : 'Static review file — no dev server involved. Just open this HTML file directly in a browser; future changes go into this one file.') + '</div>';
+
+  html += '<header class="top">'+
+    '<div class="brand"><div><div class="name">'+esc(pick(UI.brandTitle,lang))+'</div><div class="sub">'+esc(pick(UI.brandSubtitle,lang))+'</div></div></div>'+
+    '<div class="controls">'+
+      '<div class="segmented">'+
+        '<button data-act="set-level" data-val="A" class="'+(level==="A"?"active":"")+'">'+esc(pick(UI.levelA,lang))+'</button>'+
+        '<button data-act="set-level" data-val="B" class="'+(level==="B"?"active":"")+'">'+esc(pick(UI.levelB,lang))+'</button>'+
+      '</div>'+
+      '<div class="segmented">'+
+        '<button data-act="set-lang" data-val="zh" class="'+(lang==="zh"?"active":"")+'">'+esc(pick(UI.langZh,lang))+'</button>'+
+        '<button data-act="set-lang" data-val="en" class="'+(lang==="en"?"active":"")+'">'+esc(pick(UI.langEn,lang))+'</button>'+
+      '</div>'+
+      '<button class="ghost-btn" data-act="start-over">'+esc(pick(UI.startOver,lang))+'</button>'+
+    '</div></header>';
+
+  html += '<nav class="jump">'+
+    '<button class="chip'+(state.phase==="start"?" active":"")+'" data-act="goto-start">'+esc(pick(SCENE_LABEL.start,lang))+'</button>'+
+    SCENE_ORDER.map(function(s,i){
+      return '<button class="chip'+((state.phase==="scene"&&state.sceneIndex===i)?" active":"")+'" data-act="goto-scene" data-val="'+i+'">'+(i+1)+'. '+esc(pick(SCENE_LABEL[s],lang))+'</button>';
+    }).join("")+
+    '<button class="chip'+(state.phase==="summary"&&!state.showParent?" active":"")+'" data-act="goto-summary">'+esc(pick(SCENE_LABEL.summary,lang))+'</button>'+
+  '</nav>';
+
+  if (state.phase === "start"){
+    html += '<div class="start-screen">'+
+      '<h1>'+esc(pick(UI.brandTitle,lang))+'</h1><p class="small-muted">'+esc(pick(UI.brandSubtitle,lang))+'</p>'+
+      '<p style="font-size:16px;">'+esc(pick(UI.startBlurb,lang))+'</p>'+
+      '<div class="start-box"><div class="field-label">'+esc(pick(UI.startTitle,lang))+'</div>'+
+        '<div class="row" style="margin-top:10px;">'+
+          choiceBtn({act:"set-level", val:"A", label:esc(pick(UI.levelA,lang)), selected:level==="A"})+
+          choiceBtn({act:"set-level", val:"B", label:esc(pick(UI.levelB,lang)), selected:level==="B"})+
+        '</div><div class="row">'+
+          choiceBtn({act:"set-lang", val:"zh", label:esc(pick(UI.langZh,lang)), selected:lang==="zh"})+
+          choiceBtn({act:"set-lang", val:"en", label:esc(pick(UI.langEn,lang)), selected:lang==="en"})+
+        '</div></div>'+
+      '<button class="primary-btn" data-act="begin">'+esc(pick(UI.startBegin,lang))+'</button>'+
+      '<p class="small-muted" style="margin-top:14px;">'+esc(pick(UI.noDataNote,lang))+'</p>'+
+    '</div>';
+  } else if (state.phase === "scene"){
+    var sceneId = SCENE_ORDER[state.sceneIndex];
+    var stepText = fillTemplate(pick(UI.progressStep,lang), {n: state.sceneIndex+1});
+    html += '<div class="progress">'+SCENE_ORDER.map(function(_,i){
+      var cls = i<state.sceneIndex ? "done" : (i===state.sceneIndex ? "now" : "");
+      return '<span class="'+cls+'"></span>';
+    }).join("")+'</div>';
+    html += '<div class="step-line">'+esc(stepText)+' · '+esc(pick(SCENE_LABEL[sceneId],lang))+' · '+SCENE_TIME_HINT[sceneId]+' · '+esc(level==="A"?pick(UI.levelA,lang):pick(UI.levelB,lang))+'</div>';
+    html += SCENE_RENDERERS[sceneId]();
+    var canAdvance = isSceneComplete(sceneId, state.record, level);
+    html += '<div class="footer-nav">'+
+      '<button class="ghost-btn" data-act="back">'+esc(pick(UI.back,lang))+'</button>'+
+      '<button class="primary-btn" data-act="next"'+(canAdvance?"":" disabled")+'>'+(state.sceneIndex===SCENE_ORDER.length-1?esc(pick(SCENE_LABEL.summary,lang)):esc(pick(UI.next,lang)))+'</button>'+
+    '</div>';
+  } else if (state.phase === "summary"){
+    html += state.showParent ? renderParent() : renderSummary();
+  }
+
+  document.getElementById("app").innerHTML = html;
+}
+
+/* ---- event wiring ---------------------------------------------------------*/
+document.addEventListener("click", function(e){
+  var el = e.target.closest("[data-act]");
+  if (!el) return;
+  var act = el.getAttribute("data-act");
+  var val = el.getAttribute("data-val");
+  var r = state.record;
+
+  switch(act){
+    case "set-level": setState({level: val}); break;
+    case "set-lang": setState({lang: val}); break;
+    case "start-over":
+      if (confirm(state.lang==="zh" ? "要重新开始吗？这会清除这次的学习记录。" : "Start over? This clears this practice run.")){
+        state = {level:state.level, lang:state.lang, phase:"start", sceneIndex:0, record:{}, startedAt:null, completedAt:null};
+        saveState(); render();
+      }
+      break;
+    case "begin": setState({phase:"scene", sceneIndex:0, startedAt: Date.now(), showParent:false}); break;
+    case "goto-start": setState({phase:"start"}); break;
+    case "goto-scene": setState({phase:"scene", sceneIndex: parseInt(val,10), showParent:false}); break;
+    case "goto-summary": setState({phase:"summary", showParent:false, completedAt: state.completedAt || Date.now()}); break;
+    case "back":
+      if (state.phase === "scene" && state.sceneIndex > 0) setState({sceneIndex: state.sceneIndex-1});
+      break;
+    case "next":
+      if (state.sceneIndex >= SCENE_ORDER.length-1) setState({phase:"summary", showParent:false, completedAt: Date.now()});
+      else setState({sceneIndex: state.sceneIndex+1});
+      break;
+
+    case "hook-drop": patchRecord({hookDropped:true}); break;
+    case "hook-replay": break;
+    case "hook-predict": patchRecord({hookPrediction: val}); break;
+
+    case "obs-nav": patchRecord({obsIdx: parseInt(val,10)}); break;
+    case "obs-step": patchRecord({obsIdx: parseInt(val,10)}); break;
+    case "obs-place": {
+      var cards = observationCards(state.level);
+      var idx = r.obsIdx !== undefined ? r.obsIdx : 0;
+      idx = Math.min(idx, cards.length-1);
+      var card = cards[idx];
+      var next = Object.assign({}, r.observationPlacements||{});
+      next[card.id] = val;
+      var wrongNow = val !== card.kind;
+      var patch = {observationPlacements: next, observationHadWrong: r.observationHadWrong || wrongNow};
+      if (val === card.kind){
+        var nextIncomplete = cards.findIndex(function(x){ return x.id!==card.id && next[x.id]!==x.kind; });
+        if (nextIncomplete !== -1) patch.obsIdx = nextIncomplete;
+      }
+      patchRecord(patch);
+      break;
+    }
+    case "obs-explain": {
+      var ok = (OBSERVATION.levelBExplainChoices.find(function(x){return x.id===val;})||{}).correct === true;
+      patchRecord({observationExplainChoice: val, observationHadWrong: r.observationHadWrong || !ok});
+      break;
+    }
+
+    case "model-save": {
+      var days = Math.min((r.modelDays||0)+1, 10);
+      patchRecord({modelDays: days});
+      break;
+    }
+    case "model-reset": patchRecord({modelDays:0, modelCheckChoice:undefined, modelCheckHadWrong:false}); break;
+    case "model-check": {
+      var ok2 = (MODEL.check.choices.find(function(c){return c.id===val;})||{}).correct === true;
+      patchRecord({modelCheckChoice: val, modelCheckHadWrong: r.modelCheckHadWrong || !ok2});
+      break;
+    }
+
+    case "compare-predict": patchRecord({comparePrediction: val}); break;
+    case "compare-run": patchRecord({compareRan:true, compareTickIndex: TICK_DAYS.length-1}); break;
+    case "compare-result": {
+      var ok3 = (COMPARE.resultChoices.find(function(c){return c.id===val;})||{}).correct === true;
+      patchRecord({compareResultChoice: val, compareResultHadWrong: r.compareResultHadWrong || !ok3});
+      break;
+    }
+
+    case "fairA-judge": {
+      var A = FAIRTEST.levelA;
+      var step = Math.min(r.fairAStep||0, A.experiments.length-1);
+      var exp = A.experiments[step];
+      var right = val === (exp.fair?"match":"no-match");
+      var answers = Object.assign({}, r.fairAAnswers||{});
+      answers[exp.id] = val;
+      patchRecord({fairAAnswers: answers, fairAHadWrong: r.fairAHadWrong || !right});
+      break;
+    }
+    case "fairA-next": {
+      var A2 = FAIRTEST.levelA;
+      var step2 = Math.min(r.fairAStep||0, A2.experiments.length-1);
+      patchRecord({fairAStep: Math.min(step2+1, A2.experiments.length-1)});
+      break;
+    }
+    case "fairB-view": patchRecord({fairBViewIdx: parseInt(val,10)}); break;
+    case "fairB-pick": patchRecord({fairChoice: val}); break;
+    case "fairB-check": {
+      if (!r.fairChoice) break;
+      var opt = FAIRTEST.levelB.options.find(function(o){return o.id===r.fairChoice;});
+      var correct = opt && opt.correct === true;
+      patchRecord({fairChecked: r.fairChoice, fairAttempts: correct ? (r.fairAttempts||0) : (r.fairAttempts||0)+1});
+      break;
+    }
+
+    case "transferA-add": {
+      var slots = (r.transferSlots || [null,null]).slice();
+      if (slots.indexOf(val) !== -1) break;
+      var emptyIdx = slots.indexOf(null);
+      if (emptyIdx === -1) break;
+      slots[emptyIdx] = val;
+      var doneNow = slots.every(function(s){return s!=null;}) && slots.every(function(id,i){ return (TRANSFER.aChips.find(function(c){return c.id===id;})||{}).correctSlot===i; });
+      patchRecord({transferSlots: slots, transferHadWrong: r.transferHadWrong || (slots.every(function(s){return s!=null;}) && !doneNow)});
+      break;
+    }
+    case "transferA-clear": {
+      var slots2 = (r.transferSlots || [null,null]).slice();
+      slots2[parseInt(val,10)] = null;
+      patchRecord({transferSlots: slots2});
+      break;
+    }
+    case "transferA-reset": patchRecord({transferSlots:[null,null]}); break;
+
+    case "transferB-evidence": patchRecord({transferEvidence: val}); break;
+    case "transferB-because": patchRecord({transferBecause: val}); break;
+    case "transferB-so": patchRecord({transferSo: val}); break;
+
+    case "summary-parent": setState({showParent:true}); break;
+    case "summary-replay":
+      if (confirm(state.lang==="zh" ? "要重新开始吗？" : "Do it again? This clears this run.")){
+        state = {level:state.level, lang:state.lang, phase:"start", sceneIndex:0, record:{}, startedAt:null, completedAt:null};
+        saveState(); render();
+      }
+      break;
+    case "parent-back": setState({showParent:false}); break;
+  }
+});
+
+loadState();
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>What Uses the Most Internet Traffic? 1994–2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0d1117;color:#e6edf3;font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+
+/* ══ RACE PAGE ══ */
+#race-page{height:100vh;display:flex;flex-direction:column;padding:14px 0 6px}
+
+#race-header{flex-shrink:0;padding:0 20px 8px}
+#race-header h1{font-size:27px;font-weight:800;color:#e6edf3;line-height:1.2}
+#race-header p{font-size:16px;color:#8b949e;margin-top:2px}
+
+/* axis bar — positioned over chart area top */
+#axis-bar{flex-shrink:0;height:30px;position:relative;margin-bottom:2px}
+
+#chart-area{flex:1;position:relative;overflow:hidden}
+
+/* gridlines */
+.gl{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.07);pointer-events:none;z-index:0}
+
+/* year overlay — md: bright white 0.70+, orange glow, 150px+, year-title 34px, year-sub 21px */
+#year-block{position:absolute;right:24px;bottom:12px;text-align:right;pointer-events:none;user-select:none;z-index:1}
+#year-title{font-size:34px;font-weight:500;color:rgba(255,255,255,0.72)}
+#year-title strong{font-weight:800;color:rgba(255,255,255,0.85)}
+#year-display{font-size:150px;font-weight:900;color:rgba(255,255,255,0.72);line-height:1;letter-spacing:-4px;
+  text-shadow:0 0 60px rgba(244,185,66,0.35)}
+#year-sub{font-size:21px;color:rgba(255,255,255,0.72);margin-top:3px}
+
+/* milestone */
+#milestone{display:none;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);
+  backdrop-filter:blur(6px);border-radius:12px;padding:14px 26px;
+  font-size:34px;font-weight:700;color:#fff;text-align:center;z-index:10;
+  pointer-events:none;max-width:65%;line-height:1.3}
+
+/* ── BAR ROWS — md: align-items:flex-end so long names overflow upward ── */
+.brow{
+  display:flex;
+  align-items:flex-end;
+  position:absolute;
+  left:0;right:0;
+  transition:top 0.22s ease;
+  z-index:2;
+}
+/* rank number — md: 29px */
+.brow-rank{
+  width:46px;text-align:right;
+  font-size:29px;font-weight:700;
+  color:rgba(255,255,255,0.40);
+  flex-shrink:0;padding-right:6px;
+  padding-bottom:2px;
+}
+/* emoji icon — md: 40px */
+.brow-logo{
+  width:50px;text-align:center;
+  font-size:40px;flex-shrink:0;line-height:1;
+  padding-bottom:2px;
+}
+/* category name — right-aligned in fixed col — md: padding-right:8px, overflow:visible */
+.brow-name{
+  width:260px;text-align:right;
+  font-size:17px;font-weight:600;color:#e6edf3;
+  flex-shrink:0;padding-right:8px;
+  white-space:normal;word-break:break-word;line-height:1.2;
+  overflow:visible;
+}
+/* bar track */
+.brow-track{
+  flex:1;
+  position:relative;min-width:0;
+}
+.brow-fill{
+  position:absolute;left:0;top:0;height:100%;
+  border-radius:4px;
+}
+/* value label removed — md: "Numbers on right side of bars: REMOVE — Dan prefers clean bars" */
+
+/* controls */
+#controls{
+  flex-shrink:0;display:flex;align-items:center;
+  gap:6px;padding:5px 16px 4px;flex-wrap:wrap;
+}
+.ctrl-btn{
+  background:rgba(255,255,255,0.08);
+  border:1px solid rgba(255,255,255,0.14);
+  color:#e6edf3;border-radius:8px;
+  padding:5px 16px;font-size:16px;cursor:pointer;
+  transition:background .15s;
+}
+.ctrl-btn:hover{background:rgba(255,255,255,0.15)}
+.ctrl-btn.active{background:rgba(244,185,66,0.22);border-color:#f4b942;color:#f4b942}
+.src-tag{font-size:15px;color:#8b949e;margin-left:auto}
+
+/* progress */
+#progress-wrap{flex-shrink:0;height:4px;background:rgba(255,255,255,0.09);margin-top:3px}
+#progress-fill{height:100%;background:#f4b942;width:0%}
+
+/* axis label style */
+.axis-lbl{
+  position:absolute;top:6px;
+  font-size:17px;font-weight:700;
+  color:rgba(255,255,255,0.85);
+  transform:translateX(-50%);
+  white-space:nowrap;user-select:none;
+  pointer-events:none;
+}
+
+/* ══ ANALYSIS SECTION ══ */
+#analysis{max-width:900px;margin:0 auto;padding:60px 24px 80px}
+#analysis h2{font-size:31px;font-weight:800;color:#e6edf3;margin-bottom:10px}
+#analysis h3{font-size:26px;font-weight:700;color:#e6edf3;margin:38px 0 12px}
+#analysis p{font-size:20px;color:#d0d0d0;line-height:1.7;margin-bottom:14px}
+
+.cards{display:flex;flex-wrap:wrap;gap:14px;margin:20px 0}
+.card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  border-radius:12px;padding:18px 20px;min-width:200px;flex:1}
+.card-emoji{font-size:34px;margin-bottom:6px}
+.card-name{font-size:19px;font-weight:700;color:#e6edf3;margin-bottom:4px}
+.card-desc{font-size:16px;color:#c4c4c4;line-height:1.5}
+
+.share-wrap{margin:16px 0}
+.share-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.share-name{font-size:17px;color:#d0d0d0;width:200px;flex-shrink:0;text-align:right}
+.share-bar-bg{flex:1;height:18px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
+.share-bar-fill{height:100%;border-radius:4px}
+.share-pct{font-size:17px;color:#d0d0d0;width:70px}
+
+.timeline{margin:20px 0}
+.tl-item{display:flex;gap:16px;margin-bottom:22px}
+.tl-year{font-size:19px;font-weight:800;color:#f4b942;width:52px;flex-shrink:0;padding-top:2px}
+.tl-body{font-size:19px;color:#d0d0d0;line-height:1.6}
+.tl-body strong{color:#e6edf3}
+
+.forecast-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;margin:20px 0}
+.fc-card{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:14px 16px}
+.fc-name{font-size:18px;font-weight:700;color:#e6edf3;margin-bottom:8px}
+.fc-row{font-size:15px;color:#c4c4c4;margin-bottom:4px}
+.fc-label{color:#8b949e;font-size:13px}
+
+.src-table{width:100%;border-collapse:collapse;margin-top:16px;font-size:17px}
+.src-table th{text-align:left;padding:10px 12px;color:#8b949e;border-bottom:1px solid rgba(255,255,255,0.1);font-size:15px}
+.src-table td{padding:10px 12px;border-bottom:1px solid rgba(255,255,255,0.07);color:#c4c4c4;vertical-align:top}
+.src-table a{color:#58a6ff;text-decoration:none}
+.src-table a:hover{text-decoration:underline}
+.badge-v{background:rgba(0,200,100,0.15);color:#3fb950;border:1px solid rgba(0,200,100,0.3);
+  border-radius:4px;padding:2px 7px;font-size:13px;white-space:nowrap}
+.badge-e{background:rgba(255,180,0,0.12);color:#f4b942;border:1px solid rgba(255,180,0,0.25);
+  border-radius:4px;padding:2px 7px;font-size:13px;white-space:nowrap}
+
+#ai-challenge{background:linear-gradient(135deg,rgba(88,166,255,0.08),rgba(244,185,66,0.08));
+  border:1px solid rgba(255,255,255,0.12);border-radius:16px;padding:32px;margin-top:40px}
+#ai-challenge h3{color:#f4b942;margin-bottom:12px;font-size:24px}
+
+footer{text-align:center;font-size:13px;color:#8b949e;padding:20px 0 40px}
+
+@media(max-width:640px){
+  #race-header h1{font-size:18px}
+  .brow-name{width:110px;font-size:13px}
+  .brow-logo{width:36px;font-size:26px}
+  .brow-rank{width:32px;font-size:16px}
+  #year-display{font-size:70px}
+}
+</style>
+</head>
+<body>
+
+<div id="race-page">
+  <div id="race-header">
+    <h1>What Uses the Most Internet Traffic? 1994 – 2026</h1>
+    <p>Global monthly data volume by application type (GB/month) · Sources: Cisco VNI, Sandvine, CAIDA, Ookla, industry reports</p>
+  </div>
+
+  <div id="axis-bar"></div>
+
+  <div id="chart-area">
+    <div id="year-block">
+      <div id="year-title">Internet <strong>traffic</strong> race</div>
+      <div id="year-display">1994</div>
+      <div id="year-sub">Gigabytes per Month</div>
+    </div>
+    <div id="milestone"></div>
+  </div>
+
+  <div id="controls">
+    <button class="ctrl-btn active" id="btn-s1">🐢 Slow</button>
+    <button class="ctrl-btn" id="btn-s2">▶ Normal</button>
+    <button class="ctrl-btn" id="btn-s3">⚡ Fast</button>
+    <button class="ctrl-btn" id="btn-s4">🚀 Turbo</button>
+    <button class="ctrl-btn" id="btn-play">⏸ Pause</button>
+    <button class="ctrl-btn" id="btn-restart">↺ Restart</button>
+    <span class="src-tag">Data: Cisco VNI · Sandvine · CAIDA</span>
+  </div>
+  <div id="progress-wrap"><div id="progress-fill"></div></div>
+</div>
+
+<!-- ══ ANALYSIS ══ -->
+<div id="analysis">
+  <h2>🌐 The Internet Traffic Revolution: 32 Years of Data</h2>
+  <p>In 1994, the entire global internet carried just <strong>25,830 GB per month</strong> — less than a single 4K movie file today. By 2026, video streaming alone accounts for <strong>640 billion GB per month</strong>. That's a 24-million-fold explosion in just 32 years — the most dramatic growth story in the history of human communication.</p>
+  <p>The headline finding: <strong>internet traffic is not just growing — it keeps changing shape.</strong> Each decade brought a completely different dominant use case. The category that leads in 2026 didn't even exist in 2000.</p>
+
+  <h3>The Main Players</h3>
+  <div class="cards">
+    <div class="card"><div class="card-emoji">🌐</div><div class="card-name">Web Browsing</div><div class="card-desc">The original killer app. HTTP traffic defined the early internet and still grows steadily as the web gets richer and more media-heavy.</div></div>
+    <div class="card"><div class="card-emoji">🎵</div><div class="card-name">P2P Music Piracy</div><div class="card-desc">Napster launched in 1999 and within 18 months had 80M users — the first viral internet phenomenon that broke the music industry's distribution model overnight.</div></div>
+    <div class="card"><div class="card-emoji">📂</div><div class="card-name">P2P File Sharing</div><div class="card-desc">BitTorrent (2001) took over from Napster and at its peak drove 60–70% of ALL internet traffic. Nothing before or since has had that kind of dominance.</div></div>
+    <div class="card"><div class="card-emoji">📺</div><div class="card-name">Video Streaming</div><div class="card-desc">YouTube (2005) and Netflix streaming (2007) changed everything. Video now accounts for over 60% of all internet traffic globally.</div></div>
+    <div class="card"><div class="card-emoji">☁️</div><div class="card-name">Cloud Storage</div><div class="card-desc">Dropbox (2008), Google Drive (2012), iCloud — the shift to cloud moved enormous volumes of personal and enterprise data online permanently.</div></div>
+    <div class="card"><div class="card-emoji">🤖</div><div class="card-name">AI / ML Traffic</div><div class="card-desc">The newest entrant. Training runs, inference APIs, and model downloads are growing at 150%+ per year. The next dominant category is already here.</div></div>
+  </div>
+
+  <h3>Market Share: 2000 vs 2020</h3>
+  <p style="font-size:17px;color:#8b949e;margin-bottom:8px">In 2000 (% of tracked traffic):</p>
+  <div class="share-wrap">
+    <div class="share-row"><span class="share-name">Web Browsing</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:20%;background:#f4b942"></div></div><span class="share-pct">~20%</span></div>
+    <div class="share-row"><span class="share-name">P2P Music</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:11%;background:#8b5cf6"></div></div><span class="share-pct">~11%</span></div>
+    <div class="share-row"><span class="share-name">Email</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:5%;background:#34d399"></div></div><span class="share-pct">~5%</span></div>
+    <div class="share-row"><span class="share-name">Video Streaming</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:0%;background:#e11d48"></div></div><span class="share-pct">0%</span></div>
+  </div>
+  <p style="font-size:17px;color:#8b949e;margin-bottom:8px">By 2020 (same categories):</p>
+  <div class="share-wrap">
+    <div class="share-row"><span class="share-name">Web Browsing</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:10%;background:#f4b942"></div></div><span class="share-pct">~10%</span></div>
+    <div class="share-row"><span class="share-name">P2P Music</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:1%;background:#8b5cf6"></div></div><span class="share-pct">~0%</span></div>
+    <div class="share-row"><span class="share-name">Email</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:1%;background:#34d399"></div></div><span class="share-pct">~1%</span></div>
+    <div class="share-row"><span class="share-name">Video Streaming</span><div class="share-bar-bg"><div class="share-bar-fill" style="width:65%;background:#e11d48"></div></div><span class="share-pct">~65%</span></div>
+  </div>
+
+  <h3>Key Moments Timeline</h3>
+  <div class="timeline">
+    <div class="tl-item"><span class="tl-year">1994</span><div class="tl-body"><strong>Netscape Navigator launches.</strong> For the first time, ordinary people can browse the web with images. HTTP traffic surges from near-zero and within 18 months becomes the internet's defining use case.</div></div>
+    <div class="tl-item"><span class="tl-year">1999</span><div class="tl-body"><strong>Napster launches — P2P Music Piracy explodes.</strong> Two college students build a file-sharing app. Within 18 months, 80 million users sign up. The music industry loses control of distribution overnight and a single app reshapes global internet traffic patterns.</div></div>
+    <div class="tl-item"><span class="tl-year">2001</span><div class="tl-body"><strong>Napster shut down. BitTorrent era begins.</strong> Courts order Napster to close in February 2001. Kazaa, LimeWire, then BitTorrent fill the void — and go far beyond music to every type of file. P2P File Sharing drives 60–70% of ALL internet traffic by 2004.</div></div>
+    <div class="tl-item"><span class="tl-year">2005</span><div class="tl-body"><strong>YouTube launches.</strong> Founded February 2005, acquired by Google for $1.65B in October 2006. Video traffic begins its long march to dominance. "Broadcast Yourself" transforms passive TV viewers into active consumers — and producers.</div></div>
+    <div class="tl-item"><span class="tl-year">2007</span><div class="tl-body"><strong>Netflix streaming + iPhone — two revolutions in one year.</strong> Netflix streaming (January) makes legal video so frictionless it begins killing piracy. The iPhone (June) puts the internet in every pocket. Mobile traffic begins a decade-long surge.</div></div>
+    <div class="tl-item"><span class="tl-year">2010</span><div class="tl-body"><strong>Video overtakes P2P for the first time.</strong> This is the pivot point. Netflix's "Is the internet fast enough?" becomes the defining infrastructure question of the decade. P2P never recovers its lead.</div></div>
+    <div class="tl-item"><span class="tl-year">2020</span><div class="tl-body"><strong>COVID-19 — traffic surges 40% overnight.</strong> Zoom goes from 10M to 300M daily meeting participants in 90 days. Netflix, YouTube, Disney+ all break records simultaneously. The internet holds up civilisation working from home.</div></div>
+    <div class="tl-item"><span class="tl-year">2023</span><div class="tl-body"><strong>AI/ML traffic enters the race.</strong> ChatGPT hits 100M users in 60 days — the fastest product adoption in human history. Model training and inference APIs create a new traffic category growing at 150%+ per year. The next transformation is underway.</div></div>
+  </div>
+
+  <h3>What This Means for Finance &amp; Business Professionals</h3>
+  <p>Every traffic shift in this chart was also a capital allocation story. The P2P era destroyed $12B+ in music industry market cap — and created the CDN infrastructure that eventually supported Netflix. The video streaming boom justified $100B+ in content and infrastructure investment. Understanding where traffic is going is understanding where money is flowing next.</p>
+  <p>The counterintuitive finding: P2P traffic didn't die because of lawsuits. It died because Netflix was more convenient. The music and movie industries spent a decade fighting piracy in the courts. What actually killed piracy was making legal content easier than stealing it. <strong>Convenience beats restriction every time</strong> — that is the most important business insight in this entire 32-year dataset.</p>
+  <p>For career positioning: the skills that matter are the ones that enable the next dominant traffic category. In the 2000s that meant CDN and network engineering. In the 2010s it was cloud architecture. Today it's AI/ML systems — and the financial modelling of AI-driven business models. The category that barely registers in 2023 will likely lead the chart by 2030.</p>
+
+  <h3>Forecast: 2026–2028</h3>
+  <div class="forecast-grid">
+    <div class="fc-card"><div class="fc-name">📺 Video Streaming</div><div class="fc-row"><span class="fc-label">Trajectory:</span> 15–20% CAGR</div><div class="fc-row"><span class="fc-label">Tailwind:</span> 8K, VR/AR video, live sports rights</div><div class="fc-row"><span class="fc-label">Headwind:</span> Streaming fatigue, bundling backlash</div><div class="fc-row"><span class="fc-label">Base case:</span> Remains #1 through 2030</div></div>
+    <div class="fc-card"><div class="fc-name">☁️ Cloud Storage</div><div class="fc-row"><span class="fc-label">Trajectory:</span> 25–30% CAGR</div><div class="fc-row"><span class="fc-label">Tailwind:</span> Enterprise cloud migration, AI data storage</div><div class="fc-row"><span class="fc-label">Headwind:</span> Data sovereignty regulation</div><div class="fc-row"><span class="fc-label">Base case:</span> #2 by 2027</div></div>
+    <div class="fc-card"><div class="fc-name">🤖 AI / ML Traffic</div><div class="fc-row"><span class="fc-label">Trajectory:</span> 150%+ CAGR</div><div class="fc-row"><span class="fc-label">Tailwind:</span> Edge AI, autonomous agents, model APIs</div><div class="fc-row"><span class="fc-label">Headwind:</span> Compute cost constraints, efficiency gains</div><div class="fc-row"><span class="fc-label">Base case:</span> Top 3 category by 2028</div></div>
+    <div class="fc-card"><div class="fc-name">🎮 Online Gaming</div><div class="fc-row"><span class="fc-label">Trajectory:</span> 20–25% CAGR</div><div class="fc-row"><span class="fc-label">Tailwind:</span> Cloud gaming (Xbox, GeForce Now)</div><div class="fc-row"><span class="fc-label">Headwind:</span> Latency requirements limit reach</div><div class="fc-row"><span class="fc-label">Base case:</span> Steady #4–5 position</div></div>
+  </div>
+
+  <div id="ai-challenge">
+    <h3>🤖 The AI Transformation Challenge</h3>
+    <p style="color:#d0d0d0;font-size:20px;line-height:1.7">This chart ends in 2026. The category that appears smallest on the right edge — AI/ML Traffic — is growing at 150% per year. Every major internet traffic shift in this 32-year dataset looked small and irrelevant right before it became dominant. Napster was a college dorm project. YouTube was three guys in a garage. The people who saw those curves early and positioned themselves captured the value.</p>
+    <p style="color:#d0d0d0;font-size:20px;line-height:1.7;margin-bottom:0">This entire visualisation — the research, the data verification, the animation, the analysis — was built using AI tools in one session. <strong style="color:#f4b942">The question isn't whether AI will reshape your industry. The question is: are you watching this happen from the outside, or are you building with it from the inside?</strong></p>
+  </div>
+
+  <h3>Data Sources</h3>
+  <table class="src-table">
+    <thead><tr><th>Source</th><th>Data Used</th><th>Period</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td><a href="https://blogs.cisco.com/sp/the-history-and-future-of-internet-traffic" target="_blank">Cisco VNI — History of Internet Traffic</a></td><td>Total global internet traffic 1984–2014 (GB/month)</td><td>1984–2014</td><td><span class="badge-v">✓ Verified</span></td></tr>
+      <tr><td><a href="https://www.cisco.com/c/en/us/solutions/collateral/service-provider/visual-networking-index-vni/vni-hyperconnectivity-wp.pdf" target="_blank">Cisco Annual Internet Report</a></td><td>Traffic by application type, consumer vs. enterprise splits</td><td>2018–2023</td><td><span class="badge-v">✓ Verified</span></td></tr>
+      <tr><td><a href="https://www.sandvine.com/global-internet-phenomena-report" target="_blank">Sandvine Global Internet Phenomena</a></td><td>Application share of traffic (P2P, Video, Web breakdown)</td><td>2007–2024</td><td><span class="badge-v">✓ Verified</span></td></tr>
+      <tr><td><a href="https://arxiv.org/pdf/2201.00142" target="_blank">Arxiv: Evolving Internet Traffic Protocols</a></td><td>Protocol share evolution, COVID traffic impact analysis</td><td>2018–2021</td><td><span class="badge-v">✓ Verified</span></td></tr>
+      <tr><td>YouTube: "What Uses the Most Internet Traffic 1994–2026"</td><td>Category-level GB/month data (1999 screenshot values anchored)</td><td>1994–2026</td><td><span class="badge-e">~ Estimated</span></td></tr>
+      <tr><td>CAIDA / Odlyzko (Univ. of Minnesota)</td><td>Early internet traffic breakdowns by protocol 1994–2003</td><td>1994–2003</td><td><span class="badge-v">✓ Verified</span></td></tr>
+      <tr><td>2024–2026 projections</td><td>Extrapolated from Cisco AIR + Sandvine CAGR trends</td><td>2024–2026</td><td><span class="badge-e">~ Estimated</span></td></tr>
+    </tbody>
+  </table>
+  <footer>Built with AI · Data in the Age of AI series · Dan B · 2026 · All values in Gigabytes per Month</footer>
+</div>
+
+<script>
+// ── DOM refs ──
+const yearDisplay  = document.getElementById("year-display");
+const progressFill = document.getElementById("progress-fill");
+const milestoneEl  = document.getElementById("milestone");
+const chartArea    = document.getElementById("chart-area");
+const axisBar      = document.getElementById("axis-bar");
+const btnPlay      = document.getElementById("btn-play");
+const btnRestart   = document.getElementById("btn-restart");
+
+// ── Layout constants ──
+const isMobile = window.innerWidth < 641;
+const RANK_W = isMobile ? 32  : 46;
+const LOGO_W = isMobile ? 36  : 50;
+const NAME_W = isMobile ? 110 : 260;  // nw
+const VAL_W  = isMobile ? 30  : 50;   // right padding only (no value column per md)
+const TOP_N  = 12;
+
+// ── Colors / Emoji ──
+const COLORS = {
+  "Web Browsing":     "#f4b942",
+  "P2P Music Piracy": "#9333ea",
+  "Email":            "#22c55e",
+  "FTP":              "#3b82f6",
+  "Internet Radio":   "#84cc16",
+  "Usenet":           "#ec4899",
+  "Spam & Botnets":   "#ef4444",
+  "Instant Messaging":"#f97316",
+  "OS Updates":       "#06b6d4",
+  "Online Gaming":    "#14b8a6",
+  "Telnet/SSH":       "#f59e0b",
+  "Cloud Storage":    "#60a5fa",
+  "Video Streaming":  "#e11d48",
+  "P2P File Sharing": "#7c3aed",
+  "Social Media":     "#6366f1",
+  "Video Calls":      "#d946ef",
+  "AI / ML Traffic":  "#10b981",
+};
+const EMOJI = {
+  "Web Browsing":     "🌐",
+  "P2P Music Piracy": "🎵",
+  "Email":            "📧",
+  "FTP":              "📁",
+  "Internet Radio":   "📻",
+  "Usenet":           "📰",
+  "Spam & Botnets":   "🦠",
+  "Instant Messaging":"💬",
+  "OS Updates":       "🔄",
+  "Online Gaming":    "🎮",
+  "Telnet/SSH":       "💻",
+  "Cloud Storage":    "☁️",
+  "Video Streaming":  "📺",
+  "P2P File Sharing": "📂",
+  "Social Media":     "📱",
+  "Video Calls":      "🎥",
+  "AI / ML Traffic":  "🤖",
+};
+
+// ── Data (GB/month) ──
+const FRAMES = [
+  {y:1994,m:1,d:{"Web Browsing":4000,"FTP":9100,"Email":7000,"Usenet":3500,"Telnet/SSH":2000}},
+  {y:1995,m:1,d:{"Web Browsing":45000,"Email":55000,"FTP":38000,"Usenet":16000,"Telnet/SSH":7500,"Internet Radio":1500}},
+  {y:1996,m:1,d:{"Web Browsing":450000,"Email":320000,"FTP":220000,"Usenet":100000,"Telnet/SSH":40000,"Internet Radio":28000}},
+  {y:1997,m:1,d:{"Web Browsing":1800000,"Email":800000,"FTP":600000,"Usenet":150000,"Internet Radio":80000,"Telnet/SSH":80000,"Instant Messaging":20000}},
+  {y:1998,m:1,d:{"Web Browsing":3000000,"Email":1200000,"FTP":900000,"Usenet":200000,"Internet Radio":200000,"Instant Messaging":60000,"Spam & Botnets":80000,"Telnet/SSH":70000,"OS Updates":30000}},
+  {y:1999,m:1,d:{"Web Browsing":4153375,"P2P Music Piracy":1076687,"Email":1002454,"FTP":887117,"Internet Radio":293558,"Usenet":237669,"Spam & Botnets":157669,"Instant Messaging":84479,"OS Updates":50123,"Online Gaming":29356,"Telnet/SSH":23025}},
+  {y:2000,m:6,d:{"Web Browsing":15000000,"P2P Music Piracy":8000000,"Email":4000000,"FTP":2500000,"Spam & Botnets":600000,"Internet Radio":900000,"Instant Messaging":400000,"Usenet":700000,"OS Updates":200000,"Online Gaming":120000,"Telnet/SSH":80000,"Cloud Storage":60000}},
+  {y:2001,m:6,d:{"Web Browsing":28000000,"P2P Music Piracy":5500000,"P2P File Sharing":15000000,"Email":9000000,"FTP":4500000,"Spam & Botnets":2000000,"Internet Radio":1500000,"Instant Messaging":1000000,"Usenet":800000,"Online Gaming":400000,"OS Updates":500000}},
+  {y:2002,m:6,d:{"Web Browsing":45000000,"P2P File Sharing":60000000,"P2P Music Piracy":8000000,"Email":15000000,"Spam & Botnets":8000000,"FTP":6000000,"Internet Radio":3000000,"Instant Messaging":2500000,"Usenet":1000000,"Online Gaming":1000000,"OS Updates":800000}},
+  {y:2003,m:6,d:{"Web Browsing":70000000,"P2P File Sharing":130000000,"P2P Music Piracy":5000000,"Email":22000000,"Spam & Botnets":18000000,"FTP":8000000,"Internet Radio":4000000,"Instant Messaging":4000000,"Online Gaming":3000000,"OS Updates":2000000,"Usenet":800000}},
+  {y:2004,m:6,d:{"Web Browsing":100000000,"P2P File Sharing":220000000,"Email":30000000,"Spam & Botnets":35000000,"FTP":12000000,"Internet Radio":8000000,"Instant Messaging":7000000,"Online Gaming":7000000,"OS Updates":4000000,"P2P Music Piracy":2000000,"Usenet":500000}},
+  {y:2005,m:6,d:{"Web Browsing":150000000,"P2P File Sharing":350000000,"Video Streaming":5000000,"Email":45000000,"Spam & Botnets":55000000,"FTP":15000000,"Online Gaming":12000000,"Instant Messaging":12000000,"Internet Radio":12000000,"OS Updates":7000000}},
+  {y:2006,m:6,d:{"Web Browsing":250000000,"P2P File Sharing":500000000,"Video Streaming":25000000,"Email":70000000,"Spam & Botnets":80000000,"FTP":20000000,"Online Gaming":20000000,"Instant Messaging":18000000,"Internet Radio":18000000,"OS Updates":12000000}},
+  {y:2007,m:6,d:{"Web Browsing":400000000,"P2P File Sharing":700000000,"Video Streaming":170000000,"Email":100000000,"Spam & Botnets":120000000,"Online Gaming":40000000,"FTP":25000000,"Instant Messaging":30000000,"Internet Radio":25000000,"OS Updates":20000000,"Cloud Storage":5000000}},
+  {y:2008,m:6,d:{"Web Browsing":600000000,"P2P File Sharing":900000000,"Video Streaming":200000000,"Email":140000000,"Spam & Botnets":180000000,"Online Gaming":70000000,"Social Media":50000000,"Cloud Storage":15000000,"FTP":30000000,"Internet Radio":30000000}},
+  {y:2009,m:6,d:{"Web Browsing":900000000,"P2P File Sharing":1100000000,"Video Streaming":500000000,"Email":200000000,"Spam & Botnets":220000000,"Social Media":150000000,"Online Gaming":120000000,"Cloud Storage":40000000,"FTP":35000000,"Internet Radio":40000000}},
+  {y:2010,m:6,d:{"Video Streaming":1500000000,"P2P File Sharing":1800000000,"Web Browsing":1400000000,"Social Media":400000000,"Email":300000000,"Spam & Botnets":280000000,"Online Gaming":200000000,"Cloud Storage":100000000,"FTP":40000000,"Internet Radio":60000000}},
+  {y:2011,m:6,d:{"Video Streaming":3000000000,"P2P File Sharing":2200000000,"Web Browsing":2200000000,"Social Media":900000000,"Email":450000000,"Spam & Botnets":350000000,"Online Gaming":400000000,"Cloud Storage":250000000,"Video Calls":100000000,"Internet Radio":100000000}},
+  {y:2012,m:6,d:{"Video Streaming":6000000000,"Web Browsing":3500000000,"P2P File Sharing":2500000000,"Social Media":2000000000,"Online Gaming":800000000,"Email":600000000,"Cloud Storage":600000000,"Spam & Botnets":400000000,"Video Calls":300000000,"Internet Radio":200000000}},
+  {y:2013,m:6,d:{"Video Streaming":10000000000,"Web Browsing":5000000000,"Social Media":3500000000,"P2P File Sharing":2800000000,"Online Gaming":1500000000,"Cloud Storage":1200000000,"Email":800000000,"Video Calls":600000000,"Spam & Botnets":450000000,"Internet Radio":400000000}},
+  {y:2014,m:6,d:{"Video Streaming":17000000000,"Web Browsing":7000000000,"Social Media":6000000000,"P2P File Sharing":3000000000,"Cloud Storage":2500000000,"Online Gaming":2500000000,"Email":1100000000,"Video Calls":1000000000,"Spam & Botnets":500000000,"Internet Radio":600000000}},
+  {y:2015,m:6,d:{"Video Streaming":28000000000,"Web Browsing":10000000000,"Social Media":9000000000,"P2P File Sharing":3200000000,"Cloud Storage":4500000000,"Online Gaming":4000000000,"Video Calls":2000000000,"Email":1500000000,"Spam & Botnets":600000000,"Internet Radio":1000000000}},
+  {y:2016,m:6,d:{"Video Streaming":45000000000,"Web Browsing":14000000000,"Social Media":13000000000,"Cloud Storage":8000000000,"Online Gaming":7000000000,"P2P File Sharing":3500000000,"Video Calls":3500000000,"Email":2000000000,"Internet Radio":1500000000,"Spam & Botnets":700000000}},
+  {y:2017,m:6,d:{"Video Streaming":70000000000,"Social Media":19000000000,"Web Browsing":18000000000,"Cloud Storage":13000000000,"Online Gaming":11000000000,"Video Calls":6000000000,"P2P File Sharing":3800000000,"Email":2500000000,"Internet Radio":2000000000,"Spam & Botnets":800000000}},
+  {y:2018,m:6,d:{"Video Streaming":110000000000,"Social Media":28000000000,"Web Browsing":23000000000,"Cloud Storage":20000000000,"Online Gaming":16000000000,"Video Calls":10000000000,"P2P File Sharing":4000000000,"Email":3000000000,"Internet Radio":3000000000,"Spam & Botnets":900000000}},
+  {y:2019,m:6,d:{"Video Streaming":160000000000,"Social Media":38000000000,"Cloud Storage":30000000000,"Web Browsing":30000000000,"Online Gaming":23000000000,"Video Calls":15000000000,"P2P File Sharing":4200000000,"Email":4000000000,"Internet Radio":4000000000,"Spam & Botnets":1000000000}},
+  {y:2020,m:6,d:{"Video Streaming":215000000000,"Cloud Storage":48000000000,"Social Media":45000000000,"Web Browsing":33000000000,"Online Gaming":33000000000,"Video Calls":55000000000,"P2P File Sharing":4500000000,"Email":5000000000,"Internet Radio":5000000000,"Spam & Botnets":1200000000}},
+  {y:2021,m:6,d:{"Video Streaming":320000000000,"Social Media":75000000000,"Cloud Storage":90000000000,"Web Browsing":50000000000,"Online Gaming":55000000000,"Video Calls":45000000000,"Email":6000000000,"Internet Radio":6000000000,"P2P File Sharing":4800000000,"Spam & Botnets":1400000000}},
+  {y:2022,m:6,d:{"Video Streaming":380000000000,"Cloud Storage":130000000000,"Social Media":100000000000,"Online Gaming":70000000000,"Web Browsing":62000000000,"Video Calls":52000000000,"Email":7500000000,"Internet Radio":7000000000,"P2P File Sharing":5000000000,"Spam & Botnets":1600000000}},
+  {y:2023,m:6,d:{"Video Streaming":430000000000,"Cloud Storage":175000000000,"Social Media":125000000000,"Online Gaming":90000000000,"Web Browsing":75000000000,"Video Calls":58000000000,"AI / ML Traffic":15000000000,"Email":9000000000,"Internet Radio":8000000000,"P2P File Sharing":5200000000,"Spam & Botnets":1800000000}},
+  {y:2024,m:6,d:{"Video Streaming":490000000000,"Cloud Storage":220000000000,"Social Media":150000000000,"Online Gaming":110000000000,"Web Browsing":88000000000,"Video Calls":65000000000,"AI / ML Traffic":40000000000,"Email":11000000000,"Internet Radio":10000000000,"P2P File Sharing":5500000000,"Spam & Botnets":2000000000}},
+  {y:2025,m:6,d:{"Video Streaming":560000000000,"Cloud Storage":280000000000,"Social Media":180000000000,"Online Gaming":135000000000,"AI / ML Traffic":80000000000,"Web Browsing":100000000000,"Video Calls":72000000000,"Email":13000000000,"Internet Radio":12000000000,"P2P File Sharing":5800000000,"Spam & Botnets":2200000000}},
+  {y:2026,m:6,d:{"Video Streaming":640000000000,"Cloud Storage":350000000000,"Social Media":210000000000,"AI / ML Traffic":140000000000,"Online Gaming":165000000000,"Web Browsing":115000000000,"Video Calls":80000000000,"Email":15000000000,"Internet Radio":14000000000,"P2P File Sharing":6000000000,"Spam & Botnets":2500000000}},
+];
+
+// ── Milestones ──
+const MILESTONES = [
+  {y:1994.1,text:"🌐 Netscape Navigator — the web begins"},
+  {y:1999.5,text:"🎵 Napster launches — P2P music piracy explodes!"},
+  {y:2001.2,text:"⚖️ Napster shut down — BitTorrent era begins"},
+  {y:2004.0,text:"📂 P2P reaches 60–70% of ALL internet traffic"},
+  {y:2005.2,text:"📺 YouTube launches — video changes everything"},
+  {y:2007.5,text:"📱 iPhone + Netflix Streaming — two revolutions"},
+  {y:2010.5,text:"📺 Video Streaming overtakes P2P — a new era"},
+  {y:2020.3,text:"😷 COVID-19 — traffic surges 40% overnight"},
+  {y:2023.3,text:"🤖 ChatGPT era — AI/ML traffic enters the race"},
+];
+
+// ── Helpers ──
+function fmtVal(v) {
+  if (v >= 1e12) return (v/1e12).toFixed(1).replace(/\.0$/,'') + " T GB";
+  if (v >= 1e9)  return (v/1e9).toFixed(1).replace(/\.0$/,'')  + " B GB";
+  if (v >= 1e6)  return (v/1e6).toFixed(1).replace(/\.0$/,'')  + " M GB";
+  if (v >= 1e3)  return Math.round(v/1e3) + " K GB";
+  return Math.round(v) + " GB";
+}
+function fmtAxis(v) {
+  if (v === 0) return "0";
+  if (v >= 1e12) return (v/1e12).toFixed(0) + "T";
+  if (v >= 1e9)  return (v/1e9).toFixed(0)  + "B";
+  if (v >= 1e6)  return (v/1e6).toFixed(0)  + "M";
+  if (v >= 1e3)  return (v/1e3).toFixed(0)  + "K";
+  return String(Math.round(v));
+}
+function niceMax(val) {
+  if (val <= 0) return 100;
+  const mag = Math.pow(10, Math.floor(Math.log10(val)));
+  const n = val / mag;
+  const nice = n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10;
+  return nice * mag;
+}
+
+// ── Interpolation ──
+const totalSpan = FRAMES.length - 1;
+function interp(fA, fB, a) {
+  const keys = new Set([...Object.keys(fA.d||{}), ...Object.keys(fB.d||{})]);
+  const d = {};
+  keys.forEach(k => {
+    const va = (fA.d||{})[k]||0, vb = (fB.d||{})[k]||0;
+    d[k] = va + (vb - va) * a;
+  });
+  return d;
+}
+function stateAt(t) {
+  const idx = t * totalSpan;
+  const i   = Math.min(Math.floor(idx), totalSpan - 1);
+  const a   = idx - i;
+  const fA  = FRAMES[i], fB = FRAMES[Math.min(i+1, totalSpan)];
+  return {
+    data:  interp(fA, fB, a),
+    year:  fA.y + (fB.y - fA.y) * a,
+  };
+}
+
+// ── Row elements (created once) ──
+const rows = {};
+function getRow(name) {
+  if (rows[name]) return rows[name];
+  const wrap  = document.createElement("div"); wrap.className = "brow";
+  const rank  = document.createElement("div"); rank.className  = "brow-rank";
+  const logo  = document.createElement("div"); logo.className  = "brow-logo"; logo.textContent = EMOJI[name]||"📊";
+  const label = document.createElement("div"); label.className = "brow-name"; label.textContent = name;
+  const track = document.createElement("div"); track.className = "brow-track";
+  const fill  = document.createElement("div"); fill.className  = "brow-fill";
+  fill.style.background = COLORS[name]||"#aaa";
+  track.appendChild(fill);
+  wrap.appendChild(rank); wrap.appendChild(logo); wrap.appendChild(label);
+  wrap.appendChild(track);
+  chartArea.appendChild(wrap);
+  rows[name] = {wrap, rank, logo, label, track, fill};
+  return rows[name];
+}
+
+// ── Layout cache ──
+let _rowH = 40, _chartH = 400, _chartW = 800;
+function fitRows() {
+  const h = chartArea.clientHeight;
+  const w = chartArea.clientWidth;
+  if (!h) return;
+  _chartH = h;
+  _chartW = w;
+  _rowH   = Math.floor(h / TOP_N);
+}
+
+// ── Axis state ──
+let lastAxisMax = 0;  // 0 so first call always draws (guard: lastAxisMax > 0)
+let glEls = [];
+
+function updateAxis(axisMax) {
+  // FIX: use lastAxisMax > 0 guard so first call always draws
+  if (lastAxisMax > 0 && Math.abs(axisMax - lastAxisMax) / lastAxisMax < 0.015) return;
+  lastAxisMax = axisMax;
+
+  // clear old
+  axisBar.innerHTML = "";
+  glEls.forEach(el => el.remove());
+  glEls = [];
+
+  // total row left offset = rank + logo + name
+  const leftOff = RANK_W + LOGO_W + NAME_W;
+  // use cached _chartW — no live clientWidth read
+  const trackW = _chartW - leftOff - VAL_W;
+
+  // pick ticks
+  const mag = Math.pow(10, Math.floor(Math.log10(axisMax)));
+  const candidates = [0.1,0.2,0.25,0.5,1,2,2.5,5].map(x=>x*mag);
+  const interval = candidates.find(x => axisMax/x >= 3 && axisMax/x <= 10) || mag;
+  const ticks = [];
+  for (let v = 0; v <= axisMax * 1.001; v += interval) ticks.push(v);
+
+  ticks.forEach(v => {
+    const frac  = v / axisMax;
+    const xPx   = leftOff + frac * trackW;
+
+    // axis label
+    const lbl = document.createElement("div");
+    lbl.className = "axis-lbl";
+    lbl.textContent = fmtAxis(v);
+    lbl.style.left = xPx + "px";
+    axisBar.appendChild(lbl);
+
+    // gridline
+    if (v > 0) {
+      const gl = document.createElement("div");
+      gl.className = "gl";
+      gl.style.left = xPx + "px";
+      chartArea.appendChild(gl);
+      glEls.push(gl);
+    }
+  });
+}
+
+// ── Render ──
+function render() {
+  const rowH = _rowH, h = _chartH;
+  const {data, year} = stateAt(t);
+
+  const sorted = Object.entries(data)
+    .filter(([,v]) => v > 0)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, TOP_N);
+
+  const curMax  = sorted[0] ? sorted[0][1] : 1;
+  const axisMax = niceMax(curMax * 1.05);
+  updateAxis(axisMax);
+
+  yearDisplay.textContent = Math.round(year);
+
+  const leftOff = RANK_W + LOGO_W + NAME_W;
+  const trackW  = _chartW - leftOff - VAL_W;  // use cached _chartW
+  const barH    = Math.max(12, Math.round(rowH * 0.60));
+  const topNames = new Set(sorted.map(([n])=>n));
+
+  sorted.forEach(([name, val], ri) => {
+    const r = getRow(name);
+    // position row: distribute evenly, align bars to bottom half of row slot
+    const slotTop = Math.round((h / TOP_N) * ri);
+    const rowSlotH = Math.round(h / TOP_N);
+    const topPx = slotTop + Math.round((rowSlotH - barH) / 2);
+
+    r.wrap.style.display = "flex";
+    r.wrap.style.top    = slotTop + "px";
+    r.wrap.style.height = rowSlotH + "px";
+    r.rank.style.fontSize  = isMobile ? "16px" : "22px";
+    r.rank.textContent     = ri + 1;
+    r.track.style.height   = barH + "px";
+    r.fill.style.width     = Math.max(2, (val / axisMax) * trackW) + "px";
+  });
+
+  // hide rows not in top N
+  Object.keys(rows).forEach(n => {
+    if (!topNames.has(n)) rows[n].wrap.style.display = "none";
+  });
+
+  progressFill.style.width = (t * 100) + "%";
+
+  // milestones: compare current year to prevYear (set by loop before render)
+  MILESTONES.forEach(m => {
+    const key = String(m.y);
+    if (!milestoneShown.has(key) && year >= m.y && prevYear < m.y) {
+      milestoneShown.add(key);
+      showMilestone(m.text);
+    }
+  });
+}
+
+function showMilestone(text) {
+  milestoneEl.textContent = text;
+  milestoneEl.style.display = "block";
+  setTimeout(() => { milestoneEl.style.display = "none"; }, 3000);
+}
+
+// ── Animation ──
+// Speed values match template speedFactor: slow=0.006, normal=0.018, fast=0.06, turbo=0.18
+// speed = 1000 / speedFactor  →  slow≈167s, normal≈56s, fast≈17s, turbo≈5.6s total runtime
+let t = 0, playing = true, lastTime = null, speed = 167000;
+let prevYear = FRAMES[0].y;  // tracks year from previous frame for milestone detection
+const milestoneShown = new Set();
+const SPEEDS = {"btn-s1":167000,"btn-s2":56000,"btn-s3":17000,"btn-s4":5600};
+
+function loop(ts) {
+  prevYear = stateAt(t).year;  // capture before advancing t
+  if (lastTime !== null && playing && t < 1) {
+    t = Math.min(1, t + (ts - lastTime) / speed);
+  }
+  lastTime = ts;
+  render();
+  requestAnimationFrame(loop);
+}
+
+// ── Controls ──
+["btn-s1","btn-s2","btn-s3","btn-s4"].forEach(id => {
+  document.getElementById(id).addEventListener("click", () => {
+    speed = SPEEDS[id];
+    ["btn-s1","btn-s2","btn-s3","btn-s4"].forEach(x =>
+      document.getElementById(x).classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  });
+});
+btnPlay.addEventListener("click", () => {
+  playing = !playing;
+  if (!playing) lastTime = null;
+  btnPlay.textContent = playing ? "⏸ Pause" : "▶ Play";
+});
+btnRestart.addEventListener("click", () => {
+  t = 0; playing = true; lastTime = null;
+  milestoneShown.clear();
+  btnPlay.textContent = "⏸ Pause";
+});
+
+// ── Init ──
+requestAnimationFrame(() => {
+  fitRows();
+  render();
+  requestAnimationFrame(loop);
+});
+window.addEventListener("resize", () => { fitRows(); lastAxisMax = 0; render(); });
+</script>
+</body>
+</html>

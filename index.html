@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Matters Now 总览</title>
+<style>
+:root{--bg:#fbf6ec;--card:#ffffff;--ink:#23303f;--mute:#6a7686;--line:#e4dccb;--brand:#1f5f99;--brand-ink:#ffffff;--good:#1d7a4a;--goodbg:#e2f4ea;--mid:#8a5a00;--midbg:#fdf0d2;--low:#5c6675;--lowbg:#eceff3;--shadow:0 1px 3px rgba(40,30,10,.12)}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#171b22;--card:#212733;--ink:#eef1f6;--mute:#a3adbd;--line:#343c4b;--brand:#6fb0ee;--brand-ink:#0d1a2a;--good:#7fe0a8;--goodbg:#1b3a2b;--mid:#f3c969;--midbg:#3b3017;--low:#b3bccb;--lowbg:#2b3240;--shadow:none}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
+header{padding:28px 16px 8px;max-width:1100px;margin:0 auto}
+h1{margin:0 0 4px;font-size:1.7rem}
+.sub{color:var(--mute);margin:0}
+.stats{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 14px;box-shadow:var(--shadow)}
+.stat b{font-size:1.25rem;display:block}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-top:14px}
+nav .in{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;overflow-x:auto}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;cursor:pointer;min-height:44px}
+nav button[aria-selected=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
+main{max-width:1100px;margin:0 auto;padding:16px}
+.intro{color:var(--mute);margin:4px 0 16px}
+h2{font-size:1.1rem;margin:22px 0 8px}
+h2 small{color:var(--mute);font-weight:400;margin-left:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
+.card h3{margin:0;font-size:1rem;line-height:1.3}
+.card p{margin:0;color:var(--mute);font-size:.92rem}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
+.chip{font-size:.78rem;border-radius:999px;padding:2px 9px;font-weight:600}
+.chip.good{background:var(--goodbg);color:var(--good)}.chip.mid{background:var(--midbg);color:var(--mid)}.chip.low{background:var(--lowbg);color:var(--low)}
+.meta{font-size:.78rem;color:var(--mute)}
+.btn{border:0;background:var(--brand);color:var(--brand-ink);border-radius:10px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
+.btn.alt{background:transparent;color:var(--brand);border:1px solid var(--brand)}
+.btn[aria-disabled=true]{opacity:.45;pointer-events:none}
+.seen{color:var(--good);font-size:.85rem}
+.area{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
+.area h3{margin:0 0 4px;font-size:1rem}.area .next{margin:8px 0 0;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:.92rem}
+.note{margin:28px 0 8px;padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--mute);font-size:.92rem}
+#viewer{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:20;flex-direction:column}
+#viewer.on{display:flex}
+#viewer .bar{background:var(--card);padding:8px 12px;display:flex;gap:8px;align-items:center}
+#viewer .bar b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#viewer iframe{flex:1;border:0;background:#fff;width:100%}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+</style>
+</head>
+<body>
+<header>
+  <h1>What Matters Now 总览</h1>
+  <p class="sub">所有已经做出来的成品，一页看完。点「打开」就能玩 / 看。<b>测试版</b>，更新于 <span id="gen"></span>。</p>
+  <div class="stats" id="stats"></div>
+</header>
+<nav><div class="in" role="tablist" id="tabs"></div></nav>
+<main id="main"></main>
+<div id="viewer" role="dialog" aria-modal="true" aria-label="预览">
+  <div class="bar"><b id="vt"></b><a class="btn alt" id="vnew" target="_blank" rel="noopener">新窗口打开</a><button class="btn" id="vx" type="button">关闭</button></div>
+  <iframe id="vf" title="预览"></iframe>
+</div>
+<script>
+var DATA={"generated":"2026-10-04","sections":[{"id":"math","zh":"数学课","icon":"➕","count":24,"intro":"英文互动数学课，每课约 5 分钟，约 7–9 岁。点开就能玩，进度存在你这台电脑的浏览器里。","groups":[{"zh":"数与加减乘除","en":"Numbers and the four operations","items":[{"title":"Cou-Cou Packs Ten","zh":"10 的拆分：两个数合起来是 10，顺序可以换。","status":"自检过","tone":"mid","href":"lessons/ten-composition.html","meta":"219 KB"},{"title":"Cou-Cou Bundles Tens","zh":"几个十和几个一；10 个一换成 1 个十。","status":"自检过","tone":"mid","href":"lessons/tens-and-ones.html","meta":"216 KB"},{"title":"Cou-Cou’s Make-Ten Trick","zh":"凑十法：8 + 5 先凑成 10 再加 3。","status":"自检过","tone":"mid","href":"lessons/make-ten-addition.html","meta":"216 KB"},{"title":"Cou-Cou’s Break-the-Ten Trick","zh":"破十法：14 − 8 先减到 10 再减剩下的。","status":"已审核","tone":"good","href":"lessons/subtract-through-ten.html","meta":"216 KB"},{"title":"Cou-Cou Trades Up","zh":"两位数加法进位：满十进一。","status":"已审核","tone":"good","href":"lessons/add-regroup.html","meta":"223 KB"},{"title":"Cou-Cou Trades Back","zh":"两位数减法借位：退一当十。","status":"已审核","tone":"good","href":"lessons/subtract-regroup.html","meta":"223 KB"},{"title":"Cou-Cou’s Cookie Trays","zh":"用点阵理解乘法：几行、每行几个，交换后总数不变。","status":"自检过","tone":"mid","href":"lessons/multiplication-arrays.html","meta":"218 KB"},{"title":"Cou-Cou’s Fair Share","zh":"平均分：除法就是分成相同的几份。","status":"已审核","tone":"good","href":"lessons/division-sharing.html","meta":"216 KB"},{"title":"Cou-Cou’s Split-the-Tray Trick","zh":"面积模型：把长方形拆开算乘法。","status":"已审核","tone":"good","href":"lessons/area-model-multiply.html","meta":"220 KB"},{"title":"Cou-Cou’s Carry-the-Ten Trick","zh":"多位数乘一位数的进位。","status":"已审核","tone":"good","href":"lessons/multiply-regroup.html","meta":"221 KB"},{"title":"Cou-Cou’s Fact Family","zh":"乘法和除法互为逆运算。","status":"已审核","tone":"good","href":"lessons/mult-div-inverse.html","meta":"224 KB"},{"title":"Cou-Cou’s Undo Trick","zh":"加法和减法互为逆运算，用来验算。","status":"已审核","tone":"good","href":"lessons/add-sub-inverse.html","meta":"221 KB"},{"title":"Cou-Cou’s Fact Tricks","zh":"乘法口诀的策略：拆成已经会的口诀。","status":"已审核","tone":"good","href":"lessons/times-strategies.html","meta":"221 KB"},{"title":"Cou-Cou’s Leftovers","zh":"有余数的除法：分不完的还剩几个。","status":"已审核","tone":"good","href":"lessons/division-remainders.html","meta":"222 KB"},{"title":"Cou-Cou’s Growing Squares","zh":"规律：连续奇数相加等于平方数。","status":"已审核","tone":"good","href":"lessons/odd-numbers-squares.html","meta":"218 KB"}]},{"zh":"分数与小数","en":"Fractions and decimals","items":[{"title":"Cou-Cou’s Fair Shares","zh":"分数启蒙：平均分成几份、取几份；份数越多，每份越小。","status":"已审核","tone":"good","href":"lessons/fraction-intro.html","meta":"219 KB"},{"title":"Cou-Cou’s Decimal Squares","zh":"小数：十分位和百分位，0.4 和 0.35 谁大。","status":"已审核","tone":"good","href":"lessons/decimals-intro.html","meta":"236 KB"},{"title":"Cou-Cou’s Two Names","zh":"同一个量的两个名字：3/10 = 0.3，63/100 = 0.63。","status":"已审核","tone":"good","href":"lessons/fraction-decimal-link.html","meta":"249 KB"},{"title":"Cou-Cou’s Fraction Add-Ups","zh":"同分母分数相加：上面相加，下面不变。","status":"已审核","tone":"good","href":"lessons/fraction-add.html","meta":"250 KB"},{"title":"Cou-Cou’s Fraction Showdown","zh":"比较分数：切成同样大的块来比，或者和 1/2 比。","status":"已审核","tone":"good","href":"lessons/fraction-compare.html","meta":"254 KB"}]},{"zh":"时间与钱","en":"Time and money","items":[{"title":"Cou-Cou’s Clock Time","zh":"认钟表：整点、半点，到几分钟。","status":"已审核","tone":"good","href":"lessons/telling-time.html","meta":"223 KB"},{"title":"Cou-Cou’s Time Hops","zh":"经过的时间：从几点到几点过了多久。","status":"已审核","tone":"good","href":"lessons/elapsed-time.html","meta":"226 KB"},{"title":"Cou-Cou’s Calendar Weeks","zh":"日历和星期：每 7 天回到同一个星期几。","status":"已审核","tone":"good","href":"lessons/calendar-weeks.html","meta":"226 KB"},{"title":"Cou-Cou’s Coin Jar","zh":"美国硬币：数钱、找零、最少硬币。","status":"已审核","tone":"good","href":"lessons/counting-coins.html","meta":"230 KB"}]}]},{"id":"sci","zh":"科学与生活","icon":"🔬","count":10,"intro":"标签侦探系列、历史谜题、地理、理财、生物课。中英双语。","groups":[{"zh":"","en":"","items":[{"title":"The Sugar Detective","zh":"糖侦探：食物标签里的隐藏糖 · 读营养标签","status":"可试玩","tone":"mid","href":"sci/sugar-label-detective.html","meta":"606 KB"},{"title":"Fat Detective","zh":"脂肪侦探：友好脂肪和悠着点脂肪 · 读脂肪标签","status":"可试玩","tone":"mid","href":"sci/fat-label-detective.html","meta":"91 KB"},{"title":"The Color Detective","zh":"色素侦探：蓝莓味冰棍为什么是蓝的 · 读色素标签","status":"可试玩","tone":"mid","href":"sci/color-label-detective.html","meta":"96 KB"},{"title":"The Warning Label Detective","zh":"警告标签侦探：“致癌警告”到底什么意思 · 加州 Prop 65 警告","status":"可试玩","tone":"mid","href":"sci/warning-label-detective.html","meta":"93 KB"},{"title":"The Package Claims Detective","zh":"包装话术侦探：“树上熟”“太阳晒干” · 读包装广告话（带配音视频）","status":"待复核","tone":"mid","href":"sci/package-claims-detective.html","meta":"12.5 MB"},{"title":"The Scurvy Mystery","zh":"坏血病之谜：水手为什么会生病 · 维生素 C 与公平测试","status":"可试玩","tone":"mid","href":"sci/vitamin-c.html","meta":"55 KB"},{"title":"The Invisible Borders of Continents and Oceans","zh":"七大洲四大洋的隐形边界 · 地理","status":"可试玩","tone":"mid","href":"sci/continents-and-oceans.html","meta":"181 KB"},{"title":"The Travel Piggy Bank","zh":"旅行储蓄罐：利滚利 · 复利（理财启蒙）","status":"可试玩","tone":"mid","href":"sci/travel-piggy-bank.html","meta":"82 KB"},{"title":"The Tooth Timeline","zh":"换牙时间线 · 人体","status":"可试玩","tone":"mid","href":"sci/tooth-timeline.html","meta":"607 KB"},{"title":"Splinter · Bio 01","zh":"Splinter 生物课（含配音和视频）· 生物","status":"已在线","tone":"good","href":"https://dan-mom.github.io/Sci/Splinter.html","meta":"在线页"}]}]},{"id":"games","zh":"游戏与应用","icon":"🎮","count":2,"intro":"能直接玩的小应用。","groups":[{"zh":"","en":"","items":[{"title":"魔方小探险 · Little Cube Quest","zh":"20 关中英双语引导课，真魔方 + 慢动作示范 + 小问题","status":"等你走一遍","tone":"mid","href":"games/cube.html","meta":"9.6 MB","note":"文件大（含配音），第一次打开要等几秒"},{"title":"罗马数字王国 · Roman Numeral Kingdom","zh":"小游戏，女儿已一次通关；本地已修，等你说“发布”才推 GitHub","status":"已完成","tone":"good","href":"games/roman/index.html","meta":"140 KB"}]}]},{"id":"brand","zh":"品牌与视频","icon":"🎬","count":2,"intro":"What Matters Now 频道：品牌蓝图、动态数据图、已发布的视频。","groups":[{"zh":"","en":"","items":[{"title":"亿万富翁榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/billionaire-race.html","meta":"183 KB","video":false},{"title":"互联网流量榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/internet-traffic-race.html","meta":"39 KB","video":false}]}]}],"site":true};
+function E(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e}
+function seenGet(){try{return JSON.parse(localStorage.getItem('wmn-seen')||'{}')}catch(e){return{}}}
+function seenSet(k){try{var s=seenGet();s[k]=1;localStorage.setItem('wmn-seen',JSON.stringify(s))}catch(e){}}
+document.getElementById('gen').textContent=DATA.generated;
+var total=0,playable=0;DATA.sections.forEach(function(s){if(s.groups)s.groups.forEach(function(g){g.items.forEach(function(i){total++;if(i.href)playable++})})});
+DATA.sections.filter(function(s){return s.groups}).map(function(s){return [s.zh,s.count]}).concat([['合计可打开',playable]]).forEach(function(x){var d=E('div','stat');d.appendChild(E('b',null,x[1]));d.appendChild(E('span',null,x[0]));document.getElementById('stats').appendChild(d)});
+var tabs=document.getElementById('tabs'),main=document.getElementById('main'),cur=0;
+DATA.sections.forEach(function(s,i){var b=E('button',null,s.icon+' '+s.zh+(s.count?' · '+s.count:''));b.type='button';b.setAttribute('role','tab');b.onclick=function(){show(i)};tabs.appendChild(b)});
+function card(it){
+  var c=E('div','card');c.appendChild(E('h3',null,it.title));if(it.zh)c.appendChild(E('p',null,it.zh));
+  var r=E('div','row');r.appendChild(E('span','chip '+(it.tone||'mid'),it.status||''));
+  if(it.meta)r.appendChild(E('span','meta',it.meta));
+  var key=it.href||it.title;if(it.href&&seenGet()[key]){r.appendChild(E('span','seen','✓ 打开过'))}
+  c.appendChild(r);
+  var r2=E('div','row');
+  if(it.href){
+    var b=E('button','btn','打开');b.type='button';b.onclick=function(){openIt(it,key)};r2.appendChild(b);
+    var a=E('a','btn alt','新窗口');a.href=it.href;a.target='_blank';a.rel='noopener';a.onclick=function(){seenSet(key)};r2.appendChild(a);
+  } else {var d=E('span','btn alt','还没有可打开的页面');d.setAttribute('aria-disabled','true');r2.appendChild(d)}
+  r2.style.paddingTop='4px';c.appendChild(r2);
+  if(it.note){c.appendChild(E('p','meta',it.note))}
+  return c}
+function show(i){
+  cur=i;var s=DATA.sections[i];main.innerHTML='';
+  [].forEach.call(tabs.children,function(b,j){b.setAttribute('aria-selected',String(j===i))});
+  main.appendChild(E('p','intro',s.intro));
+  if(s.areas){s.areas.forEach(function(a){var d=E('div','area');d.appendChild(E('h3',null,a.title));d.appendChild(E('p','meta',a.zh));
+    var r=E('div','row');r.appendChild(E('span','chip '+a.tone,a.status));if(a.waiting)r.appendChild(E('span','chip mid',a.waiting));if(a.updated)r.appendChild(E('span','meta','更新 '+a.updated));d.appendChild(r);
+    if(a.next)d.appendChild(E('p','next','下一步：'+a.next));if(a.extra)d.appendChild(E('p','meta',a.extra));main.appendChild(d)})}
+  else s.groups.forEach(function(g){
+    if(g.zh){var h=E('h2',null,g.zh);if(g.en)h.appendChild(E('small',null,g.en));main.appendChild(h)}
+    var gr=E('div','grid');g.items.forEach(function(it){gr.appendChild(card(it))});main.appendChild(gr)});
+  if(s.id==='math'&&!DATA.site){main.appendChild(E('div','note','数学课另有一份备份在你的私有 GitHub 仓库（Dan-Mom/five-minute-math）。要变成别人也能点开的公开网址，需要你同意开启 GitHub Pages；现在还没发布任何东西。'))}
+  window.scrollTo(0,0)}
+var V=document.getElementById('viewer'),VF=document.getElementById('vf');
+function openIt(it,key){seenSet(key);document.getElementById('vt').textContent=it.title;document.getElementById('vnew').href=it.href;
+  if(it.video){window.open(it.href,'_blank');return}
+  VF.src=it.href;V.classList.add('on');document.getElementById('vx').focus()}
+function closeV(){V.classList.remove('on');VF.src='about:blank';show(cur)}
+document.getElementById('vx').onclick=closeV;document.addEventListener('keydown',function(e){if(e.key==='Escape'&&V.classList.contains('on'))closeV()});
+show(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,1200 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>警告标签侦探 · The Warning Label Detective — review preview</title>
+<style>
+  :root{
+    --ivory:#fbf9f1; --ink:#14312f; --muted:#48605d;
+    --teal:#0f6f6b; --teal-soft:#dcefec;
+    --blue:#2f7fc0; --blue-soft:#e2eefa;
+    --sun:#eab34a; --sun-soft:#fbeecd;
+    --deep:#1e5c93;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ivory);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei","Noto Sans SC",Arial,sans-serif;}
+  #app{max-width:1180px;margin:0 auto;padding:16px 16px 96px;}
+  button{font-family:inherit;}
+  button:focus-visible,input:focus-visible{outline:none;box-shadow:0 0 0 4px rgba(47,127,192,.45);}
+  .note{background:#fff8e1;border:1px solid #e8d38a;border-radius:12px;padding:10px 14px;
+    font-size:13px;color:#5a4a12;margin-bottom:14px;line-height:1.5;}
+  header.top{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+    border-bottom:1px solid rgba(20,49,47,.15);padding-bottom:10px;margin-bottom:14px;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand .name{font-weight:700;font-size:18px;}
+  .brand .sub{font-size:12px;color:var(--muted);}
+  .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;}
+  .segmented{display:flex;border:1px solid rgba(20,49,47,.2);border-radius:999px;padding:3px;background:#fff;}
+  .segmented button{border:none;background:transparent;min-height:40px;padding:0 14px;border-radius:999px;font-size:13px;
+    font-weight:600;cursor:pointer;color:var(--muted);}
+  .segmented button.active{background:var(--teal);color:#fff;}
+  .check{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;min-height:40px;cursor:pointer;}
+  .check input{width:18px;height:18px;accent-color:var(--teal);}
+  .ghost-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;
+    border-radius:999px;border:1px solid rgba(20,49,47,.3);background:#fff;color:var(--ink);font-size:14px;
+    font-weight:600;cursor:pointer;}
+  .ghost-btn:hover:not(:disabled){background:var(--blue-soft);}
+  .ghost-btn:disabled{opacity:.45;cursor:not-allowed;}
+  .primary-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;
+    border-radius:999px;border:none;background:var(--teal);color:#fff;font-size:15px;font-weight:700;cursor:pointer;}
+  .primary-btn:disabled{opacity:.4;cursor:not-allowed;}
+  .primary-btn:hover:not(:disabled){background:#0b5754;}
+  nav.jump{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+  .chip{border:1px solid rgba(20,49,47,.25);background:#fff;color:var(--ink);border-radius:999px;
+    min-height:36px;padding:0 12px;font-size:12px;font-weight:600;cursor:pointer;}
+  .chip.active{background:var(--teal);color:#fff;border-color:var(--teal);}
+  .chip.done{border-color:var(--teal);}
+  .progress{display:flex;gap:5px;margin-bottom:6px;}
+  .progress span{height:6px;flex:1;border-radius:99px;background:rgba(20,49,47,.15);}
+  .progress span.done{background:var(--teal);}
+  .progress span.now{background:var(--blue);}
+  .step-line{font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .stage{display:grid;gap:20px;}
+  @media (min-width:880px) and (orientation:landscape){
+    .stage{grid-template-columns:minmax(0,60fr) minmax(0,40fr);align-items:start;}
+    .stage .left{position:sticky;top:12px;}
+  }
+  .visual-panel{border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.8);border-radius:22px;
+    padding:16px;display:flex;flex-direction:column;justify-content:center;min-height:320px;}
+  .visual-panel svg.vis{display:block;margin:0 auto;max-width:460px;width:100%;height:auto;}
+  .caption{text-align:center;font-size:13px;color:var(--muted);margin-top:8px;line-height:1.5;}
+  .right-col{display:flex;flex-direction:column;gap:12px;}
+  .narrator{display:flex;gap:10px;border:1px solid rgba(15,111,107,.25);background:rgba(255,255,255,.9);
+    border-radius:16px;padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .narrator .mascot{flex:none;width:40px;height:46px;}
+  .narrator .label{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--teal);}
+  .narrator .text p{margin:4px 0 0;font-size:16px;line-height:1.6;}
+  .narrator .aside{margin:8px 0 0;font-size:14px;font-weight:600;color:var(--deep);}
+  .field-label{font-size:15px;font-weight:700;margin:0;}
+  .choices{display:grid;gap:9px;}
+  .row{display:flex;flex-wrap:wrap;gap:8px;}
+  .choice{width:100%;text-align:left;min-height:50px;padding:10px 16px;border-radius:16px;border:2px solid rgba(20,49,47,.25);
+    background:#fff;color:var(--ink);font-size:15px;font-weight:500;line-height:1.45;cursor:pointer;}
+  .choice.inline{width:auto;text-align:center;}
+  .choice:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft);}
+  .choice.selected{border-color:var(--teal);background:var(--teal-soft);}
+  .choice.correct{border-color:var(--teal);background:var(--teal-soft);}
+  .choice.wrong{border-color:var(--sun);background:var(--sun-soft);}
+  .choice:disabled{opacity:.5;cursor:not-allowed;}
+  .fb{border-radius:16px;border:2px solid;padding:10px 14px;font-size:15px;line-height:1.55;}
+  .fb.good{border-color:var(--teal);background:var(--teal-soft);}
+  .fb.hint{border-color:var(--sun);background:var(--sun-soft);}
+  .hintbox{border-radius:16px;border:1px solid rgba(47,127,192,.4);background:var(--blue-soft);padding:10px 14px;font-size:15px;line-height:1.55;}
+  .divider{border-top:1px solid rgba(20,49,47,.15);padding-top:12px;display:flex;flex-direction:column;gap:10px;}
+  .muted{color:var(--muted);font-size:13px;margin:0;}
+  .card-count{font-size:12px;font-weight:700;letter-spacing:.06em;color:var(--muted);margin:0;}
+  .card-text{font-size:22px;font-weight:500;line-height:1.6;margin:8px 0 0;}
+  .dots{display:flex;gap:8px;margin-top:14px;align-items:center;}
+  .dot{width:30px;height:30px;border-radius:999px;border:1px solid rgba(20,49,47,.3);background:#fff;color:var(--muted);
+    font-size:12px;font-weight:700;cursor:pointer;}
+  .dot.now{background:var(--teal);border-color:var(--teal);color:#fff;}
+  .dot.ok{background:var(--teal-soft);border-color:var(--teal);color:var(--ink);}
+  .scenario{font-size:19px;font-weight:500;line-height:1.6;margin:6px 0 0;}
+  .flags{display:flex;flex-direction:column;gap:8px;margin-top:14px;}
+  .flag{display:flex;justify-content:space-between;align-items:center;gap:12px;border:1px solid rgba(20,49,47,.15);
+    background:#fff;border-radius:12px;padding:9px 12px;font-size:14px;}
+  .pill{flex:none;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700;}
+  .pill.yes{background:var(--sun-soft);}
+  .pill.no{background:var(--teal-soft);}
+  .cand{border:2px solid rgba(20,49,47,.2);background:#fff;border-radius:18px;padding:12px;}
+  .cand.picked,.cand.ok{border-color:var(--teal);background:var(--teal-soft);}
+  .cand.bad{border-color:var(--sun);background:var(--sun-soft);}
+  .conclusion{margin:10px 0 0;border-radius:12px;background:var(--blue-soft);padding:9px 12px;font-size:14px;line-height:1.55;}
+  .slots{display:flex;flex-wrap:wrap;gap:8px;}
+  .slot{min-height:48px;min-width:92px;border-radius:12px;border:2px dashed rgba(20,49,47,.4);background:#fff;
+    color:var(--muted);font-size:14px;font-weight:600;padding:6px 12px;cursor:pointer;text-align:left;line-height:1.4;}
+  .slot.filled{border-style:solid;border-color:var(--teal);background:var(--teal-soft);color:var(--ink);}
+  .chipbtn{min-height:44px;padding:6px 14px;border-radius:14px;border:2px solid rgba(20,49,47,.25);background:#fff;
+    color:var(--ink);font-size:14px;font-weight:500;cursor:pointer;line-height:1.4;text-align:left;}
+  .chipbtn:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft);}
+  .chipbtn:disabled{opacity:.45;cursor:not-allowed;}
+  footer.bar{position:fixed;left:0;right:0;bottom:0;z-index:20;background:rgba(251,249,241,.96);
+    border-top:1px solid rgba(20,49,47,.15);}
+  footer.bar .inner{max-width:1180px;margin:0 auto;padding:10px 16px;display:flex;justify-content:space-between;align-items:center;gap:10px;}
+  .start{max-width:760px;margin:10px auto 0;display:flex;flex-direction:column;gap:18px;}
+  .start h1{margin:0;font-size:28px;}
+  .panel{border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.8);border-radius:18px;padding:16px;display:flex;flex-direction:column;gap:10px;}
+  .grid2{display:grid;gap:9px;}
+  @media(min-width:600px){ .grid2{grid-template-columns:1fr 1fr;} }
+  .summary{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+  .summary h2{margin:0;font-size:24px;}
+  .core{border:2px solid var(--teal);background:var(--teal-soft);border-radius:22px;padding:16px 18px;}
+  .kicker{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);margin:0;}
+  .core p.big{margin:6px 0 0;font-size:17px;line-height:1.65;}
+  .own{border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.85);border-radius:16px;padding:14px;}
+  .own .l{font-weight:700;color:var(--deep);margin:0;}
+  .own .v{margin:6px 0 0;color:var(--deep);font-size:16px;line-height:1.6;}
+  .parent{max-width:920px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+  .banner{border-radius:16px;border:2px solid rgba(47,127,192,.5);background:var(--blue-soft);padding:10px 14px;font-size:14px;line-height:1.55;}
+  .banner.warn{border-color:var(--sun);background:var(--sun-soft);}
+  dl.kv{margin:0;border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.85);border-radius:16px;}
+  dl.kv div{display:grid;gap:4px;padding:10px 14px;border-top:1px solid rgba(20,49,47,.08);}
+  dl.kv div:first-child{border-top:none;}
+  @media(min-width:640px){ dl.kv div{grid-template-columns:220px 1fr;} }
+  dl.kv dt{font-size:14px;font-weight:700;color:var(--muted);}
+  dl.kv dd{margin:0;font-size:15px;line-height:1.55;}
+  .box{border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.85);border-radius:16px;padding:14px;}
+  .box ul{margin:8px 0 0;padding-left:20px;line-height:1.7;}
+  .st-good{color:var(--teal);font-weight:700;}
+  .st-mid{color:var(--ink);font-weight:700;}
+  .st-low{color:var(--muted);font-weight:700;}
+  .overlay{position:fixed;inset:0;z-index:50;background:rgba(20,49,47,.45);display:flex;align-items:center;justify-content:center;padding:16px;}
+  .dialog{background:#fff;border-radius:18px;padding:18px;max-width:380px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,.2);}
+  .dialog h2{margin:0;font-size:18px;}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+
+  /* Learner-triggered reveal. Skipped entirely under reduced motion
+     (OS setting via the media query, in-app preview via body.reduced). */
+  @keyframes drop{0%{opacity:0;transform:translateY(-10px)}70%{opacity:1;transform:translateY(2px)}100%{opacity:1;transform:translateY(0)}}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+  .pop{animation:drop .6s cubic-bezier(.34,1.56,.64,1) both;transform-box:fill-box;}
+  .bob{animation:bob .9s ease-in-out 2;}
+  body.reduced .pop, body.reduced .bob{animation:none !important;}
+  @media (prefers-reduced-motion: reduce){ .pop,.bob{animation:none !important;} }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="live" class="sr" aria-live="polite"></div>
+
+<script>
+"use strict";
+
+/* =========================================================================
+   Static preview build of the Warning Label Detective course, per Dan's
+   request: no dev server / localhost — a single HTML file, open directly
+   from disk. One agent per course builds its own preview; an integrating
+   agent later merges the course previews into one site.
+   All content ported 1:1 from
+   components/lessons/warning-label-detective/content.ts (source of truth).
+   Any future change to this course's copy or logic should be made in BOTH
+   places (the React source, and here) until/unless this file is retired.
+   No network requests, no external assets, no real child data.
+   ========================================================================= */
+
+function pick(copy, lang){ return lang === "zh" ? copy.zh : copy.en; }
+function pickLeveled(copy, level, lang){ return pick(copy[level], lang); }
+function fillTemplate(text, values){
+  return text.replace(/\{(\w+)\}/g, function(_, k){ return values[k] !== undefined ? values[k] : "{"+k+"}"; });
+}
+function esc(s){ return String(s).replace(/[&<>"']/g, function(c){
+  return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c];
+});}
+
+/* ---------------------------------------------------------------- content */
+
+var SCENE_ORDER = ["hook","observation","model","compare","fairtest","transfer"];
+
+var SCENE_LABEL = {
+  start:{zh:"开始",en:"Start"},
+  hook:{zh:"谜题",en:"Mystery"},
+  observation:{zh:"观察还是猜测",en:"Observe or guess"},
+  model:{zh:"追踪来源",en:"Trace the source"},
+  compare:{zh:"比一比",en:"Compare"},
+  fairtest:{zh:"合理反应",en:"Sensible response"},
+  transfer:{zh:"换个情境",en:"Transfer"},
+  summary:{zh:"总结",en:"Summary"}
+};
+var SCENE_TIME_HINT = {hook:"0:00–0:30",observation:"0:30–1:15",model:"1:15–2:15",compare:"2:15–3:15",fairtest:"3:15–4:10",transfer:"4:10–5:00"};
+
+var UI = {
+  brandTitle:{zh:"警告标签侦探",en:"The Warning Label Detective"},
+  brandSubtitle:{zh:"为什么这包饼干和这罐糖果都贴着“警告：致癌”的标签？",en:"Why do this bag of cookies and this jar of candy both carry a “Warning: Cancer” sticker?"},
+  next:{zh:"下一步",en:"Next"},
+  back:{zh:"上一步",en:"Back"},
+  startOver:{zh:"重新开始",en:"Start over"},
+  startOverConfirmTitle:{zh:"要重新开始吗？",en:"Start over?"},
+  startOverConfirmBody:{zh:"这会清除这台设备上的这次学习记录。",en:"This clears this practice run on this device."},
+  confirm:{zh:"确定",en:"Yes, start over"},
+  cancel:{zh:"取消",en:"Cancel"},
+  levelA:{zh:"一年级左右",en:"About Grade 1"},
+  levelB:{zh:"三年级左右",en:"About Grade 3"},
+  langZh:{zh:"中文",en:"中文"},
+  langEn:{zh:"English",en:"English"},
+  reducedMotionPreview:{zh:"预览减少动画",en:"Preview reduced motion"},
+  forcedAdvance:{zh:"（审阅：可强制前进）",en:"(review: force next)"},
+  backToLesson:{zh:"回到课程",en:"Back to lesson"},
+  progressStep:{zh:"第 {n} / 6 步",en:"Step {n} of 6"},
+  narrator:{zh:"放大镜说",en:"Lens says"},
+  yourIdeaSaved:{zh:"已记下你的第一个想法（这不是考试）。",en:"Your first idea is saved (this is not a test)."},
+  hintButton:{zh:"需要提示",en:"Need a hint"},
+  hint1Label:{zh:"提示 1",en:"Hint 1"},
+  hint2Label:{zh:"提示 2",en:"Hint 2"},
+  tryAgain:{zh:"再试一次",en:"Try again"},
+  check:{zh:"检查一下",en:"Check"},
+  correct:{zh:"对了！",en:"That works!"},
+  notYet:{zh:"还没有，看看提示",en:"Not yet — see the hint"},
+  reducedMotionNote:{zh:"已按你的设备设置，减少动画。",en:"Motion is reduced to match your device setting."},
+  modelIsAModel:{zh:"这是一个模型：真正的化学物质分子太小了，眼睛根本看不见。我们用“棕色斑点”和“从土壤里爬上来的小圆点”来帮你想象它们是怎么进到食物里的。",en:"This is a model: the real chemical molecules are far too small to see. We use “brown specks” and “dots climbing up from the soil” to help you picture how they end up in food."},
+  startTitle:{zh:"选择年级和语言（中文或 English），然后开始",en:"Choose a level and language (中文 or English), then begin"},
+  startBegin:{zh:"开始学习",en:"Begin"},
+  startBlurb:{zh:"大约 5 分钟。你要先猜一猜，再动手试一试，最后用自己的话说清楚。",en:"About 5 minutes. You will predict, try things, and then explain the idea in your own words."},
+  noDataNote:{zh:"不收集姓名、声音或图像。进度只存在这台设备上。",en:"No name, voice, or photos are collected. Progress stays on this device only."},
+  previewNote:{zh:"审阅预览：直接双击打开即可，不需要 localhost。上方的场景标签可以随意跳转（会被记为“审阅跳转”）。所有内容与 components/lessons/warning-label-detective/content.ts 一一对应。",en:"Review preview: open this file directly — no localhost needed. The scene chips above jump anywhere (recorded as a review jump). All content mirrors components/lessons/warning-label-detective/content.ts."}
+};
+
+var VISUAL = {
+  pantryDimmed:{zh:"两包食物放在一起，标签上的小字还看不清楚。",en:"Two packages sit together; the sticker's small print isn't legible yet."},
+  pantryRevealed:{zh:"凑近看清楚了：两个标签都写着“警告：致癌和生殖伤害”。",en:"Zoomed in and legible now: both stickers say “Warning: Cancer and Reproductive Harm.”"},
+  stickerText:{zh:"⚠ 警告：致癌和生殖伤害",en:"⚠ WARNING: Cancer and Reproductive Harm"},
+  traceFoodBrowning:{zh:"{food}，烤/炸得比较焦，表面出现了一点棕色斑点，测到了微量。",en:"{food}, browned/fried a fair amount, has a few brown specks on the surface — a trace amount detected."},
+  traceFoodSoil:{zh:"{food}，长在土壤里，从土壤中吸收了一点点，测到了微量。",en:"{food}, grown in soil, absorbed a tiny trace from it — a trace amount detected."},
+  traceFoodUnpicked:{zh:"还没有选择食物。",en:"No food selected yet."},
+  rulerBefore:{zh:"尺子上还没有标出两个记号。",en:"Neither mark has been placed on the ruler yet."},
+  rulerAfter:{zh:"尺子上，触发标签的记号非常靠近起点，研究发现有影响的记号在尺子很远的地方。",en:"On the ruler, the label's trigger mark sits very close to the start, and the harm-study mark sits much farther along."},
+  kitchen:{zh:"自己家做的薯条，旁边是一个空的、被划掉的标签位置。",en:"Homemade fries, next to an empty, crossed-out warning-label slot."}
+};
+
+var HOOK = {
+  intro:{
+    A:{zh:"他正准备吃零食：一包饼干、一罐糖果。翻过来一看，两包上都有一个小小的白色标签。按“凑近看看”，看看上面写了什么。",en:"He's about to grab a snack — a bag of cookies, a jar of candy. Flipping them over, both have a small white sticker. Press “Look closer” to see what it says."},
+    B:{zh:"他随手拿起一包饼干和一罐糖果准备当零食，翻到背面，两包上都贴着一个小小的白色标签。按“凑近看看”，把它读清楚。",en:"He reaches for a bag of cookies and a jar of candy for a snack. Flipping them over, both packages carry a small white sticker. Press “Look closer” to read it."}
+  },
+  playButton:{zh:"凑近看看",en:"Look closer"},
+  replayButton:{zh:"再看一次",en:"Watch again"},
+  narrator:{
+    A:{zh:"标签上写着“警告：致癌和生殖伤害”！这是零食呀，为什么会有这个？你猜猜看，为什么？",en:"The sticker says “Warning: Cancer and Reproductive Harm”! These are just snacks — why would they have this? Take a guess: why?"},
+    B:{zh:"两包零食都印着同一句“警告：致癌和生殖伤害”。这两样东西看起来完全正常，为什么会贴着这种标签？先猜一猜，再往下看。",en:"Both snacks carry the exact same line: “Warning: Cancer and Reproductive Harm.” They look completely ordinary — why the warning? Predict first, then keep going."}
+  },
+  guideCaption:{zh:"放大镜也很好奇：两包完全不一样的零食，为什么会有同一句警告呢？",en:"Lens is curious too: two totally different snacks — why the same warning?"},
+  question:{zh:"你的第一个想法是：",en:"My first idea is:"},
+  choices:[
+    {id:"printing-mistake",label:{zh:"工厂放错了毒药，包装印错了",en:"The factory must have put poison in by mistake — it's a printing error"}},
+    {id:"trace-rule",label:{zh:"加州规定，只要食物里查到一点点这种化学物质，就要贴警告——就算这个量非常非常小",en:"California requires this warning whenever even a tiny amount of certain chemicals is detected — even an amount that is very, very small"}},
+    {id:"poisonous",label:{zh:"这个食物有毒，绝对不能碰",en:"This food is poisonous and must never be touched"}},
+    {id:"ignore-it",label:{zh:"这个标签只是吓唬人的，完全不用管",en:"The label is just a scare tactic — you can completely ignore it"}}
+  ]
+};
+function hookChoiceLabel(id, lang){
+  for (var i=0;i<HOOK.choices.length;i++) if (HOOK.choices[i].id===id) return pick(HOOK.choices[i].label, lang);
+  return id;
+}
+
+var OBSERVATION = {
+  narrator:{
+    A:{zh:"把每张卡片放好：这是“观察”，还是“猜测”？观察是我们直接看到的。",en:"Sort each card: is it an observation or a guess? An observation is something we saw directly."},
+    B:{zh:"分类四张卡片。观察是直接看到的；猜测是我们想的原因；有一张是“可能的解释”，还没有被证明。",en:"Sort four cards. An observation is seen directly; a guess is a reason we imagine; one card is a possible explanation that is not proven yet."}
+  },
+  buckets:{
+    observation:{zh:"观察",en:"Observation"},
+    guess:{zh:"猜测",en:"Guess"},
+    explanation:{zh:"可能的解释（还没证明）",en:"Possible explanation (not proven)"}
+  },
+  cards:[
+    {id:"sticker-text",kind:"observation",
+     text:{zh:"两包食物上都有一个白色小标签，写着“警告：致癌和生殖伤害”。",en:"Both packages have a small white sticker that says “Warning: Cancer and Reproductive Harm.”"},
+     feedback:{zh:"标签上写了什么，我们能直接看到、读出来。这是观察。",en:"What the sticker says is something we can directly see and read. That is an observation."}},
+    {id:"must-be-poisoned",kind:"guess",
+     text:{zh:"这个食物一定有毒，吃一口就会生病。",en:"This food must be poisonous — eating even one bite will make you sick."},
+     feedback:{zh:"我们还没有证实“吃一口就会生病”，这是我们想的原因。这是猜测。",en:"We haven't shown that eating one bite would actually make someone sick — that's a reason we imagined. That is a guess."}},
+    {id:"trace-rule-explanation",kind:"explanation",levelBOnly:true,
+     text:{zh:"这个标签是因为食物里测到了一点点某种化学物质——哪怕这个量非常小，加州法律也要求贴警告，这跟“食物有没有毒”不是一回事。",en:"The label is there because a trace amount of a certain chemical was detected — even a very small amount — and California law requires the warning regardless; that's a different question from whether the food is actually poisonous."},
+     feedback:{zh:"这是关于加州规定和量的关系的一种解释，可能是对的，但对这一包零食来说，我们还没有亲自查过具体的量。这是可能的解释。",en:"This is an explanation about California's rule and the amount involved — it may be right, but we haven't personally checked the exact amount for this snack. It is a possible explanation."}},
+    {id:"coffee-chocolate-chips",kind:"observation",
+     text:{zh:"咖啡、巧克力、薯片也常常有一样的警告标签。",en:"Coffee, chocolate, and potato chips often carry this same warning label."},
+     feedback:{zh:"哪些食物常带这个标签，我们能直接观察、数出来。这是观察。",en:"Which foods often carry this label is something we can directly observe and count. That is an observation."}}
+  ],
+  levelBExplainPrompt:{zh:"一位家长说：“这么多食物都有这个标签，那警告根本没用，我们家不用管它。”哪一个解释最合适？",en:"A parent says: “So many foods have this label — the warning must be pointless, and our family doesn't need to pay attention to it at all.” Which explanation fits best?"},
+  levelBExplainChoices:[
+    {id:"still-useful-reminder",correct:true,label:{zh:"警告确实设置得很谨慎，但它仍然是个有用的提醒：留意自己有没有经常大量吃同一种常带这些化学物质的食物，吃得多样一些更好。",en:"The warning is set very cautiously, but it's still a useful reminder — notice whether you eat a lot of one food that often carries these chemicals, and eat a variety of foods instead."}},
+    {id:"common-means-dangerous",correct:false,label:{zh:"既然这么多食物都有，那就说明它们真的都很危险。",en:"Since so many foods carry it, that proves they're all genuinely dangerous."}}
+  ],
+  wrongCardFeedback:{zh:"再想想：这句话是我们直接看到的吗？还是我们想的原因，或者还没证明的解释？",en:"Think again: did we see this directly, or is it a reason we imagined, or an unproven explanation?"}
+};
+
+var MODEL_FOODS = [
+  {id:"toast",name:{zh:"吐司",en:"Toast"},mechanism:"browning"},
+  {id:"fries",name:{zh:"薯条",en:"Fries"},mechanism:"browning"},
+  {id:"cacao",name:{zh:"可可豆",en:"Cacao beans"},mechanism:"soil"},
+  {id:"spinach",name:{zh:"菠菜",en:"Spinach"},mechanism:"soil"}
+];
+function foodById(id){ for (var i=0;i<MODEL_FOODS.length;i++) if (MODEL_FOODS[i].id===id) return MODEL_FOODS[i]; return null; }
+
+var MODEL = {
+  narrator:{
+    A:{zh:"选一样食物，看看这一点点化学物质是怎么进到食物里的。至少选一样“烤/炸”的，再选一样“长在土里”的。",en:"Pick a food and watch how a trace of this chemical ends up in it. Pick at least one “baked/fried” food and one “grows in soil” food."},
+    B:{zh:"选一样食物，观察它属于哪条来源路径：加热变焦，还是从土壤里吸收。至少各看一样，再回答下面的检查题。",en:"Pick a food and see which pathway it follows: heat-and-browning, or soil uptake. View at least one of each, then answer the check question below."}
+  },
+  pickPrompt:{zh:"选一样食物：",en:"Pick a food:"},
+  mechanismLabel:{browning:{zh:"烤/炸变焦",en:"Baking/frying and browning"},soil:{zh:"长在土壤里",en:"Grows in soil"}},
+  mechanismExplain:{
+    browning:{zh:"淀粉类食物（面包、土豆、饼干面团）加热变焦时，天然会产生一点点这种化学物质——不是特意加进去的。烤得越焦，斑点越多。",en:"When a starchy food (bread, potato, cookie dough) is heated and browns, it naturally picks up a small trace of this chemical — nobody adds it on purpose. The more it browns, the more specks appear."},
+    soil:{zh:"植物（可可树、菠菜）通过根从土壤和水里吸收养分，同时也会吸收土壤里天然存在的一点点矿物质，带进果实或叶子里。",en:"A plant (a cacao tree, spinach) draws water and nutrients up through its roots from the soil, and along with them, a tiny natural trace of minerals that end up in the bean or the leaf."}
+  },
+  traceTag:{zh:"测到了微量",en:"Trace amount detected"},
+  nextSoil:{zh:"再选一样“长在土壤里”的食物。",en:"Now pick a food that “grows in soil.”"},
+  nextBrowning:{zh:"再选一样“烤/炸”的食物。",en:"Now pick a “baked/fried” food."},
+  nextStart:{zh:"先选一样食物看看。",en:"Pick a food to get started."},
+  checkPrompt:{zh:"菠菜里检测到这种化学物质，主要是因为——",en:"Spinach was found to have a trace of this chemical, mainly because —"},
+  checkChoices:[
+    {id:"soil-uptake",correct:true,label:{zh:"它长在土壤里，从土壤里吸收了一点点矿物质",en:"it grows in soil and absorbs a tiny trace of minerals from it"}},
+    {id:"browned",correct:false,label:{zh:"它被烤得很焦",en:"it was browned a lot"}},
+    {id:"added-on-purpose",correct:false,label:{zh:"商店特意加进去的",en:"a store added it in on purpose"}}
+  ],
+  checkWrong:{zh:"再想想：菠菜是烤/炸出来的食物吗，还是长在土壤里的植物？",en:"Think again: is spinach a baked/fried food, or a plant that grows in soil?"}
+};
+
+var COMPARE = {
+  narrator:{
+    A:{zh:"有两个量：一个是“测到多少就要贴标签”的量，一个是“研究里真的看到影响”的量。你猜猜，这两个量差得多不多？猜完按“揭晓”看看。",en:"There are two amounts: one is how much triggers the warning label, and one is how much studies found could actually cause an effect. Guess how different they are, then press “Reveal” to find out."},
+    B:{zh:"在同一把尺子上比较两个量：触发标签的量，和研究里真正看到健康影响的量。先预测，再揭晓结果，最后回答下面的检查题。",en:"Compare two amounts on one shared ruler: the amount that triggers the label, and the amount studies found could actually cause a health effect. Predict first, reveal the result, then answer the check question."}
+  },
+  predictPrompt:{zh:"我猜：",en:"My prediction:"},
+  choices:[
+    {id:"close",label:{zh:"很接近",en:"Very close"}},
+    {id:"much-smaller",label:{zh:"触发标签的量比研究里有影响的量小很多很多",en:"The trigger amount is much, much smaller than the harm-study amount"}},
+    {id:"about-same",label:{zh:"差不多一样",en:"About the same"}},
+    {id:"unrelated",label:{zh:"两个量没有关系，是完全不同的两件事",en:"Unrelated — two separate things"}}
+  ],
+  reveal:{zh:"揭晓",en:"Reveal"},
+  triggerLabel:{zh:"触发标签的量",en:"The label's trigger amount"},
+  harmLabel:{zh:"研究里有影响的量",en:"The harm-study amount"},
+  explain:{
+    A:{zh:"触发标签的量非常靠近尺子的起点，研究里真正有影响的量在尺子很远很远的地方。加州故意把线画得很靠前，这样更安全、更谨慎。",en:"The trigger amount sits very close to the start of the ruler, and the harm-study amount is much, much farther along. California drew the line early on purpose, to be extra cautious and safe."},
+    B:{zh:"这把尺子上，触发线离“0”非常近；研究里真正看到健康影响的量，在尺子上远得多。这个差距是加州故意设计的谨慎安全边界，不代表这个量本身很接近危险。",en:"On this ruler, the trigger line sits very close to “zero”; the amount studies found could actually cause a health effect is far along the ruler. That gap is a deliberately cautious safety margin California built in — it doesn't mean the trigger amount itself is close to dangerous."}
+  },
+  resultCheckPrompt:{zh:"加州为什么要把警告标签的“触发线”设得离研究里的危险区那么远？",en:"Why would California set the warning label's “trigger line” so far from the actual danger zone studies found?"},
+  resultChoices:[
+    {id:"coincidence",correct:false,label:{zh:"只是碰巧这样",en:"It's just a coincidence"}},
+    {id:"extra-cautious",correct:true,label:{zh:"这样更谨慎、更安全——就算测到的量还差得很远，也提前提醒大家",en:"To be extra cautious and safe — it gives people a heads-up well before any real danger zone"}},
+    {id:"no-reason",correct:false,label:{zh:"没有什么特别的原因",en:"There's no particular reason"}}
+  ],
+  wrongResult:{zh:"再看看尺子上两个记号的位置——哪个记号离“0”更近？",en:"Look at the two marks on the ruler again — which one is closer to “zero”?"},
+  readout:{zh:"同一把尺子上——触发线：非常靠近起点 · 研究影响线：在尺子很远的地方",en:"On this one ruler — trigger line: very close to the start · harm-study line: much farther along"}
+};
+
+var FAIRTEST = {
+  narrator:{
+    A:{zh:"三个小朋友看到警告标签后，各自做出了不同的反应。看看每一种反应，判断它合理吗？",en:"Three kids saw the warning label and each reacted differently. Look at each reaction — is it a sensible response?"},
+    B:{zh:"选出讲道理的推理方式：既要比较“触发量”和“研究影响量”，也要看这周实际吃了几次。",en:"Pick the sound reasoning: it should compare the trigger amount to the harm-study amount, and also check how often the food was actually eaten that week."}
+  },
+  levelA:{
+    question:{zh:"这个反应合理吗？",en:"Is this a sensible response?"},
+    fairButton:{zh:"合理",en:"Sensible"},
+    notFairButton:{zh:"不合理",en:"Not sensible"},
+    attrNames:{
+      onlyThisFood:{zh:"只吃这一种、经常大量吃？",en:"Eating only this food, often and a lot?"},
+      discardedEverything:{zh:"因为一个标签就完全不吃了？",en:"Stopped eating everything because of one label?"}
+    },
+    yes:{zh:"是",en:"Yes"}, no:{zh:"否",en:"No"},
+    hint1:{zh:"看看这两条：小朋友是不是只吃这一种、吃很多？还是因为一个标签就完全不吃任何东西了？",en:"Check the two flags: is the child eating only this one food, a lot? Or did they stop eating everything because of one label?"},
+    hint2:{zh:"合理的反应：两条都是“否”——既没有只吃这一种、吃很多，也没有因为一个标签就完全不吃。",en:"A sensible response: both flags are “No” — neither eating only this one food a lot, nor refusing everything because of one label."},
+    stepLabel:{zh:"第 {n} / {total} 个反应",en:"Reaction {n} of {total}"},
+    nextButton:{zh:"下一个反应",en:"Next reaction"},
+    wrongFair:{zh:"再看一次：这两条里有没有一条是“是”？只要有一条是“是”，这个反应就不算合理。",en:"Look again: is either flag “Yes”? If either one is “Yes,” the reaction isn't quite sensible."},
+    wrongNotFair:{zh:"再看一次：这两条是不是都是“否”？两条都“否”，其实就是合理的反应。",en:"Look again: are both flags “No”? If both are “No,” it's actually a sensible response."},
+    allDone:{zh:"合理的反应就是：不因为一个标签就完全不吃，也不是只吃这一种、吃很多——量少一点、种类多一点，才是该有的回应。",en:"A sensible response doesn't stop eating everything because of one label, and doesn't eat only this one food a lot — a bit less of it and more variety is the response a cautious label calls for."},
+    setups:[
+      {id:"eat-a-few-vary",fair:true,onlyThisFood:false,discardedEverything:false,
+       scenario:{zh:"小朋友看到警告标签后，决定这次还是可以吃几片饼干，接下来几天多吃点水果、蔬菜和别的零食，不要每天都吃这一种。",en:"After seeing the warning, the child decides it's fine to eat a few cookies this time, and plans to eat more fruit, vegetables, and other snacks over the next few days instead of this one every day."},
+       whyFair:{zh:"他没有因为一个标签就完全不吃，也没有只吃这一种——量少一点、种类多一点，这正是一个谨慎标签该有的回应。",en:"He didn't stop eating entirely because of one label, and he isn't relying on only this one food — a bit less of it and more variety is exactly the response a cautious label calls for."}},
+      {id:"throw-everything-away",fair:false,onlyThisFood:false,discardedEverything:true,
+       scenario:{zh:"小朋友看到标签后非常害怕，把家里所有带这种标签的食物都扔掉了，说以后再也不吃任何一种。",en:"After seeing the label, the child gets very scared, throws away every food in the house with this sticker, and says none of it will ever be eaten again."},
+       whyNotFair:{zh:"警告标签不是“有毒禁止食用”，把所有相关食物都完全禁掉，反应比标签实际的意思严重多了。",en:"The warning label doesn't mean “poisonous, do not eat” — banning every related food completely is a much bigger reaction than what the label actually says."}},
+      {id:"eat-unlimited",fair:false,onlyThisFood:true,discardedEverything:false,
+       scenario:{zh:"小朋友说反正没贴标签的食物也可能有一样的化学物质，所以标签根本不用管，这种零食想吃多少就吃多少。",en:"The child says foods without the sticker might have the same chemical anyway, so the label doesn't matter at all — this snack can be eaten in any amount."},
+       whyNotFair:{zh:"就算没贴标签的食物也可能有一点点，也不代表可以完全不管量、只吃这一种零食——多样一点、别过量，这条建议对所有食物都适用。",en:"Even foods without the label might have a trace — but that doesn't mean amount stops mattering, or that this one snack can be eaten without limit; eating a variety and not overdoing any single food is good advice either way."}}
+    ]
+  },
+  levelB:{
+    rowHeaders:{
+      concludedFromLabelAlone:{zh:"只看了一次标签就下结论？",en:"Concluded from seeing the label once alone?"},
+      comparedAmounts:{zh:"比较了“触发量”和“研究影响量”？",en:"Compared the trigger amount to the harm-study amount?"},
+      checkedFrequency:{zh:"统计了这周吃这种食物的次数？",en:"Checked how many times this food was eaten this week?"}
+    },
+    yes:{zh:"是",en:"Yes"}, no:{zh:"否",en:"No"},
+    conclusionLabel:{zh:"结论：",en:"Conclusion:"},
+    candidates:[
+      {id:"full-reasoning",correct:true,concludedFromLabelAlone:false,comparedAmounts:true,checkedFrequency:true,
+       conclusion:{zh:"触发量远小于研究影响量，这周吃这种零食也不算频繁——偶尔吃没问题，可以留意别太频繁。",en:"The trigger amount is far smaller than the harm-study amount, and this snack wasn't eaten often this week — fine to eat occasionally, worth keeping an eye on frequency."},
+       whyRight:{zh:"既比较了两个量的差距，也统计了实际吃的次数，这样的结论才站得住。",en:"It compares the gap between the two amounts and checks the actual frequency eaten — that's a conclusion that holds up."}},
+      {id:"label-alone",correct:false,concludedFromLabelAlone:true,comparedAmounts:false,checkedFrequency:false,
+       conclusion:{zh:"看到标签就下结论：这个食物很危险，以后都不能吃。",en:"Concluded from seeing the label alone: this food is dangerous, never eat it again."},
+       whyWrong:{zh:"只看了一次标签，没有比较任何量，也没看吃了几次，直接跳到了很严重的结论。",en:"Only the label was seen once — no amounts were compared and frequency wasn't checked, yet it jumps straight to a very strong conclusion."}},
+      {id:"compared-but-ignored-frequency",correct:false,concludedFromLabelAlone:false,comparedAmounts:true,checkedFrequency:false,
+       conclusion:{zh:"触发量比研究影响量小很多，于是下结论：这个标签完全没有意义，随便吃、不用管次数。",en:"The trigger amount is much smaller than the harm-study amount, so it concludes: the label means nothing, eat as much as you want, frequency doesn't matter."},
+       whyWrong:{zh:"比较了两个量是对的一步，但完全跳过了吃的次数——多样、别过量的习惯，跟这个谨慎的差距没关系，一样重要。",en:"Comparing the two amounts was a good step, but frequency was skipped entirely — the variety/don't-overdo-it habit still matters, independent of this cautious margin."}}
+    ],
+    hint1:{zh:"先看看：这次判断有没有比较“触发标签的量”和“研究里真正有影响的量”？",en:"First check: did this reasoning actually compare the label's trigger amount with the amount studies found to have an effect?"},
+    hint2:{zh:"光凭“有没有标签”就下结论，或者直接跳到“完全没事、随便吃”——两种都跳过了中间这一步：量到底差多少，还有这周吃了几次。",en:"Concluding straight from whether the label exists, or jumping straight to “totally fine, eat as much as you want” — both skip the middle step: how big the gap in amounts is, and how many times this was eaten that week."},
+    candidateLabel:{zh:"推理 {n} / {total}",en:"Reasoning {n} of {total}"},
+    pickThis:{zh:"选这个作为讲道理的推理",en:"Choose this as the sound reasoning"},
+    picked:{zh:"已选这个",en:"Chosen"},
+    correctNote:{zh:"这就是讲道理的推理：既比较了量，也看了吃的次数。",en:"That's sound reasoning: it compares the amounts and checks the frequency eaten."}
+  }
+};
+
+var TRANSFER = {
+  narrator:{
+    A:{zh:"新情况：奶奶在家煎的薯条，没有贴警告标签，因为标签只贴在店里卖的包装食品上。把词卡拼成一句话，说说这跟标签有什么关系。",en:"New situation: Grandma's homemade fries have no warning sticker, because the sticker is only required on packaged food sold in stores. Build a sentence from word chips explaining the connection."},
+    B:{zh:"新情况：奶奶在家煎的薯条没有警告标签。先选出最好的证据，再用“因为……所以……”完成解释。",en:"New situation: Grandma's homemade fries have no warning sticker. First choose the best evidence, then finish the explanation with “because … so …”."}
+  },
+  aSlots:3,
+  aChips:[
+    {id:"no-sticker",correctSlot:0,text:{zh:"自己家做的薯条没有贴警告标签",en:"Homemade fries don't have a warning sticker"}},
+    {id:"browner-more",correctSlot:1,text:{zh:"但烤得越焦，这种化学物质就可能越多",en:"but the more browned they get, the more of this chemical they may have"}},
+    {id:"eat-varied",correctSlot:2,text:{zh:"所以最好吃得多样一点",en:"so it's best to eat a bit more variety"}},
+    {id:"saltier-distractor",correctSlot:-1,text:{zh:"烤得越咸，这种化学物质就可能越多",en:"the saltier it gets, the more of this chemical it may have"}},
+    {id:"faster-distractor",correctSlot:-1,text:{zh:"烤得越快，这种化学物质就可能越多",en:"the faster it's cooked, the more of this chemical it may have"}}
+  ],
+  aWrongChip:{zh:"这一句不是我们要说明的重点。想想哪句话真的和“越焦、越多”这个规律有关。",en:"That piece doesn't fit. Think about which lines are really about “more browning, more of the chemical.”"},
+  aWrongOrder:{zh:"顺序还不对。先说没有标签，再说烤焦和化学物质的关系，最后说该怎么吃。",en:"The order isn't right yet. First say there's no sticker, then the browning/chemical link, then what's best to do."},
+  bEvidencePrompt:{zh:"哪一个是最好的证据？",en:"Which one is the best evidence?"},
+  bEvidenceChoices:[
+    {id:"no-sticker-because-homemade",correct:true,label:{zh:"包装食品的警告标签是因为查到了微量化学物质就要贴，不代表家里做的就一定没有。",en:"A packaged food's warning label is required once a trace amount is detected — that doesn't mean homemade food is guaranteed to have none."}},
+    {id:"grandma-careful",correct:false,label:{zh:"奶奶做饭一向很小心，所以肯定没问题。",en:"Grandma is always careful when cooking, so it must be fine."}},
+    {id:"homemade-always-safe",correct:false,label:{zh:"自己家做的食物本来就比店里卖的更安全。",en:"Homemade food is inherently safer than store-bought food."}}
+  ],
+  bBecausePrompt:{zh:"因为……",en:"Because …"},
+  bBecauseChoices:[
+    {id:"label-is-retail-rule",correct:true,label:{zh:"标签只贴在符合加州规定的包装食品上，机制本身（加热变焦）跟有没有贴标签没有关系",en:"the label is only required on qualifying packaged retail food — the underlying mechanism (heat causing browning) happens regardless of whether a label is required"}},
+    {id:"grandma-uses-less-oil",correct:false,label:{zh:"奶奶用的油比工厂少",en:"Grandma uses less oil than a factory"}},
+    {id:"homemade-cooked-faster",correct:false,label:{zh:"自己家做的煮得比较快",en:"Homemade food cooks faster"}}
+  ],
+  bSoPrompt:{zh:"所以……",en:"so …"},
+  bSoChoices:[
+    {id:"less-brown-more-variety",correct:true,label:{zh:"不管有没有标签，少烤焦一点、吃得多样一点，都是更好的习惯",en:"whether or not something is labeled, browning it a little less and eating a variety of foods is still the better habit"}},
+    {id:"only-buy-labeled",correct:false,label:{zh:"以后只吃贴了标签的食物才安全",en:"from now on, only labeled food should be considered safe"}},
+    {id:"stop-eating-fries",correct:false,label:{zh:"以后再也不吃薯条了",en:"fries should never be eaten again"}}
+  ],
+  bWrong:{zh:"再想想：哪个证据 / 原因 / 结果真的和“标签是包装规则，机制跟有没有标签无关”有关，并且和薯条的例子对得上？",en:"Think again: which evidence / because / so line is really about “the label is a packaging rule, and the mechanism doesn't depend on it” and matches the fries example?"},
+  invisibleCaption:{zh:"看不见标签，不代表看不见的化学物质就不存在——机制才是关键，不是有没有那张贴纸。",en:"No sticker doesn't mean the invisible chemical isn't there — the mechanism is what matters, not whether there's a label."},
+  tip:{zh:"提示：先说有没有标签，再说烤焦和化学物质的关系，最后说该怎么吃。",en:"Tip: first say whether there's a sticker, then the browning/chemical link, then what's best to do."}
+};
+
+var SUMMARY = {
+  title:{zh:"你破解了警告标签的秘密",en:"You've cracked the warning-label mystery"},
+  coreIdeaLabel:{zh:"核心结论",en:"The core idea"},
+  coreIdea:{
+    A:{zh:"食品包装上的“警告：致癌”标签，是说这个食物里有一点点、很少很少的某种化学物质——不是说吃了马上就会生病。看到这个标签，我还是可以偶尔吃这个食物，但也要多吃各种不同的食物，不要只吃这一种。",en:"A “Warning: Cancer” sticker on a food package means the food has a tiny, trace amount of a certain chemical — not that eating it will make me sick right away. I can still eat that food sometimes, but I should also eat lots of different foods, not just that one."},
+    B:{zh:"加州规定，只要检测到一点点这种化学物质，不管这个量离“真的会伤害人”的量有多远，都要贴警告标签——所以这个标签用的是一把非常谨慎的尺子，跟这个食物到底安不安全，是两回事，需要分开来看。",en:"California requires this warning whenever even a trace of the chemical is detected — no matter how far that amount is from the level studies show could actually cause harm — so the label uses an extremely cautious ruler, and that's a different question from whether the food is actually unsafe, which needs its own look."}
+  },
+  yourStartLabel:{zh:"你一开始的想法",en:"Your first idea"},
+  yourEndLabel:{zh:"你最后的解释",en:"Your explanation now"},
+  teaserLabel:{zh:"下一个问题",en:"Next question"},
+  teaser:{zh:"那如果一包东西上没有贴这种警告标签，是不是就代表它完全没有这些化学物质呢？下次我们来查一查“没有标签”到底说明了什么。",en:"If a package doesn't carry this warning label at all, does that mean it definitely has none of these chemicals? Next time, let's investigate what “no label” really tells you."},
+  toParentView:{zh:"看家长 / 审阅视图",en:"Open parent / reviewer view"},
+  replay:{zh:"再做一次",en:"Do it again"},
+  notRecorded:{zh:"（本次未记录）",en:"(not recorded this run)"}
+};
+
+var EVIDENCE_STATE_LABEL = {
+  "not-recorded":{zh:"未记录",en:"Not recorded"},
+  "experienced":{zh:"已体验，还没做对",en:"Engaged, not correct yet"},
+  "with-two-hints":{zh:"用了 2 条提示后做对",en:"Correct after 2 hints"},
+  "with-one-hint":{zh:"用了 1 条提示后做对",en:"Correct after 1 hint"},
+  "with-support":{zh:"改正之后做对",en:"Correct after a correction"},
+  "independent":{zh:"第一次就独立做对",en:"Correct independently, first try"},
+  "transferred":{zh:"用到了新情境",en:"Used it in a new situation"}
+};
+
+var PARENT = {
+  title:{zh:"家长 / 审阅视图",en:"Parent / reviewer view"},
+  demoBanner:{zh:"这是本次样品运行的演示数据，只保存在这台设备上。不收集孩子的姓名、账号或云端资料。这不是医学或饮食建议——如果对具体的饮食安排有疑问，请咨询医生或营养师。",en:"This is demo data from this sample run, stored on this device only. No child name, account, or cloud data is collected. This is not medical or dietary advice — a doctor or dietitian can answer any specific concern about your family's diet."},
+  reviewUsedFlag:{zh:"本次使用过“审阅模式”跳转场景，时间和作答可能不代表孩子的真实完成情况。",en:"Review mode was used to jump between scenes, so times and answers may not reflect a real child run."},
+  rows:{
+    level:{zh:"年级层级",en:"Level"},
+    language:{zh:"语言模式",en:"Language mode"},
+    prediction:{zh:"最初的预测（不评分）",en:"Initial prediction (not scored)"},
+    explanation:{zh:"最终解释",en:"Final explanation"},
+    time:{zh:"完成总时间",en:"Total completion time"},
+    hints:{zh:"使用的提示",en:"Hints used"}
+  },
+  evidenceTitle:{zh:"学习证据",en:"Learning evidence"},
+  evidenceHint:{zh:"对照《掌握状态》：已体验 → 有提示会做 → 独立会做 → 能迁移 → 复习后稳定。",en:"Against the mastery ladder: experienced → can do with hints → can do independently → can transfer → stable after review."},
+  masteryCaveat:{zh:"以上是本次一次运行的表现。一次做对还不代表已经稳固掌握——请在 7 天后再确认一次。",en:"The above is one run. One correct attempt is not stable mastery yet — please confirm again in seven days."},
+  skills:{
+    observation:{zh:"把“观察”和“猜测”分开",en:"Separating an observation from a guess"},
+    mechanism:{zh:"知道两条来源路径：加热变焦、土壤吸收",en:"Knowing the two source pathways: heat/browning and soil uptake"},
+    magnitude:{zh:"知道触发标签的量远小于研究里有影响的量",en:"Knowing the label's trigger amount is far smaller than the harm-study amount"},
+    reasoning:{zh:"判断看到标签后，怎样的反应是合理的",en:"Judging which response to the label is sensible"},
+    transfer:{zh:"把这个想法用到新情境（自己家做的薯条）",en:"Using the idea in a new situation (homemade fries)"}
+  },
+  none:{zh:"（未记录）",en:"(not recorded)"},
+  hintsNone:{zh:"没有使用提示",en:"No hints used"},
+  revisitTitle:{zh:"7 天后再检查",en:"Check again in seven days"},
+  revisitItems:[
+    {zh:"让孩子只用自己的话再解释一次“看到警告标签该怎么反应”，看是否还会说“完全不能吃”或“完全不用管”。",en:"Ask the child to re-explain in their own words how to respond to seeing a warning label; check they no longer say “can never eat it” or “doesn't matter at all.”"},
+    {zh:"给一个新例子（另一包没有见过的零食），看孩子能不能自己说出“触发标签的量很小，但还是要多样、别过量”。",en:"Give a fresh example (a snack they haven't seen) and see if they can say on their own “the trigger amount is small, but variety and moderation still matter.”"},
+    {zh:"再问一次：没有警告标签的食物，是不是就一定完全没有这些化学物质？",en:"Re-ask: does a food without the warning label definitely have none of these chemicals?"}
+  ]
+};
+
+/* ------------------------------------------------------------------ state */
+
+var STORAGE_KEY = "fmlos.preview.warning-label-detective.v1";
+
+function freshProgress(){
+  return {phase:"start",sceneIndex:0,hintsUsed:{},record:{},reviewModeUsed:false,startedAt:null,completedAt:null};
+}
+function freshState(){
+  return {v:1,level:"A",lang:"zh",reduced:false,showParent:false,byLevel:{A:freshProgress(),B:freshProgress()}};
+}
+function loadState(){
+  try{
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return freshState();
+    var s = JSON.parse(raw);
+    if (!s || s.v !== 1 || !s.byLevel || !s.byLevel.A || !s.byLevel.B) return freshState();
+    s.level = s.level === "B" ? "B" : "A";
+    s.lang = s.lang === "en" ? "en" : "zh";
+    s.reduced = s.reduced === true;
+    s.showParent = s.showParent === true;
+    return s;
+  }catch(e){ return freshState(); }
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){} }
+
+var state = loadState();
+/* View-only state (not persisted). */
+var ui = {obsIdx:null, fairBView:null, confirmReset:false, justRevealed:null};
+
+function prog(){ return state.byLevel[state.level]; }
+function rec(){ return prog().record; }
+function L(copy){ return pick(copy, state.lang); }
+function LL(copy){ return pickLeveled(copy, state.level, state.lang); }
+function patch(o){ var r = rec(); for (var k in o) r[k] = o[k]; }
+function isReduced(){
+  return state.reduced || (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+}
+function anim(key){ return (!isReduced() && ui.justRevealed === key) ? " pop" : ""; }
+
+/* ----------------------------------------------- derived completion logic */
+
+function findBy(list, id){ for (var i=0;i<list.length;i++) if (list[i].id===id) return list[i]; return null; }
+function isCorrect(list, id){ var c = findBy(list, id); return !!(c && c.correct === true); }
+
+function observationCards(level){ return OBSERVATION.cards.filter(function(c){ return level === "B" || !c.levelBOnly; }); }
+function observationDone(r, level){
+  var placed = r.observationPlacements || {};
+  var all = observationCards(level).every(function(c){ return placed[c.id] === c.kind; });
+  return all && (level === "A" || isCorrect(OBSERVATION.levelBExplainChoices, r.observationExplainChoice));
+}
+function sawMechanism(r, m){ return (r.modelFoodsViewed || []).some(function(id){ var f = foodById(id); return f && f.mechanism === m; }); }
+function modelDone(r){ return sawMechanism(r,"browning") && sawMechanism(r,"soil") && isCorrect(MODEL.checkChoices, r.modelCheckChoice); }
+function compareDone(r){ return !!r.comparePrediction && r.compareRevealed === true && isCorrect(COMPARE.resultChoices, r.compareResultChoice); }
+function fairDone(r, level){
+  if (level === "A") return FAIRTEST.levelA.setups.every(function(s){ return (r.fairAAnswers || {})[s.id] === (s.fair ? "fair" : "unfair"); });
+  return isCorrect(FAIRTEST.levelB.candidates, r.fairChecked);
+}
+function transferDone(r, level){
+  if (level === "A"){
+    var slots = r.transferSlots || [];
+    if (slots.length !== TRANSFER.aSlots || slots.some(function(s){ return s == null; })) return false;
+    return slots.every(function(id, i){ var c = findBy(TRANSFER.aChips, id); return c && c.correctSlot === i; });
+  }
+  return isCorrect(TRANSFER.bEvidenceChoices, r.transferEvidence) && isCorrect(TRANSFER.bBecauseChoices, r.transferBecause) && isCorrect(TRANSFER.bSoChoices, r.transferSo);
+}
+function cap(s){ return s ? s.charAt(0).toUpperCase() + s.slice(1) : s; }
+/* Rebuilt in the display language from stored choice IDs — never stored as text. */
+function deriveExplanation(r, level, lang){
+  if (!transferDone(r, level)) return null;
+  if (level === "A"){
+    var parts = r.transferSlots.map(function(id){ return pick(findBy(TRANSFER.aChips, id).text, lang); });
+    return parts.join(lang === "zh" ? "，" : " ") + (lang === "zh" ? "。" : ".");
+  }
+  var bc = pick(findBy(TRANSFER.bBecauseChoices, r.transferBecause).label, lang);
+  var so = pick(findBy(TRANSFER.bSoChoices, r.transferSo).label, lang);
+  return lang === "zh" ? "因为" + bc + "，所以" + so + "。" : cap(bc) + ", so " + so + ".";
+}
+function isSceneComplete(scene, r, level){
+  switch (scene){
+    case "hook": return !!r.hookPrediction;
+    case "observation": return observationDone(r, level);
+    case "model": return modelDone(r);
+    case "compare": return compareDone(r);
+    case "fairtest": return fairDone(r, level);
+    case "transfer": return transferDone(r, level);
+  }
+  return false;
+}
+function evidenceFor(skill, p, level){
+  var r = p.record, hints = p.hintsUsed || {};
+  switch (skill){
+    case "observation":
+      if (!r.observationPlacements) return "not-recorded";
+      if (!observationDone(r, level)) return "experienced";
+      return r.observationHadWrong ? "with-support" : "independent";
+    case "mechanism":
+      if ((r.modelFoodsViewed || []).length === 0 && !r.modelCheckChoice) return "not-recorded";
+      if (!modelDone(r)) return "experienced";
+      return r.modelCheckHadWrong ? "with-support" : "independent";
+    case "magnitude":
+      if (!r.comparePrediction && !r.compareResultChoice) return "not-recorded";
+      if (!compareDone(r)) return "experienced";
+      return r.compareResultHadWrong ? "with-support" : "independent";
+    case "reasoning":
+      var touched = level === "A" ? (r.fairAAnswers && Object.keys(r.fairAAnswers).length > 0) : !!r.fairChecked;
+      if (!touched) return "not-recorded";
+      if (!fairDone(r, level)) return "experienced";
+      var used = hints.fairtest || 0;
+      var wrong = level === "A" ? (r.fairAHadWrong ? 1 : 0) : (r.fairAttempts || 0);
+      if (used >= 2) return "with-two-hints";
+      if (used === 1) return "with-one-hint";
+      return wrong > 0 ? "with-support" : "independent";
+    case "transfer":
+      var t = level === "A" ? (r.transferSlots || []).some(function(s){ return s != null; }) : !!r.transferEvidence;
+      if (!t) return "not-recorded";
+      if (!transferDone(r, level)) return "experienced";
+      return "transferred";
+  }
+  return "not-recorded";
+}
+
+/* ------------------------------------------------------------------ SVGs */
+
+var TEAL="var(--teal)", BLUE="var(--blue)", INK="var(--ink)", SUN="var(--sun)";
+var BROWN="#7a5a2e";
+
+function magnifier(mood, cls){
+  var mouth = mood === "cheer" ? "M14 8c2.4 2.4 8 2.4 10.4 0" : mood === "curious" ? "M15 9h8" : "M14 9c2.4 1.8 8 1.8 10.4 0";
+  var ex = mood === "curious" ? 1 : 0;
+  var anim = (mood === "cheer" && !isReduced()) ? " bob" : "";
+  return '<svg viewBox="0 0 48 56" class="'+(cls||"mascot")+anim+'" aria-hidden="true" focusable="false">'+
+    '<line x1="30" y1="30" x2="42" y2="48" stroke="'+TEAL+'" stroke-width="5" stroke-linecap="round"/>'+
+    '<circle cx="19" cy="19" r="17" fill="var(--blue-soft)" stroke="'+TEAL+'" stroke-width="3"/>'+
+    '<circle cx="19" cy="19" r="13" fill="#fff" fill-opacity="0.65"/>'+
+    '<circle cx="'+(14.5+ex)+'" cy="17" r="1.6" fill="'+INK+'"/><circle cx="'+(23.5+ex)+'" cy="17" r="1.6" fill="'+INK+'"/>'+
+    '<path d="'+mouth+'" transform="translate(0,6)" stroke="'+INK+'" stroke-width="2" stroke-linecap="round" fill="none"/>'+
+    '<path d="M11 11 q3 -3 6 -1" stroke="#fff" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.8"/>'+
+  '</svg>';
+}
+
+function pantrySvg(revealed, label){
+  function sticker(x){
+    var body = revealed
+      ? '<g class="'+anim("hook").trim()+'">'+
+          '<rect x="'+x+'" y="96" width="56" height="34" rx="6" fill="var(--sun-soft)" stroke="'+SUN+'" stroke-width="2.5"/>'+
+          '<path d="M'+(x+28)+' 102 l9 17 h-18 z" fill="none" stroke="'+SUN+'" stroke-width="2.2" stroke-linejoin="round"/>'+
+          '<line x1="'+(x+28)+'" y1="109" x2="'+(x+28)+'" y2="114" stroke="'+SUN+'" stroke-width="2"/>'+
+          '<circle cx="'+(x+28)+'" cy="117" r="1.4" fill="'+SUN+'"/>'+
+        '</g>'
+      : '<rect x="'+x+'" y="96" width="56" height="34" rx="6" fill="#ecefee" stroke="'+INK+'" stroke-opacity=".35" stroke-width="2"/>'+
+        '<g opacity=".5"><line x1="'+(x+12)+'" y1="107" x2="'+(x+44)+'" y2="107" stroke="'+INK+'" stroke-width="2" stroke-dasharray="2 3"/>'+
+        '<line x1="'+(x+12)+'" y1="114" x2="'+(x+44)+'" y2="114" stroke="'+INK+'" stroke-width="2" stroke-dasharray="2 3"/>'+
+        '<line x1="'+(x+12)+'" y1="121" x2="'+(x+36)+'" y2="121" stroke="'+INK+'" stroke-width="2" stroke-dasharray="2 3"/></g>';
+    return body;
+  }
+  return '<svg class="vis" viewBox="0 0 320 170" role="img" aria-label="'+esc(label)+'">'+
+    '<rect x="16" y="150" width="288" height="8" rx="3" fill="'+INK+'" fill-opacity=".12"/>'+
+    '<path d="M40 60 L40 148 Q40 154 46 154 L98 154 Q104 154 104 148 L104 60 Q86 48 72 60 Q58 48 40 60 Z" fill="#e8f1fa" stroke="'+TEAL+'" stroke-width="2.5"/>'+
+    '<line x1="46" y1="76" x2="98" y2="76" stroke="'+TEAL+'" stroke-width="2" stroke-opacity=".4"/>'+
+    sticker(44)+
+    '<rect x="184" y="66" width="72" height="88" rx="12" fill="#fcf4e1" stroke="'+TEAL+'" stroke-width="2.5"/>'+
+    '<rect x="196" y="46" width="48" height="22" rx="7" fill="'+TEAL+'"/>'+
+    sticker(192)+
+  '</svg>';
+}
+
+function traceSvg(mech, label){
+  var inner;
+  if (!mech){
+    inner = '<circle cx="160" cy="95" r="46" fill="none" stroke="'+INK+'" stroke-opacity=".35" stroke-width="2" stroke-dasharray="6 6"/>';
+  } else if (mech === "browning"){
+    var specks = [[112,56],[132,48],[152,60],[172,50],[192,58],[206,52]].map(function(p){
+      return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.6" fill="'+BROWN+'"/>'; }).join("");
+    inner = '<rect x="60" y="96" width="200" height="18" rx="6" fill="'+INK+'" fill-opacity=".08"/>'+
+      '<rect x="90" y="40" width="140" height="60" rx="10" fill="#f4dcb2" stroke="'+TEAL+'" stroke-width="2.5"/>'+
+      '<g class="'+anim("model").trim()+'">'+specks+'</g>';
+  } else {
+    var dots = [[128,148],[192,148],[150,50],[170,42]].map(function(p){
+      return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.8" fill="'+BLUE+'"/>'; }).join("");
+    inner = '<rect x="40" y="120" width="240" height="40" fill="#e3dcc3"/>'+
+      '<line x1="40" y1="120" x2="280" y2="120" stroke="'+INK+'" stroke-opacity=".3" stroke-width="2" stroke-dasharray="5 4"/>'+
+      '<line x1="160" y1="120" x2="160" y2="55" stroke="'+TEAL+'" stroke-width="4"/>'+
+      '<ellipse cx="160" cy="46" rx="30" ry="20" fill="var(--teal-soft)" stroke="'+TEAL+'" stroke-width="2.5"/>'+
+      '<path d="M160 120 Q140 132 128 148 M160 120 Q180 132 192 148" stroke="'+TEAL+'" stroke-width="2.5" fill="none"/>'+
+      '<g class="'+anim("model").trim()+'">'+dots+'</g>';
+  }
+  return '<svg class="vis" viewBox="0 0 320 190" role="img" aria-label="'+esc(label)+'">'+inner+'</svg>';
+}
+
+function rulerSvg(revealed, label){
+  var x0 = 30, x1 = 290, tx = x0 + 0.06*(x1-x0), hx = x0 + 0.86*(x1-x0), ticks = "";
+  for (var i=0;i<=10;i++){ var x = x0 + (i/10)*(x1-x0); ticks += '<line x1="'+x+'" y1="94" x2="'+x+'" y2="106" stroke="'+INK+'" stroke-opacity=".15" stroke-width="2"/>'; }
+  return '<svg class="vis" viewBox="0 0 320 150" role="img" aria-label="'+esc(label)+'">'+
+    '<circle cx="'+tx+'" cy="40" r="7" fill="'+BLUE+'"/>'+
+    '<rect x="'+(hx-15)+'" y="24" width="30" height="28" rx="4" fill="var(--sun-soft)" stroke="'+SUN+'" stroke-width="2.5"/>'+
+    '<line x1="'+(hx-15)+'" y1="36" x2="'+(hx+15)+'" y2="36" stroke="'+SUN+'" stroke-width="2"/>'+
+    '<line x1="'+x0+'" y1="100" x2="'+x1+'" y2="100" stroke="'+INK+'" stroke-opacity=".3" stroke-width="3"/>'+ticks+
+    '<text x="'+x0+'" y="124" font-size="10" fill="var(--muted)">0</text>'+
+    (revealed ? '<g class="'+anim("compare").trim()+'">'+
+      '<line x1="'+tx+'" y1="80" x2="'+tx+'" y2="120" stroke="'+BLUE+'" stroke-width="4"/>'+
+      '<line x1="'+hx+'" y1="80" x2="'+hx+'" y2="120" stroke="'+SUN+'" stroke-width="4"/></g>' : "")+
+  '</svg>';
+}
+
+function kitchenSvg(progress, label){
+  var pts = [[96,104],[112,96],[128,106],[144,98],[160,104]];
+  var n = Math.round(Math.max(0, Math.min(1, progress)) * pts.length);
+  var fries = "";
+  for (var i=0;i<6;i++){
+    fries += '<rect x="'+(78+i*15)+'" y="'+(98-(i%2)*6)+'" width="12" height="'+(26+(i%3)*4)+'" rx="4" fill="#f4dcb2" stroke="'+TEAL+'" stroke-width="2" transform="rotate('+((i-2.5)*5)+' '+(84+i*15)+' 120)"/>';
+  }
+  var specks = pts.slice(0, n).map(function(p){ return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="2.2" fill="'+BROWN+'"/>'; }).join("");
+  return '<svg class="vis" viewBox="0 0 320 170" role="img" aria-label="'+esc(label)+'">'+
+    '<ellipse cx="128" cy="124" rx="92" ry="26" fill="#fff" stroke="'+INK+'" stroke-opacity=".25" stroke-width="2.5"/>'+
+    fries+'<g class="'+anim("transfer").trim()+'">'+specks+'</g>'+
+    '<rect x="232" y="28" width="60" height="36" rx="6" fill="none" stroke="'+INK+'" stroke-opacity=".35" stroke-dasharray="4 4" stroke-width="2"/>'+
+    '<line x1="234" y1="30" x2="290" y2="62" stroke="'+INK+'" stroke-opacity=".35" stroke-width="2"/>'+
+  '</svg>';
+}
+
+/* --------------------------------------------------------- UI primitives */
+
+function btn(cls, act, val, label, disabled){
+  return '<button type="button" class="'+cls+'" data-act="'+act+'" data-val="'+esc(val == null ? "" : val)+'"'+(disabled?" disabled":"")+'>'+label+'</button>';
+}
+function choice(act, val, label, opts){
+  opts = opts || {};
+  var cls = "choice" + (opts.inline ? " inline" : "") + (opts.state ? " " + opts.state : (opts.selected ? " selected" : ""));
+  return '<button type="button" class="'+cls+'" aria-pressed="'+(!!opts.selected)+'" data-act="'+act+'" data-val="'+esc(val)+'"'+(opts.disabled?" disabled":"")+'>'+esc(label)+'</button>';
+}
+function narrator(text, mood, aside){
+  var paras = text.split("\n").map(function(l){ return "<p>"+esc(l)+"</p>"; }).join("");
+  return '<div class="narrator">'+magnifier(mood)+'<div><div class="label">'+esc(L(UI.narrator))+'</div>'+
+    '<div class="text" lang="'+(state.lang==="zh"?"zh-Hans":"en")+'">'+paras+'</div>'+
+    (aside ? '<p class="aside">'+esc(aside)+'</p>' : "")+'</div></div>';
+}
+function fb(tone, html){ return '<div class="fb '+tone+'" role="status">'+html+'</div>'; }
+function field(t){ return '<p class="field-label">'+esc(t)+'</p>'; }
+function hintPanel(h1, h2){
+  var shown = prog().hintsUsed[SCENE_ORDER[prog().sceneIndex]] || 0, out = "";
+  if (shown < 1) out += btn("ghost-btn","hint","",esc(L(UI.hintButton)));
+  if (shown >= 1) out += '<div class="hintbox"><b>'+esc(L(UI.hint1Label))+'：</b>'+esc(h1)+'</div>';
+  if (shown === 1) out += btn("ghost-btn","hint","",esc(L(UI.hint2Label)));
+  if (shown >= 2) out += '<div class="hintbox"><b>'+esc(L(UI.hint2Label))+'：</b>'+esc(h2)+'</div>';
+  return out;
+}
+function stage(left, right){
+  return '<div class="stage"><section class="left" aria-label="'+esc(L(UI.brandTitle))+'">'+left+'</section>'+
+    '<section class="right-col" aria-label="'+esc(L(UI.narrator))+'">'+right+'</section></div>';
+}
+function panel(inner){ return '<div class="visual-panel">'+inner+'</div>'; }
+function caption(t){ return '<p class="caption">'+esc(t)+'</p>'; }
+
+/* ---------------------------------------------------------------- scenes */
+
+function renderHook(){
+  var r = rec(), revealed = r.hookRevealed === true, chosen = r.hookPrediction;
+  var left = panel(pantrySvg(revealed, L(revealed ? VISUAL.pantryRevealed : VISUAL.pantryDimmed)) +
+    (revealed ? caption(L(VISUAL.stickerText)) : ""));
+  var right = narrator(revealed ? LL(HOOK.narrator) : LL(HOOK.intro), revealed ? "curious" : "idle", revealed ? L(HOOK.guideCaption) : null) +
+    '<div class="row">'+(revealed ? btn("ghost-btn","hook-replay","",esc(L(HOOK.replayButton))) : btn("primary-btn","hook-reveal","",esc(L(HOOK.playButton))))+'</div>';
+  if (revealed){
+    right += field(L(HOOK.question)) + '<div class="choices">' +
+      HOOK.choices.map(function(c){ return choice("hook-predict", c.id, L(c.label), {selected: chosen === c.id}); }).join("") + '</div>' +
+      (chosen ? fb("good", esc(L(UI.yourIdeaSaved))) : "");
+  }
+  return stage(left, right);
+}
+
+function renderObservation(){
+  var level = state.level, r = rec(), cards = observationCards(level);
+  var buckets = level === "B" ? ["observation","guess","explanation"] : ["observation","guess"];
+  var placed = r.observationPlacements || {};
+  if (ui.obsIdx === null){
+    var fi = cards.findIndex(function(c){ return placed[c.id] !== c.kind; });
+    ui.obsIdx = fi === -1 ? cards.length - 1 : fi;
+  }
+  var idx = Math.min(ui.obsIdx, cards.length - 1), card = cards[idx], p = placed[card.id];
+  var isRight = p === card.kind, isWrong = !!p && !isRight;
+  var dots = cards.map(function(c, i){
+    var cls = "dot" + (i === idx ? " now" : placed[c.id] === c.kind ? " ok" : "");
+    return '<button type="button" class="'+cls+'" data-act="obs-nav" data-val="'+i+'" aria-label="'+(i+1)+'"'+(i===idx?' aria-current="true"':"")+'>'+(i+1)+'</button>';
+  }).join("");
+  var left = panel('<p class="card-count">'+(idx+1)+' / '+cards.length+'</p><p class="card-text">“'+esc(L(card.text))+'”</p><div class="dots">'+dots+'</div>');
+  var right = narrator(LL(OBSERVATION.narrator)) +
+    '<div class="row">' + buckets.map(function(b){
+      return choice("obs-place", card.id + "|" + b, L(OBSERVATION.buckets[b]), {inline:true, selected: p === b, state: p === b ? (isRight ? "correct" : "wrong") : null});
+    }).join("") + '</div>' +
+    (isRight ? fb("good", esc(L(card.feedback))) : "") +
+    (isWrong ? fb("hint", esc(L(OBSERVATION.wrongCardFeedback))) : "") +
+    '<div class="row">' + btn("ghost-btn","obs-nav",Math.max(0,idx-1),esc(L(UI.back)), idx===0) +
+    btn("ghost-btn","obs-nav",Math.min(cards.length-1,idx+1),esc(L(UI.next)), idx>=cards.length-1) + '</div>';
+  var allRight = cards.every(function(c){ return placed[c.id] === c.kind; });
+  if (level === "B" && allRight){
+    var ec = r.observationExplainChoice;
+    right += '<div class="divider">' + field(L(OBSERVATION.levelBExplainPrompt)) + '<div class="choices">' +
+      OBSERVATION.levelBExplainChoices.map(function(c){
+        return choice("obs-explain", c.id, L(c.label), {selected: ec === c.id, state: ec === c.id ? (c.correct ? "correct" : "wrong") : null});
+      }).join("") + '</div>' +
+      (ec && !isCorrect(OBSERVATION.levelBExplainChoices, ec) ? fb("hint", esc(L(OBSERVATION.wrongCardFeedback))) : "") + '</div>';
+  }
+  if (observationDone(r, level)) right += fb("good", esc(L(UI.correct)));
+  return stage(left, right);
+}
+
+function renderModel(){
+  var r = rec(), sel = foodById(r.modelSelectedFood), mech = sel ? sel.mechanism : null;
+  var label = sel ? fillTemplate(L(mech === "browning" ? VISUAL.traceFoodBrowning : VISUAL.traceFoodSoil), {food: L(sel.name)}) : L(VISUAL.traceFoodUnpicked);
+  var left = panel(traceSvg(mech, label) +
+    (sel ? caption(L(MODEL.mechanismLabel[mech]) + " · " + L(MODEL.traceTag)) : "") +
+    caption(L(UI.modelIsAModel)) +
+    (isReduced() ? caption(L(UI.reducedMotionNote)) : ""));
+  var ready = sawMechanism(r,"browning") && sawMechanism(r,"soil");
+  var right = narrator(LL(MODEL.narrator)) + field(L(MODEL.pickPrompt)) +
+    '<div class="row">' + MODEL_FOODS.map(function(f){ return choice("model-pick", f.id, L(f.name), {inline:true, selected: r.modelSelectedFood === f.id}); }).join("") + '</div>' +
+    (sel ? fb("good", esc(L(MODEL.mechanismExplain[mech]))) : "");
+  if (ready){
+    var cc = r.modelCheckChoice;
+    right += '<div class="divider">' + field(L(MODEL.checkPrompt)) + '<div class="row">' +
+      MODEL.checkChoices.map(function(c){ return choice("model-check", c.id, L(c.label), {inline:true, selected: cc === c.id, state: cc === c.id ? (c.correct ? "correct" : "wrong") : null}); }).join("") +
+      '</div>' + (cc && !isCorrect(MODEL.checkChoices, cc) ? fb("hint", esc(L(MODEL.checkWrong))) : "") + '</div>';
+  } else {
+    right += '<p class="muted">' + esc(L(sawMechanism(r,"browning") ? MODEL.nextSoil : sawMechanism(r,"soil") ? MODEL.nextBrowning : MODEL.nextStart)) + '</p>';
+  }
+  return stage(left, right);
+}
+
+function renderCompare(){
+  var r = rec(), pred = r.comparePrediction, revealed = r.compareRevealed === true, rc = r.compareResultChoice;
+  var left = panel(rulerSvg(revealed, L(revealed ? VISUAL.rulerAfter : VISUAL.rulerBefore)) +
+    caption("● " + L(COMPARE.triggerLabel) + "　 ■ " + L(COMPARE.harmLabel)) +
+    (revealed ? caption(L(COMPARE.readout)) : ""));
+  var right = narrator(LL(COMPARE.narrator)) + field(L(COMPARE.predictPrompt)) + '<div class="choices">' +
+    COMPARE.choices.map(function(c){ return choice("compare-predict", c.id, L(c.label), {selected: pred === c.id}); }).join("") + '</div>';
+  if (pred && !revealed) right += '<div class="row">' + btn("primary-btn","compare-reveal","",esc(L(COMPARE.reveal))) + '</div>';
+  if (revealed){
+    right += field(L(COMPARE.resultCheckPrompt)) + '<div class="choices">' +
+      COMPARE.resultChoices.map(function(c){ return choice("compare-result", c.id, L(c.label), {selected: rc === c.id, state: rc === c.id ? (c.correct ? "correct" : "wrong") : null}); }).join("") + '</div>' +
+      (rc && !isCorrect(COMPARE.resultChoices, rc) ? fb("hint", esc(L(COMPARE.wrongResult))) : "");
+  }
+  if (isCorrect(COMPARE.resultChoices, rc)) right += fb("good", esc(LL(COMPARE.explain)));
+  return stage(left, right);
+}
+
+function flagRow(label, value, A){
+  return '<div class="flag"><span>'+esc(label)+'</span><span class="pill '+(value?"yes":"no")+'">'+esc(L(value ? A.yes : A.no))+'</span></div>';
+}
+
+function renderFairtest(){
+  var r = rec();
+  if (state.level === "A"){
+    var A = FAIRTEST.levelA, answers = r.fairAAnswers || {};
+    var step = Math.min(r.fairAStep || 0, A.setups.length - 1), s = A.setups[step];
+    var ans = answers[s.id], correctAns = s.fair ? "fair" : "unfair", right_ = ans === correctAns;
+    var left = panel('<p class="card-count">'+esc(fillTemplate(L(A.stepLabel), {n: step+1, total: A.setups.length}))+'</p>'+
+      '<p class="scenario">'+esc(L(s.scenario))+'</p><div class="flags">'+
+      flagRow(L(A.attrNames.onlyThisFood), s.onlyThisFood, A) + flagRow(L(A.attrNames.discardedEverything), s.discardedEverything, A) + '</div>');
+    var right = narrator(LL(FAIRTEST.narrator)) + field(L(A.question)) + '<div class="row">' +
+      choice("fairA-judge","fair",L(A.fairButton),{inline:true, selected: ans==="fair", state: ans==="fair" ? (right_?"correct":"wrong") : null}) +
+      choice("fairA-judge","unfair",L(A.notFairButton),{inline:true, selected: ans==="unfair", state: ans==="unfair" ? (right_?"correct":"wrong") : null}) + '</div>';
+    if (ans && !right_) right += fb("hint", esc(L(ans === "fair" ? A.wrongFair : A.wrongNotFair))) + hintPanel(L(A.hint1), L(A.hint2));
+    if (right_) right += fb("good", esc(L(s.fair ? s.whyFair : s.whyNotFair)));
+    if (right_ && step < A.setups.length - 1) right += '<div class="row">' + btn("primary-btn","fairA-next","",esc(L(A.nextButton))) + '</div>';
+    if (fairDone(r, "A")) right += fb("good", esc(L(A.allDone)));
+    return stage(left, right);
+  }
+  var B = FAIRTEST.levelB, ch = r.fairChoice, checked = r.fairChecked;
+  if (ui.fairBView === null){ var ci = B.candidates.findIndex(function(c){ return c.id === ch; }); ui.fairBView = ci === -1 ? 0 : ci; }
+  var vi = Math.min(ui.fairBView, B.candidates.length - 1), shown = B.candidates[vi];
+  var ok = isCorrect(B.candidates, checked), checkedCand = findBy(B.candidates, checked);
+  var cls = "cand" + (checked === shown.id ? (shown.correct ? " ok" : " bad") : ch === shown.id ? " picked" : "");
+  var navDots = B.candidates.map(function(c, i){
+    var dc = "dot" + (i === vi ? " now" : ch === c.id ? " ok" : "");
+    return '<button type="button" class="'+dc+'" data-act="fairB-view" data-val="'+i+'" aria-label="'+(i+1)+'">'+(i+1)+'</button>';
+  }).join("");
+  var rows = ["concludedFromLabelAlone","comparedAmounts","checkedFrequency"].map(function(k){ return flagRow(L(B.rowHeaders[k]), shown[k], B); }).join("");
+  var left = panel('<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:10px">'+
+    '<p class="card-count">'+esc(fillTemplate(L(B.candidateLabel), {n: vi+1, total: B.candidates.length}))+'</p>'+
+    '<div class="dots" style="margin-top:0">'+navDots+'</div></div>'+
+    '<div class="'+cls+'"><div class="flags" style="margin-top:0">'+rows+'</div>'+
+    '<p class="conclusion"><b>'+esc(L(B.conclusionLabel))+'</b> '+esc(L(shown.conclusion))+'</p></div>');
+  var right = narrator(LL(FAIRTEST.narrator)) + '<div class="row">' +
+    choice("fairB-choose", shown.id, ch === shown.id ? L(B.picked) : L(B.pickThis), {inline:true, selected: ch === shown.id}) +
+    btn("primary-btn","fairB-check","",esc(L(UI.check)), !ch || ok) + '</div>';
+  if (checked && !ok && checkedCand && checkedCand.whyWrong) right += fb("hint", esc(L(UI.notYet)) + " — " + esc(L(checkedCand.whyWrong)));
+  if (checked && !ok) right += hintPanel(L(B.hint1), L(B.hint2));
+  if (ok) right += fb("good", esc(L(B.correctNote)) + " " + esc(L(checkedCand.whyRight)));
+  return stage(left, right);
+}
+
+function renderTransfer(){
+  var r = rec();
+  if (state.level === "A"){
+    var slots = r.transferSlots || [null,null,null];
+    var used = slots.filter(function(x){ return x; });
+    var filled = slots.every(function(x){ return x !== null; });
+    var distractor = filled && slots.some(function(id){ var c = findBy(TRANSFER.aChips, id); return c && c.correctSlot === -1; });
+    var done = transferDone(r, "A"), progress = done ? 1 : used.length / TRANSFER.aSlots;
+    var left = panel(kitchenSvg(progress, L(VISUAL.kitchen)) + caption(L(TRANSFER.invisibleCaption)));
+    var right = narrator(LL(TRANSFER.narrator)) + '<div class="slots">' +
+      slots.map(function(id, i){
+        return id ? '<button type="button" class="slot filled" data-act="tr-clear" data-val="'+i+'">'+esc(L(findBy(TRANSFER.aChips, id).text))+'</button>'
+                  : '<button type="button" class="slot" disabled>'+(i+1)+'</button>';
+      }).join("") + '</div><div class="row">' +
+      TRANSFER.aChips.map(function(c){ return btn("chipbtn","tr-add",c.id,esc(L(c.text)), used.indexOf(c.id) !== -1 || filled); }).join("") + '</div>' +
+      (filled && distractor ? fb("hint", esc(L(TRANSFER.aWrongChip))) : "") +
+      (filled && !distractor && !done ? fb("hint", esc(L(TRANSFER.aWrongOrder))) : "") +
+      (done ? fb("good", esc(L(UI.correct)) + "<br>" + esc(deriveExplanation(r, "A", state.lang))) : "") +
+      (used.length ? '<div class="row">' + btn("ghost-btn","tr-reset","",esc(L(UI.tryAgain))) + '</div>' : "") +
+      '<p class="muted">' + esc(L(TRANSFER.tip)) + '</p>';
+    return stage(left, right);
+  }
+  var ev = r.transferEvidence, bc = r.transferBecause, so = r.transferSo;
+  var evOk = isCorrect(TRANSFER.bEvidenceChoices, ev), bcOk = isCorrect(TRANSFER.bBecauseChoices, bc), soOk = isCorrect(TRANSFER.bSoChoices, so);
+  var steps = [evOk, bcOk, soOk].filter(Boolean).length, doneB = transferDone(r, "B");
+  var anyWrong = (ev && !evOk) || (bc && !bcOk) || (so && !soOk);
+  function group(prompt, list, act, cur){
+    return field(L(prompt)) + '<div class="choices">' + list.map(function(c){
+      return choice(act, c.id, L(c.label), {selected: cur === c.id, state: cur === c.id ? (c.correct ? "correct" : "wrong") : null});
+    }).join("") + '</div>';
+  }
+  var leftB = panel(kitchenSvg(doneB ? 1 : 0.15 + steps * 0.28, L(VISUAL.kitchen)) + caption(L(TRANSFER.invisibleCaption)));
+  var rightB = narrator(LL(TRANSFER.narrator)) + group(TRANSFER.bEvidencePrompt, TRANSFER.bEvidenceChoices, "tr-ev", ev) +
+    (evOk ? group(TRANSFER.bBecausePrompt, TRANSFER.bBecauseChoices, "tr-bc", bc) : "") +
+    (evOk && bcOk ? group(TRANSFER.bSoPrompt, TRANSFER.bSoChoices, "tr-so", so) : "") +
+    (anyWrong ? fb("hint", esc(L(TRANSFER.bWrong))) : "") +
+    (doneB ? fb("good", esc(deriveExplanation(r, "B", state.lang))) : "") +
+    '<p class="muted">' + esc(L(TRANSFER.tip)) + '</p>';
+  return stage(leftB, rightB);
+}
+
+var SCENE_RENDER = {hook:renderHook, observation:renderObservation, model:renderModel, compare:renderCompare, fairtest:renderFairtest, transfer:renderTransfer};
+
+/* ------------------------------------------------ start / summary / parent */
+
+function renderStart(){
+  return '<div class="start"><div class="brand">'+magnifier("curious","mascot")+
+    '<div><h1>'+esc(L(UI.brandTitle))+'</h1><div class="sub">'+esc(L(UI.brandSubtitle))+'</div></div></div>'+
+    '<p style="font-size:17px;line-height:1.6;margin:0">'+esc(L(UI.startBlurb))+'</p>'+
+    '<div class="panel">'+field(L(UI.startTitle))+
+      '<div class="grid2">'+choice("set-level","A",L(UI.levelA),{selected: state.level==="A"})+choice("set-level","B",L(UI.levelB),{selected: state.level==="B"})+'</div>'+
+      '<div class="grid2">'+choice("set-lang","zh",L(UI.langZh),{selected: state.lang==="zh"})+choice("set-lang","en",L(UI.langEn),{selected: state.lang==="en"})+'</div>'+
+    '</div><div>'+btn("primary-btn","begin","",esc(L(UI.startBegin)))+'</div>'+
+    '<p class="muted">'+esc(L(UI.noDataNote))+'</p></div>';
+}
+
+function renderSummary(){
+  var r = rec(), lang = state.lang;
+  var start = r.hookPrediction ? hookChoiceLabel(r.hookPrediction, lang) : L(SUMMARY.notRecorded);
+  var end = deriveExplanation(r, state.level, lang) || L(SUMMARY.notRecorded);
+  return '<div class="summary"><div class="brand">'+magnifier("cheer","mascot")+'<h2>'+esc(L(SUMMARY.title))+'</h2></div>'+
+    '<div class="core"><p class="kicker">'+esc(L(SUMMARY.coreIdeaLabel))+'</p><p class="big">'+esc(LL(SUMMARY.coreIdea))+'</p></div>'+
+    '<div class="grid2"><div class="own"><p class="l">'+esc(L(SUMMARY.yourStartLabel))+'</p><p class="v">'+esc(start)+'</p></div>'+
+    '<div class="own"><p class="l">'+esc(L(SUMMARY.yourEndLabel))+'</p><p class="v">'+esc(end)+'</p></div></div>'+
+    fb("hint", '<b>'+esc(L(SUMMARY.teaserLabel))+'：</b>'+esc(L(SUMMARY.teaser)))+
+    '<div class="row">'+btn("primary-btn","parent-open","",esc(L(SUMMARY.toParentView)))+btn("ghost-btn","reset-ask","",esc(L(SUMMARY.replay)))+'</div></div>';
+}
+
+function formatTime(ms){
+  if (!ms || ms < 0) return "—";
+  var t = Math.round(ms/1000); return Math.floor(t/60) + ":" + String(t%60).padStart(2,"0");
+}
+
+function renderParent(){
+  var p = prog(), r = p.record, lang = state.lang, none = L(PARENT.none), R = PARENT.rows;
+  var hints = p.hintsUsed || {}, total = 0, parts = [];
+  SCENE_ORDER.forEach(function(s){ if (hints[s]){ total += hints[s]; parts.push(L(SCENE_LABEL[s]) + " ×" + hints[s]); } });
+  var rows = [
+    [L(R.level), L(state.level === "A" ? UI.levelA : UI.levelB)],
+    [L(R.language), L(lang === "zh" ? UI.langZh : UI.langEn)],
+    [L(R.prediction), r.hookPrediction ? hookChoiceLabel(r.hookPrediction, lang) : none],
+    [L(R.explanation), deriveExplanation(r, state.level, lang) || none],
+    [L(R.time), formatTime(p.completedAt && p.startedAt ? p.completedAt - p.startedAt : null)],
+    [L(R.hints), total === 0 ? L(PARENT.hintsNone) : total + " (" + parts.join("; ") + ")"]
+  ];
+  var tone = {"not-recorded":"st-low","experienced":"st-low","with-two-hints":"st-mid","with-one-hint":"st-mid","with-support":"st-mid","independent":"st-good","transferred":"st-good"};
+  var skills = ["observation","mechanism","magnitude","reasoning","transfer"].map(function(k){
+    var st = evidenceFor(k, p, state.level);
+    return '<li>'+esc(L(PARENT.skills[k]))+' — <span class="'+tone[st]+'">'+esc(L(EVIDENCE_STATE_LABEL[st]))+'</span></li>';
+  }).join("");
+  return '<div class="parent"><div style="display:flex;justify-content:space-between;align-items:center;gap:10px">'+
+    '<h2 style="margin:0">'+esc(L(PARENT.title))+'</h2>'+btn("ghost-btn","parent-close","",esc(L(UI.backToLesson)))+'</div>'+
+    '<div class="banner">'+esc(L(PARENT.demoBanner))+'</div>'+
+    (p.reviewModeUsed ? '<div class="banner warn">'+esc(L(PARENT.reviewUsedFlag))+'</div>' : "")+
+    '<dl class="kv">'+rows.map(function(x){ return '<div><dt>'+esc(x[0])+'</dt><dd>'+esc(x[1])+'</dd></div>'; }).join("")+'</dl>'+
+    '<div class="box"><b>'+esc(L(PARENT.evidenceTitle))+'</b><p class="muted" style="margin-top:4px">'+esc(L(PARENT.evidenceHint))+'</p>'+
+      '<ul>'+skills+'</ul><div class="banner warn" style="margin-top:10px;font-size:13px">'+esc(L(PARENT.masteryCaveat))+'</div></div>'+
+    '<div class="box"><b>'+esc(L(PARENT.revisitTitle))+'</b><ul>'+PARENT.revisitItems.map(function(i){ return '<li>'+esc(L(i))+'</li>'; }).join("")+'</ul></div>'+
+    '<p class="muted">'+esc(L(UI.noDataNote))+'</p></div>';
+}
+
+/* ---------------------------------------------------------------- frame */
+
+function renderHeader(){
+  return '<div class="note">'+esc(L(UI.previewNote))+'</div>'+
+    '<header class="top"><div class="brand">'+magnifier("idle","mascot")+
+      '<div><div class="name">'+esc(L(UI.brandTitle))+'</div><div class="sub">'+esc(L(UI.brandSubtitle))+'</div></div></div>'+
+    '<div class="controls">'+
+      '<div class="segmented" role="group">'+
+        '<button type="button" data-act="set-level" data-val="A" class="'+(state.level==="A"?"active":"")+'" aria-pressed="'+(state.level==="A")+'">'+esc(L(UI.levelA))+'</button>'+
+        '<button type="button" data-act="set-level" data-val="B" class="'+(state.level==="B"?"active":"")+'" aria-pressed="'+(state.level==="B")+'">'+esc(L(UI.levelB))+'</button></div>'+
+      '<div class="segmented" role="group">'+
+        '<button type="button" data-act="set-lang" data-val="zh" class="'+(state.lang==="zh"?"active":"")+'" aria-pressed="'+(state.lang==="zh")+'">中文</button>'+
+        '<button type="button" data-act="set-lang" data-val="en" class="'+(state.lang==="en"?"active":"")+'" aria-pressed="'+(state.lang==="en")+'">English</button></div>'+
+      '<label class="check"><input type="checkbox" data-act="toggle-reduced"'+(state.reduced?" checked":"")+'>'+esc(L(UI.reducedMotionPreview))+'</label>'+
+      btn("ghost-btn","reset-ask","",esc(L(UI.startOver)))+
+    '</div></header>';
+}
+
+function renderJump(){
+  var p = prog();
+  var chips = '<button type="button" class="chip'+(p.phase==="start"?" active":"")+'" data-act="jump" data-val="start">'+esc(L(SCENE_LABEL.start))+'</button>';
+  SCENE_ORDER.forEach(function(s, i){
+    var cls = "chip" + (p.phase==="scene" && p.sceneIndex===i ? " active" : isSceneComplete(s, p.record, state.level) ? " done" : "");
+    chips += '<button type="button" class="'+cls+'" data-act="jump" data-val="'+i+'">'+(i+1)+'. '+esc(L(SCENE_LABEL[s]))+'</button>';
+  });
+  chips += '<button type="button" class="chip'+(p.phase==="summary"?" active":"")+'" data-act="jump" data-val="summary">'+esc(L(SCENE_LABEL.summary))+'</button>';
+  return '<nav class="jump" aria-label="scenes">'+chips+'</nav>';
+}
+
+function renderFooter(){
+  var p = prog();
+  if (p.phase !== "scene") return "";
+  var scene = SCENE_ORDER[p.sceneIndex], can = isSceneComplete(scene, p.record, state.level);
+  var last = p.sceneIndex === SCENE_ORDER.length - 1;
+  return '<footer class="bar"><div class="inner">'+btn("ghost-btn","back","",esc(L(UI.back)))+
+    btn("primary-btn","next","",esc(last ? L(SCENE_LABEL.summary) : L(UI.next)), !can)+'</div></footer>';
+}
+
+function renderDialog(){
+  if (!ui.confirmReset) return "";
+  return '<div class="overlay"><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dlg-t">'+
+    '<h2 id="dlg-t">'+esc(L(UI.startOverConfirmTitle))+'</h2><p>'+esc(L(UI.startOverConfirmBody))+'</p>'+
+    '<div class="row" style="justify-content:flex-end">'+btn("ghost-btn","reset-cancel","",esc(L(UI.cancel)))+btn("primary-btn","reset-confirm","",esc(L(UI.confirm)))+'</div></div></div>';
+}
+
+function render(focusKey){
+  document.documentElement.lang = state.lang === "zh" ? "zh-Hans" : "en";
+  document.body.classList.toggle("reduced", !!state.reduced);
+  var p = prog(), body = "";
+  if (p.phase === "start") body = renderStart();
+  else if (p.phase === "summary") body = state.showParent ? renderParent() : renderSummary();
+  else {
+    var scene = SCENE_ORDER[p.sceneIndex], level = state.level;
+    body = '<div class="progress">' + SCENE_ORDER.map(function(s, i){ return '<span class="'+(i < p.sceneIndex ? "done" : i === p.sceneIndex ? "now" : "")+'"></span>'; }).join("") + '</div>' +
+      '<div class="step-line">' + esc(fillTemplate(L(UI.progressStep), {n: p.sceneIndex+1})) + ' · ' + esc(L(SCENE_LABEL[scene])) + ' · ' + SCENE_TIME_HINT[scene] + ' · ' + esc(L(level === "A" ? UI.levelA : UI.levelB)) + '</div>' +
+      SCENE_RENDER[scene]();
+  }
+  document.getElementById("app").innerHTML = renderHeader() + renderJump() + '<main id="stage">' + body + '</main>' + renderFooter() + renderDialog();
+  ui.justRevealed = null;
+  if (focusKey){
+    var el = document.querySelector('[data-act="'+focusKey[0]+'"][data-val="'+focusKey[1]+'"]');
+    if (el && !el.disabled) el.focus({preventScroll:true});
+  }
+  if (ui.confirmReset){ var c = document.querySelector('[data-act="reset-confirm"]'); if (c) c.focus(); }
+}
+
+/* --------------------------------------------------------------- actions */
+
+function resetSceneView(){ ui.obsIdx = null; ui.fairBView = null; }
+function goScene(i){ var p = prog(); p.phase = "scene"; p.sceneIndex = i; if (!p.startedAt) p.startedAt = Date.now(); state.showParent = false; resetSceneView(); }
+
+function handle(act, val){
+  var p = prog(), r = p.record, scene = SCENE_ORDER[p.sceneIndex];
+  switch (act){
+    case "set-level": state.level = val === "B" ? "B" : "A"; resetSceneView(); state.showParent = false; break;
+    case "set-lang": state.lang = val === "en" ? "en" : "zh"; break;
+    case "toggle-reduced": state.reduced = !state.reduced; break;
+    case "reset-ask": ui.confirmReset = true; break;
+    case "reset-cancel": ui.confirmReset = false; break;
+    case "reset-confirm":
+      state.byLevel = {A: freshProgress(), B: freshProgress()}; state.showParent = false; ui.confirmReset = false; resetSceneView(); break;
+    case "begin": goScene(0); break;
+    case "jump":
+      if (val === "start"){ p.phase = "start"; state.showParent = false; }
+      else if (val === "summary"){ p.phase = "summary"; p.reviewModeUsed = true; state.showParent = false; if (!p.completedAt) p.completedAt = Date.now(); }
+      else { goScene(Number(val)); p.reviewModeUsed = true; }
+      window.scrollTo(0,0); break;
+    case "back":
+      if (p.sceneIndex > 0) goScene(p.sceneIndex - 1); else p.phase = "start";
+      window.scrollTo(0,0); break;
+    case "next":
+      if (!isSceneComplete(scene, r, state.level)) break;
+      if (p.sceneIndex >= SCENE_ORDER.length - 1){ p.phase = "summary"; if (!p.completedAt) p.completedAt = Date.now(); state.showParent = false; }
+      else goScene(p.sceneIndex + 1);
+      window.scrollTo(0,0); break;
+    case "parent-open": state.showParent = true; window.scrollTo(0,0); break;
+    case "parent-close": state.showParent = false; window.scrollTo(0,0); break;
+    case "hint": p.hintsUsed[scene] = (p.hintsUsed[scene] || 0) + 1; break;
+
+    case "hook-reveal": patch({hookRevealed: true}); ui.justRevealed = "hook"; break;
+    case "hook-replay": patch({hookRevealed: false, hookPrediction: undefined}); break;
+    case "hook-predict": patch({hookPrediction: val}); break;
+
+    case "obs-nav": ui.obsIdx = Number(val); break;
+    case "obs-place":
+      var bits = val.split("|"), cards = observationCards(state.level), card = findBy(cards, bits[0]);
+      var placed = Object.assign({}, r.observationPlacements || {}); placed[bits[0]] = bits[1];
+      patch({observationPlacements: placed, observationHadWrong: !!r.observationHadWrong || (card && bits[1] !== card.kind)});
+      if (card && bits[1] === card.kind){
+        var nextI = cards.findIndex(function(c){ return c.id !== bits[0] && placed[c.id] !== c.kind; });
+        if (nextI !== -1) setTimeout(function(){ ui.obsIdx = nextI; render(); }, 550);
+      }
+      break;
+    case "obs-explain":
+      patch({observationExplainChoice: val, observationHadWrong: !!r.observationHadWrong || !isCorrect(OBSERVATION.levelBExplainChoices, val)}); break;
+
+    case "model-pick":
+      var viewed = (r.modelFoodsViewed || []).slice(); if (viewed.indexOf(val) === -1) viewed.push(val);
+      patch({modelSelectedFood: val, modelFoodsViewed: viewed, modelRuns: (r.modelRuns || 0) + 1}); ui.justRevealed = "model"; break;
+    case "model-check":
+      patch({modelCheckChoice: val, modelCheckHadWrong: !!r.modelCheckHadWrong || !isCorrect(MODEL.checkChoices, val)}); break;
+
+    case "compare-predict": patch({comparePrediction: val}); break;
+    case "compare-reveal": patch({compareRevealed: true}); ui.justRevealed = "compare"; break;
+    case "compare-result":
+      patch({compareResultChoice: val, compareResultHadWrong: !!r.compareResultHadWrong || !isCorrect(COMPARE.resultChoices, val)}); break;
+
+    case "fairA-judge":
+      var A = FAIRTEST.levelA, st = A.setups[Math.min(r.fairAStep || 0, A.setups.length - 1)];
+      var answers = Object.assign({}, r.fairAAnswers || {}); answers[st.id] = val;
+      var good = val === (st.fair ? "fair" : "unfair");
+      patch({fairAAnswers: answers, fairAHadWrong: !!r.fairAHadWrong || !good});
+      if (!good && (p.hintsUsed.fairtest || 0) < 2) p.hintsUsed.fairtest = (p.hintsUsed.fairtest || 0) + 1;
+      break;
+    case "fairA-next": patch({fairAStep: Math.min((r.fairAStep || 0) + 1, FAIRTEST.levelA.setups.length - 1)}); break;
+    case "fairB-view": ui.fairBView = Number(val); break;
+    case "fairB-choose": patch({fairChoice: val}); break;
+    case "fairB-check":
+      if (!r.fairChoice) break;
+      var okB = isCorrect(FAIRTEST.levelB.candidates, r.fairChoice);
+      patch({fairChecked: r.fairChoice, fairAttempts: okB ? (r.fairAttempts || 0) : (r.fairAttempts || 0) + 1});
+      if (!okB && (p.hintsUsed.fairtest || 0) < 2) p.hintsUsed.fairtest = (p.hintsUsed.fairtest || 0) + 1;
+      break;
+
+    case "tr-add":
+      var slots = (r.transferSlots || [null,null,null]).slice(), empty = slots.indexOf(null);
+      if (empty === -1 || slots.indexOf(val) !== -1) break;
+      slots[empty] = val; commitSlots(slots); ui.justRevealed = "transfer"; break;
+    case "tr-clear":
+      var s2 = (r.transferSlots || [null,null,null]).slice(); s2[Number(val)] = null; commitSlots(s2); break;
+    case "tr-reset": commitSlots([null,null,null]); break;
+    case "tr-ev": case "tr-bc": case "tr-so":
+      var key = act === "tr-ev" ? "transferEvidence" : act === "tr-bc" ? "transferBecause" : "transferSo";
+      var list = act === "tr-ev" ? TRANSFER.bEvidenceChoices : act === "tr-bc" ? TRANSFER.bBecauseChoices : TRANSFER.bSoChoices;
+      var o = {}; o[key] = val; o.transferHadWrong = !!r.transferHadWrong || !isCorrect(list, val);
+      patch(o); ui.justRevealed = "transfer"; break;
+  }
+  saveState();
+  render([act, val]);
+}
+
+function commitSlots(slots){
+  var r = rec();
+  var full = slots.every(function(x){ return x != null; });
+  var ok = full && slots.every(function(id, i){ var c = findBy(TRANSFER.aChips, id); return c && c.correctSlot === i; });
+  patch({transferSlots: slots, transferHadWrong: !!r.transferHadWrong || (full && !ok)});
+}
+
+document.addEventListener("click", function(e){
+  var t = e.target.closest("[data-act]");
+  if (!t || t.disabled || t.tagName === "INPUT") return;
+  handle(t.getAttribute("data-act"), t.getAttribute("data-val"));
+});
+document.addEventListener("change", function(e){
+  var t = e.target;
+  if (t && t.getAttribute && t.getAttribute("data-act") === "toggle-reduced") handle("toggle-reduced", "");
+});
+document.addEventListener("keydown", function(e){
+  if (e.key === "Escape" && ui.confirmReset){ ui.confirmReset = false; render(); }
+});
+
+render();
+</script>
+</body>
+</html>

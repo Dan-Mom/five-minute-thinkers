@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>坏血病之谜 / The Scurvy Mystery — Vitamin C</title>
+<style>
+  :root{
+    --bg:#fdf6ee; --panel:#ffffff; --ink:#2a2420; --muted:#6b6058;
+    --accent:#1e5c93; --accent-bg:#eaf2fb;
+    --citrus:#ff8c3c; --citrus-dark:#c9601a;
+    --good:#2f9e44; --good-bg:#eaf7ec;
+    --bad:#c0392b; --bad-bg:#fbeceb;
+    --warn:#b8860b; --warn-bg:#fff6e0;
+    --line:#e8ded2; --focus:#1e5c93;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    font-size:16px; line-height:1.5;
+    min-height:100vh;
+  }
+  .reduced *{ transition:none !important; animation:none !important; }
+  @media (prefers-reduced-motion: reduce){ *{ transition:none !important; animation:none !important; } }
+
+  header{
+    position:sticky; top:0; z-index:10; background:var(--panel);
+    border-bottom:1px solid var(--line);
+    display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;
+    gap:8px; padding:10px 16px;
+  }
+  header h1{font-size:16px; margin:0; font-weight:700;}
+  header .step{font-size:13px; color:var(--muted);}
+  .controls{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .ctrl-btn{
+    font-size:13px; padding:8px 12px; border-radius:999px; border:1px solid var(--line);
+    background:#fff; cursor:pointer; min-height:36px;
+  }
+  .ctrl-btn:hover{border-color:var(--citrus);}
+  label.reduced-toggle{font-size:13px; color:var(--muted); display:flex; align-items:center; gap:6px; cursor:pointer;}
+
+  main{max-width:1080px; margin:0 auto; padding:20px 16px 96px;}
+
+  .dots{display:flex; gap:6px; margin-bottom:14px;}
+  .dots .dot{width:9px; height:9px; border-radius:50%; background:var(--line);}
+  .dots .dot.active{background:var(--citrus);}
+  .dots .dot.done{background:var(--good);}
+
+  .shell{display:grid; grid-template-columns:1fr; gap:20px;}
+  @media (min-width:900px) and (orientation:landscape){
+    .shell{grid-template-columns:61fr 39fr; align-items:start;}
+  }
+  .visual-panel{
+    background:var(--panel); border:1px solid var(--line); border-radius:16px;
+    padding:24px; min-height:260px; display:flex; flex-direction:column;
+    justify-content:center; align-items:center; gap:14px; text-align:center;
+  }
+  .visual-caption{font-size:14px; color:var(--muted); max-width:32em;}
+  .panel-right{display:flex; flex-direction:column; gap:14px;}
+
+  .narrator{
+    background:var(--accent-bg); border-left:4px solid var(--accent);
+    padding:12px 14px; border-radius:8px; font-size:15px; white-space:pre-line;
+  }
+  h2.scene-title{margin:0 0 4px; font-size:18px;}
+  .question{font-weight:600; font-size:16px; margin:4px 0;}
+
+  .choice-btn{
+    display:block; width:100%; text-align:left; padding:12px 14px; border-radius:12px;
+    border:2px solid var(--line); background:#fff; cursor:pointer; font-size:15px;
+    min-height:44px; margin-bottom:8px;
+  }
+  .choice-btn:hover:not(:disabled){border-color:var(--citrus);}
+  .choice-btn.selected{border-color:var(--accent); background:var(--accent-bg);}
+  .choice-btn.correct{border-color:var(--good); background:var(--good-bg);}
+  .choice-btn.incorrect{border-color:var(--bad); background:var(--bad-bg);}
+  .choice-btn:disabled{cursor:default; opacity:.9;}
+
+  .primary-btn, .ghost-btn{
+    font-size:15px; padding:10px 18px; border-radius:10px; cursor:pointer; min-height:44px;
+  }
+  .primary-btn{background:var(--citrus); border:2px solid var(--citrus-dark); color:#fff; font-weight:600;}
+  .primary-btn:hover:not(:disabled){background:var(--citrus-dark);}
+  .primary-btn:disabled{opacity:.45; cursor:not-allowed;}
+  .ghost-btn{background:#fff; border:2px solid var(--line); color:var(--ink);}
+  .ghost-btn:hover{border-color:var(--citrus);}
+
+  .feedback{border-radius:10px; padding:10px 12px; font-size:14px; margin-top:6px;}
+  .feedback.good{background:var(--good-bg); border:1px solid var(--good); color:#205c2b;}
+  .feedback.hint{background:var(--warn-bg); border:1px solid var(--warn); color:#6b5200;}
+
+  .tank-wrap{width:100%; max-width:360px;}
+  .tank{
+    width:100%; height:26px; background:#f1e9dc; border-radius:999px; overflow:hidden;
+    border:1px solid var(--line); position:relative;
+  }
+  .tank-fill{height:100%; background:var(--citrus); transition:width .5s ease;}
+  .tank-row{display:flex; align-items:center; justify-content:space-between; margin-top:6px; font-size:14px;}
+  .badge{display:inline-block; padding:3px 10px; border-radius:999px; font-size:13px; font-weight:600;}
+  .badge-none{background:var(--good-bg); color:#205c2b;}
+  .badge-tired{background:var(--warn-bg); color:#6b5200;}
+  .badge-gum{background:#ffe8d6; color:#a34e10;}
+  .badge-severe{background:var(--bad-bg); color:#7d201a;}
+
+  .compare-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%;}
+  .compare-card{background:#fff8f0; border:1px solid var(--line); border-radius:12px; padding:12px; text-align:left;}
+  .compare-card h3{margin:0 0 6px; font-size:14px;}
+  .tray{font-size:13px; color:var(--muted); margin-bottom:6px;}
+
+  table.attr-table{width:100%; border-collapse:collapse; font-size:13px; margin-top:6px;}
+  table.attr-table th, table.attr-table td{border:1px solid var(--line); padding:6px 8px; text-align:left;}
+  table.attr-table th{background:#f6efe4;}
+  td.diff{background:#fff1e6; font-weight:600;}
+
+  .chip-row{display:flex; flex-wrap:wrap; gap:8px; margin:8px 0;}
+  .chip{
+    padding:8px 14px; border-radius:999px; border:2px solid var(--line); background:#fff;
+    cursor:pointer; font-size:14px; min-height:40px;
+  }
+  .chip:hover:not(:disabled){border-color:var(--citrus);}
+  .chip.selected{border-color:var(--accent); background:var(--accent-bg);}
+  .chip.correct{border-color:var(--good); background:var(--good-bg);}
+  .chip.incorrect{border-color:var(--bad); background:var(--bad-bg);}
+  .sentence-frame{font-size:16px; margin:10px 0; line-height:1.9;}
+  .blank{display:inline-block; min-width:5em; border-bottom:2px solid var(--citrus); text-align:center; font-weight:700; color:var(--citrus-dark);}
+
+  .summary-box{background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px; margin-bottom:12px;}
+  .summary-box h3{margin:0 0 8px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.03em;}
+  .teaser{background:var(--accent-bg); border-radius:12px; padding:14px; font-size:15px;}
+
+  footer{
+    position:fixed; inset-inline:0; bottom:0; background:var(--panel);
+    border-top:1px solid var(--line); display:flex; justify-content:space-between;
+    align-items:center; padding:10px 16px; z-index:10;
+  }
+  .start-screen{display:flex; flex-direction:column; align-items:center; justify-content:center;
+    min-height:calc(100vh - 140px); text-align:center; gap:18px;}
+  .start-screen h1{font-size:26px; margin:0; max-width:20em;}
+  .start-screen p{color:var(--muted); max-width:34em; margin:0;}
+  .toggle-group{display:flex; gap:10px;}
+  :focus-visible{outline:3px solid var(--focus); outline-offset:2px;}
+  .hint-list{display:flex; gap:8px; flex-wrap:wrap; margin-top:4px;}
+  .sailors-icon{font-size:56px; line-height:1;}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1 id="course-title">坏血病之谜 / The Scurvy Mystery</h1>
+    <div class="step" id="step-label"></div>
+  </div>
+  <div class="controls">
+    <button class="ctrl-btn" data-action="toggleLang" id="lang-btn" type="button"></button>
+    <button class="ctrl-btn" data-action="toggleLevel" id="level-btn" type="button"></button>
+    <label class="reduced-toggle">
+      <input type="checkbox" id="reduced-toggle" data-action="toggleReduced">
+      <span id="reduced-label"></span>
+    </label>
+  </div>
+</header>
+
+<main id="app"></main>
+
+<footer id="nav-footer"></footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------------------------------------------------------- */
+  /* Content — every user-visible string is {zh, en}                   */
+  /* ---------------------------------------------------------------- */
+
+  var UI = {
+    title:{zh:'坏血病之谜：水手为什么会生病？', en:'The Scurvy Mystery: Why Did the Sailors Get Sick?'},
+    start:{zh:'开始', en:'Start'},
+    back:{zh:'上一步', en:'Back'},
+    next:{zh:'下一步', en:'Next'},
+    finish:{zh:'完成', en:'Finish'},
+    restart:{zh:'重新开始', en:'Restart'},
+    toEnglish:{zh:'English', en:'中文'},
+    levelA:{zh:'难度 A · 一年级', en:'Level A · Grade 1'},
+    levelB:{zh:'难度 B · 三年级', en:'Level B · Grade 3'},
+    switchToA:{zh:'切换到难度 A', en:'Switch to Level A'},
+    switchToB:{zh:'切换到难度 B', en:'Switch to Level B'},
+    reducedMotion:{zh:'减少动效', en:'Reduce motion'},
+    hint:{zh:'提示', en:'Hint'},
+    correct:{zh:'对了！', en:'Correct!'},
+    tryAgain:{zh:'再想想，选一个别的答案', en:'Not quite — try a different answer'},
+    reveal:{zh:'敲一敲甲板，看看发生了什么', en:"Tap the deck to see what's happening"},
+    run:{zh:'开始快进比较', en:'Run the comparison'},
+    skipDay:{zh:'跳过一天新鲜水果', en:'Skip a day of fresh produce'},
+    eatFruit:{zh:'吃一份含维生素C的水果', en:'Eat a vitamin-C food'},
+    day:{zh:'第几天：', en:'Day count: '},
+    fair:{zh:'公平', en:'Fair'},
+    notFair:{zh:'不公平', en:'Not fair'},
+    yourPrediction:{zh:'你一开始的猜测', en:'Your first prediction'},
+    yourExplanation:{zh:'你最后的解释', en:'Your final explanation'},
+    teaserLabel:{zh:'下集预告', en:'Coming up next'},
+    continueCard:{zh:'下一张卡片', en:'Next card'},
+    levelBCheck:{zh:'再检查一个问题', en:'One more check'},
+    pickOne:{zh:'请选一个', en:'Pick one'},
+    candidate:{zh:'方案', en:'Candidate'},
+    whyLabel:{zh:'为什么', en:'Why'}
+  };
+
+  var SCENE_NAMES = [
+    {zh:'开始', en:'Start'},
+    {zh:'谜题', en:'Hook'},
+    {zh:'找线索', en:'Surface ideas'},
+    {zh:'模型', en:'Model'},
+    {zh:'比较', en:'Compare'},
+    {zh:'公平测试', en:'Fair test'},
+    {zh:'迁移应用', en:'Transfer'},
+    {zh:'总结', en:'Summary'}
+  ];
+
+  var HOOK = {
+    setup:{zh:'一艘远航了好几个月的帆船。曾经强壮的水手们，现在牙龈出血、皮肤瘀青、浑身没有力气。',
+           en:'A sailing ship, months into a long voyage. Sailors who started out strong now have bleeding gums, bruised skin, and no energy.'},
+    question:{zh:'为什么长期航海的水手会得"坏血病"（牙龈出血、浑身乏力、皮肤瘀青）？',
+              en:'Why did sailors on long voyages get "scurvy" (bleeding gums, exhaustion, bruised skin)?'},
+    choices:[
+      {id:'A', zh:'海水太咸，把身体"腌"坏了', en:'The salty sea air "pickled" their bodies'},
+      {id:'B', zh:'船上很久没有新鲜水果和蔬菜，身体缺少了维生素C', en:'The ship had gone a long time with no fresh fruit or vegetables, so their bodies ran low on vitamin C', best:true},
+      {id:'C', zh:'一定是被生病的同伴传染了', en:'They must have caught it from a sick shipmate'},
+      {id:'D', zh:'只是太累了，船上运动量不够', en:'They were just worn out from too little exercise'}
+    ]
+  };
+
+  var OBS = {
+    cards:[
+      {text:{zh:'很多水手在船上待了几个月后，开始牙龈出血、浑身没力气。', en:'After months at sea, many sailors began having bleeding gums and no energy.'}, tag:'observation'},
+      {text:{zh:'这一定是因为被生病的同伴传染了。', en:'It must be because they caught it from a sick shipmate.'}, tag:'guess'},
+      {text:{zh:'船上几个月都没有新鲜水果和蔬菜可吃，只有饼干和腌肉。', en:'For months, the ship had no fresh fruit or vegetables — only biscuits and salted meat.'}, tag:'observation'},
+      {text:{zh:'身体没办法自己制造维生素C，也存不了太久；一直没有从食物里得到它，人就会生病。', en:"The body can't make its own vitamin C and can't store it for long — going without it in food for a long time makes people sick."}, tag:'explanation'}
+    ],
+    tagLabels:{
+      observation:{zh:'观察', en:'Observation'},
+      guess:{zh:'猜测', en:'Guess'},
+      explanation:{zh:'解释', en:'Explanation'}
+    },
+    bQuestion:{zh:'哪一个解释最能说明水手为什么生病？', en:'Which explanation best accounts for why the sailors got sick?'},
+    bOptions:[
+      {id:'correct', zh:'身体不能自己制造维生素C，也存不了太久，需要不断从食物里补充；水手很久没吃新鲜水果蔬菜，所以生病了。', en:"The body can't make or store much vitamin C — it needs regular top-ups from food; the sailors went a long time without fresh produce, so they got sick.", correct:true},
+      {id:'damp', zh:'船舱太潮湿，湿气让人生病', en:'The cabin was too damp, and the dampness made them sick'},
+      {id:'luck', zh:'坏血病只是水手这份工作本来就会得的病，运气不好而已', en:'Scurvy is just an unlucky disease that comes with being a sailor'}
+    ]
+  };
+
+  var MODEL = {
+    caption:{zh:'这是一个简化的小模型；真实的维生素缺乏是几个星期慢慢出现的，不是几天，具体因人而异。',
+             en:'This is a simplified model — a real vitamin deficiency develops gradually over weeks and varies from person to person, not day by day like this.'}
+  };
+
+  function bandFor(v){
+    if (v > 70) return {key:'none', label:{zh:'健康', en:'Healthy'}};
+    if (v >= 41) return {key:'tired', label:{zh:'有点累', en:'A bit tired'}};
+    if (v >= 10) return {key:'gum', label:{zh:'牙龈有点红', en:'Gums a bit red'}};
+    return {key:'severe', label:{zh:'身体虚弱', en:'Severely weak'}};
+  }
+
+  var COMPARE = {
+    question:{zh:'六周后，谁的维生素C库存会更低、更容易出现坏血病症状？', en:'After six weeks, whose vitamin C tank will be lower and more likely to show scurvy symptoms?'},
+    choices:[
+      {id:'aji', zh:'阿吉', en:'Aji', best:true},
+      {id:'bola', zh:'宝拉', en:'Bola'},
+      {id:'same', zh:'两人差不多', en:'About the same for both'},
+      {id:'luck', zh:'说不准，要看运气', en:"Can't tell — depends on luck"}
+    ],
+    weeks:[2,4,6],
+    aji:[85,55,25],
+    bola:[95,90,85],
+    resultQuestion:{zh:'六周后，谁更可能出现牙龈出血、乏力这些坏血病症状？', en:'After six weeks, who is more likely to show scurvy symptoms like bleeding gums and exhaustion?'},
+    resultChoices:[
+      {id:'aji', zh:'阿吉', en:'Aji', correct:true},
+      {id:'bola', zh:'宝拉', en:'Bola'},
+      {id:'both', zh:'两人都会', en:'Both of them'},
+      {id:'neither', zh:'两人都不会', en:'Neither of them'}
+    ],
+    nudge:{zh:'再看一眼两人的库存量表——阿吉的维生素C库存是不是比宝拉低很多？', en:"Look again at both tanks — isn't Aji's vitamin C level a lot lower than Bola's?"}
+  };
+
+  var FAIR = {
+    setups:[
+      { pair:{zh:'甲 vs 乙', en:'Jiǎ vs Yǐ'},
+        rows:[
+          {label:{zh:'饮食', en:'Diet'}, a:{zh:'标准口粮', en:'Standard ration'}, b:{zh:'标准口粮', en:'Standard ration'}, same:true},
+          {label:{zh:'船舱', en:'Cabin'}, a:{zh:'相同船舱', en:'Same cabin'}, b:{zh:'相同船舱', en:'Same cabin'}, same:true},
+          {label:{zh:'起始症状', en:'Starting symptoms'}, a:{zh:'一样严重', en:'Same severity'}, b:{zh:'一样严重', en:'Same severity'}, same:true},
+          {label:{zh:'额外补充品', en:'Extra remedy'}, a:{zh:'两只橙子+一只柠檬', en:'Two oranges + a lemon'}, b:{zh:'一杯苹果酒', en:'A cup of cider'}, same:false}
+        ], fair:true,
+        why:{zh:'两人除了额外吃的东西不一样，饮食、住处、一开始的病情都相同，所以能看出真正让人好转的是什么。',
+             en:'The two sailors are identical in diet, quarters, and starting condition — only the extra remedy differs, so whatever difference appears must come from the remedy.'}
+      },
+      { pair:{zh:'丙 vs 丁', en:'Bǐng vs Dīng'},
+        rows:[
+          {label:{zh:'饮食', en:'Diet'}, a:{zh:'标准口粮', en:'Standard ration'}, b:{zh:'标准口粮', en:'Standard ration'}, same:true},
+          {label:{zh:'船舱', en:'Cabin'}, a:{zh:'暖和干燥的上层舱', en:'Warm, dry upper cabin'}, b:{zh:'潮湿的下层舱', en:'Damp lower deck'}, same:false},
+          {label:{zh:'起始症状', en:'Starting symptoms'}, a:{zh:'一样严重', en:'Same severity'}, b:{zh:'一样严重', en:'Same severity'}, same:true},
+          {label:{zh:'额外补充品', en:'Extra remedy'}, a:{zh:'柑橘', en:'Citrus'}, b:{zh:'醋', en:'Vinegar'}, same:false}
+        ], fair:false,
+        why:{zh:'丙不只多吃了柑橘，还换到了更暖和干燥的船舱，没办法确定到底是柑橘还是舱室让他好转的。',
+             en:"Bing didn't just get citrus — he also moved to a warmer, drier cabin, so there's no way to tell whether the fruit or the cabin change helped him."}
+      },
+      { pair:{zh:'戊 vs 己', en:'Wù vs Jǐ'},
+        rows:[
+          {label:{zh:'饮食', en:'Diet'}, a:{zh:'标准口粮', en:'Standard ration'}, b:{zh:'标准口粮', en:'Standard ration'}, same:true},
+          {label:{zh:'船舱', en:'Cabin'}, a:{zh:'相同船舱', en:'Same cabin'}, b:{zh:'相同船舱', en:'Same cabin'}, same:true},
+          {label:{zh:'起始症状', en:'Starting symptoms'}, a:{zh:'轻微', en:'Mild'}, b:{zh:'严重', en:'Severe'}, same:false},
+          {label:{zh:'额外补充品', en:'Extra remedy'}, a:{zh:'柑橘', en:'Citrus'}, b:{zh:'海水', en:'Seawater'}, same:false}
+        ], fair:false,
+        why:{zh:'戊一开始病情就比己轻很多，就算两人恢复速度不同，也没办法只怪罪到吃的东西上。',
+             en:"Wu started out much less sick than Ji to begin with, so even if they recover at different speeds, you can't blame the difference only on what they ate."}
+      }
+    ],
+    hints:[
+      {zh:'看看每一组水手，除了"多吃/多喝的东西"之外，还有什么条件不一样？', en:'Look at each pair — besides the extra thing they ate or drank, what else is different between them?'},
+      {zh:'公平的比较：除了要测试的那一件事（这里是补充的食物），其它所有条件——饮食、船舱、一开始的病情——都必须完全相同。', en:'A fair comparison: everything except the one thing being tested (here, the extra food) — diet, cabin, and starting condition — must be exactly the same.'}
+    ],
+    bQuestion:{zh:'下面三个方案里，哪一个是"公平"的比较？', en:'Which of these three candidates is the one FAIR comparison?'},
+    wrongNudge:{zh:'再想想：仔细比较所有条件——除了额外补充的东西，是不是还有别的地方也不一样？', en:'Think again: compare every condition carefully — besides the extra remedy, is anything else also different?'}
+  };
+
+  var TRANSFER = {
+    evidence:{zh:'奶奶这几个月牙龈总出血，也容易累，她的饮食里几乎没有新鲜水果和蔬菜。',
+              en:"Over the past few months grandma's gums bleed easily and she tires easily; her diet has almost no fresh fruit or vegetables."},
+    frame:{zh:'因为奶奶很久没有吃____，所以她身体里的维生素C____。', en:'Because grandma hasn’t eaten ____ in a long time, the vitamin C in her body ____.'},
+    blank1:[
+      {id:'fresh', zh:'新鲜的水果和蔬菜', en:'fresh fruits and vegetables', correct:true},
+      {id:'pills', zh:'维生素药片', en:'vitamin pills'},
+      {id:'salty', zh:'咸的食物', en:'salty food'}
+    ],
+    blank2:[
+      {id:'low', zh:'变少了', en:'got low', correct:true},
+      {id:'high', zh:'变多了', en:'got higher'}
+    ],
+    because:[
+      {id:'correct', zh:'身体不能自己制造维生素C，也存不了太久，需要不断从食物里补充', en:"the body can't make its own vitamin C and can't store it for long — it needs to be topped up from food regularly", correct:true},
+      {id:'wrong', zh:'年纪大了皮肤会自然变薄，容易瘀青', en:'skin naturally thins with age and bruises more easily'}
+    ],
+    so:[
+      {id:'correct', zh:'只要在饮食里加入新鲜水果和蔬菜（比如橙子、猕猴桃、彩椒），维生素C库存就会慢慢回升，症状也会跟着好转', en:'once fresh fruits and vegetables (like oranges, kiwis, bell peppers) are added back into her diet, her vitamin C level will slowly rise again and the symptoms should improve too', correct:true},
+      {id:'wrong', zh:'她应该多穿衣服保暖', en:'she should wear warmer clothes'}
+    ],
+    caption:{zh:'看不见的维生素C，需要每天悄悄补充。', en:'The invisible vitamin C needs a quiet top-up every day.'}
+  };
+
+  var TEASER = {zh:'水手待在阳光很少的船舱底部，会不会也缺少另一种"晒太阳才能获得"的维生素？',
+                en:'If a sailor spent all day below deck with almost no sunlight, could they end up missing a different vitamin — one your body makes only when skin meets sunlight?'};
+
+  /* ---------------------------------------------------------------- */
+  /* State                                                              */
+  /* ---------------------------------------------------------------- */
+
+  var state = {
+    lang:'zh', level:'A', reduced:false, scene:0,
+    hook:{prediction:null, revealed:false},
+    obs:{cardIndex:0, tags:[null,null,null,null], feedback:null,
+         bAnswer:null, bCorrect:false, bFeedback:null},
+    model:{tank:100, skipCount:0, eatCount:0},
+    compare:{prediction:null, ran:false, tick:0, resultAnswer:null, resultCorrect:false, showNudge:false},
+    fair:{setupIndex:0, verdicts:[null,null,null], feedback:[null,null,null], wrong:[false,false,false],
+          hintsShown:0, bPick:null, bCorrect:false, bWrong:null},
+    transfer:{a:{blank1:null, blank2:null, feedback:null},
+              b:{because:null, so:null, feedbackBecause:null, feedbackSo:null}}
+  };
+
+  function t(copy){ return copy[state.lang]; }
+
+  /* ---------------------------------------------------------------- */
+  /* Rendering helpers                                                  */
+  /* ---------------------------------------------------------------- */
+
+  function esc(s){
+    return String(s).replace(/[&<>"']/g, function(c){
+      return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
+    });
+  }
+
+  function choiceButton(opts){
+    var cls = 'choice-btn';
+    if (opts.selected) cls += opts.correct === false ? ' incorrect' : (opts.correct ? ' correct' : ' selected');
+    var disabled = opts.disabled ? 'disabled' : '';
+    return '<button type="button" class="'+cls+'" '+disabled+' data-action="'+opts.action+'" data-value="'+esc(opts.value)+'">'+esc(opts.label)+'</button>';
+  }
+
+  function chip(opts){
+    var cls = 'chip';
+    if (opts.selected) cls += opts.correct === false ? ' incorrect' : (opts.correct ? ' correct' : ' selected');
+    var disabled = opts.disabled ? 'disabled' : '';
+    return '<button type="button" class="'+cls+'" '+disabled+' data-action="'+opts.action+'" data-value="'+esc(opts.value)+'">'+esc(opts.label)+'</button>';
+  }
+
+  function tankVisual(value, bandKey, bandLabel, ariaLabel){
+    return ''+
+      '<div class="tank-wrap" role="img" aria-label="'+esc(ariaLabel)+'">'+
+        '<div class="tank"><div class="tank-fill" style="width:'+value+'%"></div></div>'+
+        '<div class="tank-row"><span>'+value+' / 100</span><span class="badge badge-'+bandKey+'">'+esc(bandLabel)+'</span></div>'+
+      '</div>';
+  }
+
+  function dots(n, activeIndex, doneUpTo){
+    var html = '<div class="dots">';
+    for (var i=0;i<n;i++){
+      var cls = 'dot';
+      if (i === activeIndex) cls += ' active';
+      else if (i < doneUpTo) cls += ' done';
+      html += '<span class="'+cls+'"></span>';
+    }
+    return html + '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 0 — Start                                                    */
+  /* ---------------------------------------------------------------- */
+
+  function renderStart(){
+    return ''+
+      '<div class="start-screen">'+
+        '<div class="sailors-icon">⛵</div>'+
+        '<h1>'+esc(t(UI.title))+'</h1>'+
+        '<p>'+esc(t({zh:'一个关于水手、坏血病和一片柑橘的真实历史小谜题。跟着水手的日志，猜一猜、试一试，最后自己说出解释。',
+                     en:'A true historical mini-mystery about sailors, scurvy, and a wedge of citrus. Predict, interact, and explain it in your own words.'}))+'</p>'+
+        '<button type="button" class="primary-btn" data-action="start">'+esc(t(UI.start))+'</button>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 1 — Hook                                                     */
+  /* ---------------------------------------------------------------- */
+
+  function renderHook(){
+    var symptomAria = state.hook.revealed
+      ? t({zh:'水手们牙龈出血、身上有瘀青、非常疲惫', en:'The sailors have bleeding gums, bruised skin, and look exhausted'})
+      : t({zh:'水手们看起来还很健康', en:'The sailors look healthy so far'});
+    var visual = '<div class="sailors-icon">'+(state.hook.revealed ? '🤕👥' : '👥⛵')+'</div>'+
+      '<div role="img" aria-label="'+esc(symptomAria)+'" style="font-size:14px;color:var(--muted)">'+
+        (state.hook.revealed
+          ? esc(t({zh:'❌ 牙龈出血　❌ 皮肤瘀青　❌ 浑身乏力', en:'❌ bleeding gums   ❌ bruised skin   ❌ no energy'}))
+          : esc(t({zh:'（点击下方按钮，查看几个月后发生了什么）', en:'(press the button below to see what happened months later)'})))+
+      '</div>'+
+      (state.hook.revealed ? '' : '<button type="button" class="ghost-btn" data-action="revealHook">'+esc(t(UI.reveal))+'</button>');
+
+    var choicesHtml = '';
+    if (state.hook.revealed){
+      HOOK.choices.forEach(function(c){
+        var selected = state.hook.prediction === c.id;
+        choicesHtml += choiceButton({
+          action:'hookChoice', value:c.id, label:t(c), selected:selected, disabled:false,
+          correct: selected ? undefined : undefined
+        });
+      });
+    }
+
+    return ''+
+      dots(8, 1, 1)+
+      '<div class="shell">'+
+        '<div class="visual-panel">'+visual+'</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[1]))+'</h2>'+
+          '<div class="narrator" aria-live="polite">'+esc(t(HOOK.setup))+'</div>'+
+          (state.hook.revealed ? '<div class="question">'+esc(t(HOOK.question))+'</div>'+choicesHtml : '')+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 2 — Observation                                              */
+  /* ---------------------------------------------------------------- */
+
+  function renderObservation(){
+    var idx = state.obs.cardIndex;
+    var allTagged = state.obs.tags.every(function(v){ return v !== null; });
+    var showExtra = state.level === 'B' && allTagged;
+
+    var body = '';
+    if (!allTagged){
+      var card = OBS.cards[idx];
+      var tagged = state.obs.tags[idx] !== null;
+      var buttons = ['observation','guess','explanation'].map(function(key){
+        return choiceButton({
+          action:'obsTag', value:key, label:t(OBS.tagLabels[key]),
+          selected: state.obs.tags[idx] === key,
+          disabled: tagged,
+          correct: tagged ? (key === card.tag) : undefined
+        });
+      }).join('');
+      body = ''+
+        dots(4, idx, state.obs.tags.filter(function(v){return v!==null;}).length)+
+        '<div class="question">'+esc(t(card.text))+'</div>'+
+        buttons+
+        (state.obs.feedback ? '<div class="feedback '+(state.obs.feedback.good?'good':'hint')+'">'+esc(t(state.obs.feedback.text))+'</div>' : '')+
+        (tagged && state.obs.tags[idx] === card.tag ? '<button type="button" class="ghost-btn" data-action="obsNextCard">'+esc(t(UI.continueCard))+'</button>' : '');
+    } else if (showExtra){
+      var bDone = state.obs.bAnswer !== null;
+      var opts = OBS.bOptions.map(function(o){
+        return choiceButton({
+          action:'obsB', value:o.id, label:t(o),
+          selected: state.obs.bAnswer === o.id,
+          disabled: bDone,
+          correct: bDone ? (o.correct === true) : undefined
+        });
+      }).join('');
+      body = ''+
+        '<div class="feedback good">'+esc(t({zh:'四张卡片都分类正确！', en:'All four cards sorted correctly!'}))+'</div>'+
+        '<div class="question" style="margin-top:10px">'+esc(t(OBS.bQuestion))+'</div>'+
+        opts+
+        (state.obs.bFeedback ? '<div class="feedback '+(state.obs.bFeedback.good?'good':'hint')+'">'+esc(t(state.obs.bFeedback.text))+'</div>' : '');
+    } else {
+      body = '<div class="feedback good">'+esc(t({zh:'四张卡片都分类正确！可以继续下一步了。', en:'All four cards sorted correctly! Ready for the next step.'}))+'</div>';
+    }
+
+    return ''+
+      dots(8, 2, 2)+
+      '<div class="shell">'+
+        '<div class="visual-panel"><div class="sailors-icon">📋</div>'+
+          '<div class="visual-caption">'+esc(t({zh:'把每一句话分类：这是"观察"、"猜测"还是"解释"？', en:'Sort each sentence: is it an Observation, a Guess, or an Explanation?'}))+'</div>'+
+        '</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[2]))+'</h2>'+
+          body+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 3 — Model                                                    */
+  /* ---------------------------------------------------------------- */
+
+  function renderModel(){
+    var band = bandFor(state.model.tank);
+    var ariaLabel = t({zh:'维生素C库存还剩'+state.model.tank+'，'+t(band.label),
+                        en:'Vitamin C level is at '+state.model.tank+' — '+t(band.label)});
+    return ''+
+      dots(8, 3, 3)+
+      '<div class="shell">'+
+        '<div class="visual-panel">'+
+          '<div class="sailors-icon">🧍</div>'+
+          tankVisual(state.model.tank, band.key, t(band.label), ariaLabel)+
+          '<div class="visual-caption">'+esc(t(UI.day))+state.model.skipCount+'</div>'+
+        '</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[3]))+'</h2>'+
+          '<div class="narrator" aria-live="polite">'+esc(t(MODEL.caption))+'</div>'+
+          '<button type="button" class="ghost-btn" data-action="modelSkip">'+esc(t(UI.skipDay))+'</button>'+
+          '<button type="button" class="ghost-btn" data-action="modelEat">'+esc(t(UI.eatFruit))+'</button>'+
+          (state.model.skipCount>0 && state.model.eatCount>0
+            ? '<div class="feedback good">'+esc(t({zh:'很好，你已经看到库存下降和回升的样子了。', en:"Good — you've seen the tank both drop and refill."}))+'</div>'
+            : '<div class="feedback hint">'+esc(t({zh:'两个按钮都至少试一次，才能继续下一步。', en:'Try both buttons at least once before moving on.'}))+'</div>')+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 4 — Compare                                                  */
+  /* ---------------------------------------------------------------- */
+
+  function renderCompare(){
+    var tickIdx = state.compare.ran ? state.compare.tick : -1;
+    var ajiVal = tickIdx >= 0 ? COMPARE.aji[tickIdx] : 100;
+    var bolaVal = tickIdx >= 0 ? COMPARE.bola[tickIdx] : 100;
+    var ajiBand = bandFor(ajiVal), bolaBand = bandFor(bolaVal);
+    var weekLabel = tickIdx >= 0 ? (t({zh:'第 ', en:'Week '})+COMPARE.weeks[tickIdx]+t({zh:' 周', en:''})) : t({zh:'航行开始', en:'Start of voyage'});
+
+    var predictionHtml = COMPARE.choices.map(function(c){
+      return choiceButton({action:'compareChoice', value:c.id, label:t(c), selected: state.compare.prediction===c.id, disabled:false});
+    }).join('');
+
+    var resultBlock = '';
+    if (state.compare.ran && state.compare.tick === 2){
+      var rDone = state.compare.resultAnswer !== null;
+      var rOpts = COMPARE.resultChoices.map(function(o){
+        return choiceButton({
+          action:'compareResult', value:o.id, label:t(o),
+          selected: state.compare.resultAnswer === o.id, disabled: state.compare.resultCorrect,
+          correct: rDone ? (o.correct === true) : undefined
+        });
+      }).join('');
+      resultBlock = '<div class="question" style="margin-top:10px">'+esc(t(COMPARE.resultQuestion))+'</div>'+rOpts+
+        (state.compare.showNudge ? '<div class="feedback hint">'+esc(t(COMPARE.nudge))+'</div>' : '')+
+        (state.compare.resultCorrect ? '<div class="feedback good">'+esc(t(UI.correct))+'</div>' : '');
+    }
+
+    return ''+
+      dots(8, 4, 4)+
+      '<div class="shell">'+
+        '<div class="visual-panel">'+
+          '<div style="font-size:13px;color:var(--muted);margin-bottom:6px">'+esc(weekLabel)+'</div>'+
+          '<div class="compare-grid">'+
+            '<div class="compare-card"><h3>'+esc(t({zh:'阿吉（不吃柑橘）', en:'Aji (no citrus)'}))+'</h3>'+
+              '<div class="tray">🚢 '+esc(t({zh:'饼干 + 腌肉', en:'biscuit + salted meat'}))+'</div>'+
+              tankVisual(ajiVal, ajiBand.key, t(ajiBand.label), t({zh:'阿吉的维生素C库存', en:"Aji's vitamin C level"}))+
+            '</div>'+
+            '<div class="compare-card"><h3>'+esc(t({zh:'宝拉（每天吃柑橘）', en:'Bola (daily citrus)'}))+'</h3>'+
+              '<div class="tray">🍊 '+esc(t({zh:'饼干 + 腌肉 + 柑橘', en:'biscuit + salted meat + citrus'}))+'</div>'+
+              tankVisual(bolaVal, bolaBand.key, t(bolaBand.label), t({zh:'宝拉的维生素C库存', en:"Bola's vitamin C level"}))+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[4]))+'</h2>'+
+          (!state.compare.ran ? '<div class="question">'+esc(t(COMPARE.question))+'</div>'+predictionHtml : '')+
+          (!state.compare.ran ? '<button type="button" class="primary-btn" data-action="compareRun" '+(state.compare.prediction?'':'disabled')+'>'+esc(t(UI.run))+'</button>' : '')+
+          (state.compare.ran && state.compare.tick < 2 ? '<div class="feedback hint">'+esc(t({zh:'快进中……', en:'Fast-forwarding…'}))+'</div>' : '')+
+          resultBlock+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 5 — Fair test                                                */
+  /* ---------------------------------------------------------------- */
+
+  function attrTable(setup){
+    var html = '<table class="attr-table"><thead><tr><th></th><th>'+esc(setup.pair.zh.split(' vs ')[0])+' / '+esc(t({zh:'', en:setup.pair.en.split(' vs ')[0]}))+'</th><th>'+esc(setup.pair.zh.split(' vs ')[1])+'</th></tr></thead><tbody>';
+    setup.rows.forEach(function(r){
+      html += '<tr><th>'+esc(t(r.label))+'</th><td class="'+(r.same?'':'diff')+'">'+esc(t(r.a))+'</td><td class="'+(r.same?'':'diff')+'">'+esc(t(r.b))+'</td></tr>';
+    });
+    html += '</tbody></table>';
+    return html;
+  }
+
+  function renderFair(){
+    var body = '';
+    var hintBlock = '<div class="hint-list">'+
+        FAIR.hints.map(function(h,i){
+          return '<button type="button" class="ghost-btn" data-action="fairHint" data-value="'+i+'">'+esc(t(UI.hint))+' '+(i+1)+'</button>';
+        }).join('')+
+      '</div>'+
+      (state.fair.hintsShown>0 ? FAIR.hints.slice(0,state.fair.hintsShown).map(function(h){return '<div class="feedback hint">'+esc(t(h))+'</div>';}).join('') : '');
+
+    if (state.level === 'A'){
+      var idx = state.fair.setupIndex;
+      var setup = FAIR.setups[idx];
+      var locked = state.fair.verdicts[idx] !== null; // only true once answered CORRECTLY
+      body = ''+
+        dots(3, idx, state.fair.verdicts.filter(function(v){return v!==null;}).length)+
+        '<div style="font-weight:600;margin-bottom:4px">'+esc(t(setup.pair))+'</div>'+
+        attrTable(setup)+
+        '<div class="chip-row" style="margin-top:10px">'+
+          choiceButton({action:'fairVerdict', value:'fair', label:t(UI.fair), selected: locked && setup.fair, disabled:locked, correct: locked ? true : undefined})+
+          choiceButton({action:'fairVerdict', value:'notfair', label:t(UI.notFair), selected: locked && !setup.fair, disabled:locked, correct: locked ? true : undefined})+
+        '</div>'+
+        (locked ? '<div class="feedback good">'+esc(t(setup.why))+'</div>'
+                : (state.fair.wrong[idx] ? '<div class="feedback hint">'+esc(t(FAIR.wrongNudge))+'</div>' : ''))+
+        (locked && idx < 2 ? '<button type="button" class="ghost-btn" data-action="fairNext">'+esc(t(UI.continueCard))+'</button>' : '')+
+        hintBlock;
+    } else {
+      var picked = state.fair.bPick !== null; // only true once the CORRECT candidate was picked
+      body = ''+
+        '<div class="question">'+esc(t(FAIR.bQuestion))+'</div>'+
+        FAIR.setups.map(function(setup, i){
+          var isThePick = picked && i === state.fair.bPick;
+          var wasWrongAttempt = state.fair.bWrong === i;
+          var btnDisabled = picked;
+          var btnCls = 'choice-btn';
+          if (isThePick) btnCls += ' correct';
+          return '<div class="compare-card" style="margin-bottom:10px">'+
+            '<h3>'+esc(t(UI.candidate))+' '+(i+1)+' — '+esc(t(setup.pair))+'</h3>'+
+            attrTable(setup)+
+            '<button type="button" class="'+btnCls+'" '+(btnDisabled?'disabled':'')+' data-action="fairBPick" data-value="'+i+'">'+
+              esc(t(UI.pickOne))+
+            '</button>'+
+            (isThePick ? '<div class="feedback good">'+esc(t(UI.whyLabel))+'：'+esc(t(setup.why))+'</div>' : '')+
+            (!picked && wasWrongAttempt ? '<div class="feedback hint">'+esc(t(FAIR.wrongNudge))+'</div>' : '')+
+          '</div>';
+        }).join('')+
+        hintBlock;
+    }
+
+    return ''+
+      dots(8, 5, 5)+
+      '<div class="shell">'+
+        '<div class="visual-panel"><div class="sailors-icon">⚖️</div>'+
+          '<div class="visual-caption">'+esc(t({zh:'真实历史：1747 年，一位船医比较了不同水手组的"药方"。', en:'True history: in 1747, a ship’s doctor compared different remedies across sailor pairs.'}))+'</div>'+
+        '</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[5]))+'</h2>'+
+          body+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 6 — Transfer                                                 */
+  /* ---------------------------------------------------------------- */
+
+  function renderTransfer(){
+    var body = '';
+    if (state.level === 'A'){
+      var a = state.transfer.a;
+      var frameParts = t(TRANSFER.frame).split('____');
+      var b1 = a.blank1 ? esc(t(TRANSFER.blank1.filter(function(o){return o.id===a.blank1;})[0])) : '____';
+      var b2 = a.blank2 ? esc(t(TRANSFER.blank2.filter(function(o){return o.id===a.blank2;})[0])) : '____';
+      var sentence = frameParts[0]+'<span class="blank">'+b1+'</span>'+frameParts[1]+'<span class="blank">'+b2+'</span>'+(frameParts[2]||'');
+      body = ''+
+        '<div class="sentence-frame">'+sentence+'</div>'+
+        '<div style="font-size:13px;color:var(--muted)">'+esc(t({zh:'选第一个空格：', en:'Choose the first blank:'}))+'</div>'+
+        '<div class="chip-row">'+TRANSFER.blank1.map(function(o){
+          return chip({action:'transferBlank1', value:o.id, label:t(o), selected:a.blank1===o.id, disabled:!!a.feedback && a.feedback.good});
+        }).join('')+'</div>'+
+        '<div style="font-size:13px;color:var(--muted)">'+esc(t({zh:'选第二个空格：', en:'Choose the second blank:'}))+'</div>'+
+        '<div class="chip-row">'+TRANSFER.blank2.map(function(o){
+          return chip({action:'transferBlank2', value:o.id, label:t(o), selected:a.blank2===o.id, disabled:!!a.feedback && a.feedback.good});
+        }).join('')+'</div>'+
+        (a.blank1 && a.blank2 && !a.feedback ? '<button type="button" class="primary-btn" data-action="transferCheckA">'+esc(t({zh:'检查', en:'Check'}))+'</button>' : '')+
+        (a.feedback ? '<div class="feedback '+(a.feedback.good?'good':'hint')+'">'+esc(t(a.feedback.text))+'</div>' : '');
+    } else {
+      var b = state.transfer.b;
+      body = ''+
+        '<div class="narrator" aria-live="polite">'+esc(t(TRANSFER.evidence))+'</div>'+
+        '<div style="font-size:13px;color:var(--muted);margin-top:8px">'+esc(t({zh:'因为……', en:'Because…'}))+'</div>'+
+        '<div class="chip-row">'+TRANSFER.because.map(function(o){
+          return choiceButton({action:'transferBecause', value:o.id, label:t(o), selected:b.because===o.id, disabled: b.feedbackBecause && b.feedbackBecause.good, correct: (b.because===o.id && b.feedbackBecause) ? o.correct===true : undefined});
+        }).join('')+'</div>'+
+        (b.feedbackBecause ? '<div class="feedback '+(b.feedbackBecause.good?'good':'hint')+'">'+esc(t(b.feedbackBecause.text))+'</div>' : '')+
+        (b.feedbackBecause && b.feedbackBecause.good ? ''+
+          '<div style="font-size:13px;color:var(--muted);margin-top:8px">'+esc(t({zh:'所以……', en:'So…'}))+'</div>'+
+          '<div class="chip-row">'+TRANSFER.so.map(function(o){
+            return choiceButton({action:'transferSo', value:o.id, label:t(o), selected:b.so===o.id, disabled: b.feedbackSo && b.feedbackSo.good, correct: (b.so===o.id && b.feedbackSo) ? o.correct===true : undefined});
+          }).join('')+'</div>'+
+          (b.feedbackSo ? '<div class="feedback '+(b.feedbackSo.good?'good':'hint')+'">'+esc(t(b.feedbackSo.text))+'</div>' : '')
+        : '');
+    }
+
+    return ''+
+      dots(8, 6, 6)+
+      '<div class="shell">'+
+        '<div class="visual-panel"><div class="sailors-icon">👵</div>'+
+          '<div class="visual-caption">'+esc(t(TRANSFER.caption))+'</div>'+
+        '</div>'+
+        '<div class="panel-right">'+
+          '<h2 class="scene-title">'+esc(t(SCENE_NAMES[6]))+'</h2>'+
+          body+
+        '</div>'+
+      '</div>';
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Scene 7 — Summary                                                  */
+  /* ---------------------------------------------------------------- */
+
+  function renderSummary(){
+    var predictionText = '—';
+    if (state.hook.prediction){
+      var c = HOOK.choices.filter(function(x){return x.id===state.hook.prediction;})[0];
+      predictionText = t(c);
+    }
+    var explanationText = '—';
+    if (state.level === 'A'){
+      var a = state.transfer.a;
+      if (a.blank1 && a.blank2){
+        var frameParts = t(TRANSFER.frame).split('____');
+        explanationText = frameParts[0]+t(TRANSFER.blank1.filter(function(o){return o.id===a.blank1;})[0])+frameParts[1]+t(TRANSFER.blank2.filter(function(o){return o.id===a.blank2;})[0])+(frameParts[2]||'');
+      }
+    } else {
+      var b = state.transfer.b;
+      if (b.because && b.so){
+        var bec = t(TRANSFER.because.filter(function(o){return o.id===b.because;})[0]);
+        var so = t(TRANSFER.so.filter(function(o){return o.id===b.so;})[0]);
+        explanationText = state.lang==='zh' ? ('因为'+bec+'，所以'+so+'。') : (bec.charAt(0).toUpperCase()+bec.slice(1)+', so '+so+'.');
+      }
+    }
+
+    return ''+
+      dots(8, 7, 7)+
+      '<h2 class="scene-title">'+esc(t(SCENE_NAMES[7]))+'</h2>'+
+      '<div class="summary-box"><h3>'+esc(t(UI.yourPrediction))+'</h3><div>'+esc(predictionText)+'</div></div>'+
+      '<div class="summary-box"><h3>'+esc(t(UI.yourExplanation))+'</h3><div>'+esc(explanationText)+'</div></div>'+
+      '<div class="teaser"><strong>'+esc(t(UI.teaserLabel))+'</strong><div style="margin-top:6px">'+esc(t(TEASER))+'</div></div>'+
+      '<div style="margin-top:16px"><button type="button" class="ghost-btn" data-action="restart">'+esc(t(UI.restart))+'</button></div>';
+  }
+
+  var SCENE_RENDERERS = [renderStart, renderHook, renderObservation, renderModel, renderCompare, renderFair, renderTransfer, renderSummary];
+
+  /* ---------------------------------------------------------------- */
+  /* canProceed                                                         */
+  /* ---------------------------------------------------------------- */
+
+  function canProceed(){
+    switch(state.scene){
+      case 1: return state.hook.prediction !== null;
+      case 2: return state.obs.tags.every(function(v,i){ return v === OBS.cards[i].tag; }) && (state.level==='A' || state.obs.bCorrect);
+      case 3: return state.model.skipCount>0 && state.model.eatCount>0;
+      case 4: return state.compare.resultCorrect === true;
+      case 5: return state.level==='A'
+        ? state.fair.verdicts.every(function(v){ return v !== null; })
+        : state.fair.bCorrect === true;
+      case 6: return state.level==='A'
+        ? (state.transfer.a.feedback && state.transfer.a.feedback.good)
+        : (state.transfer.b.feedbackSo && state.transfer.b.feedbackSo.good);
+      default: return false;
+    }
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Chrome: header + footer                                            */
+  /* ---------------------------------------------------------------- */
+
+  function renderChrome(){
+    document.getElementById('lang-btn').textContent = t(UI.toEnglish);
+    document.getElementById('level-btn').textContent = state.level==='A' ? t(UI.switchToB) : t(UI.switchToA);
+    document.getElementById('reduced-label').textContent = t(UI.reducedMotion);
+    document.getElementById('reduced-toggle').checked = state.reduced;
+    document.getElementById('course-title').textContent = t(UI.title);
+    var stepLabel = state.scene===0 ? '' : (state.scene + ' / 7 · ' + t(SCENE_NAMES[state.scene]) + ' · ' + t(state.level==='A'?UI.levelA:UI.levelB));
+    document.getElementById('step-label').textContent = stepLabel;
+    document.documentElement.lang = state.lang==='zh' ? 'zh-CN' : 'en';
+    document.body.classList.toggle('reduced', state.reduced);
+
+    var footer = document.getElementById('nav-footer');
+    if (state.scene===0){
+      footer.style.display = 'none';
+    } else if (state.scene===7){
+      footer.style.display = 'flex';
+      footer.innerHTML = '<button type="button" class="ghost-btn" data-action="navBack">'+esc(t(UI.back))+'</button><span></span>';
+    } else {
+      footer.style.display = 'flex';
+      var nextLabel = state.scene===6 ? t(UI.finish) : t(UI.next);
+      footer.innerHTML = ''+
+        '<button type="button" class="ghost-btn" data-action="navBack">'+esc(t(UI.back))+'</button>'+
+        '<button type="button" class="primary-btn" data-action="navNext" '+(canProceed()?'':'disabled')+'>'+esc(nextLabel)+'</button>';
+    }
+  }
+
+  function render(){
+    document.getElementById('app').innerHTML = SCENE_RENDERERS[state.scene]();
+    renderChrome();
+  }
+
+  /* ---------------------------------------------------------------- */
+  /* Actions                                                            */
+  /* ---------------------------------------------------------------- */
+
+  var handlers = {
+    toggleLang: function(){ state.lang = state.lang==='zh' ? 'en' : 'zh'; render(); },
+    toggleLevel: function(){
+      state.level = state.level==='A' ? 'B' : 'A';
+      state.obs = {cardIndex:0, tags:[null,null,null,null], feedback:null, bAnswer:null, bCorrect:false, bFeedback:null};
+      state.fair = {setupIndex:0, verdicts:[null,null,null], feedback:[null,null,null], wrong:[false,false,false], hintsShown:0, bPick:null, bCorrect:false, bWrong:null};
+      state.transfer = {a:{blank1:null, blank2:null, feedback:null}, b:{because:null, so:null, feedbackBecause:null, feedbackSo:null}};
+      render();
+    },
+    toggleReduced: function(_v, el){ state.reduced = el.checked; render(); },
+    start: function(){ state.scene = 1; render(); },
+    restart: function(){
+      state = {
+        lang: state.lang, level: state.level, reduced: state.reduced, scene:0,
+        hook:{prediction:null, revealed:false},
+        obs:{cardIndex:0, tags:[null,null,null,null], feedback:null, bAnswer:null, bCorrect:false, bFeedback:null},
+        model:{tank:100, skipCount:0, eatCount:0},
+        compare:{prediction:null, ran:false, tick:0, resultAnswer:null, resultCorrect:false, showNudge:false},
+        fair:{setupIndex:0, verdicts:[null,null,null], feedback:[null,null,null], wrong:[false,false,false], hintsShown:0, bPick:null, bCorrect:false, bWrong:null},
+        transfer:{a:{blank1:null, blank2:null, feedback:null}, b:{because:null, so:null, feedbackBecause:null, feedbackSo:null}}
+      };
+      render();
+    },
+    navBack: function(){ if (state.scene>0) state.scene -= 1; render(); },
+    navNext: function(){ if (canProceed() && state.scene<7) state.scene += 1; render(); },
+
+    revealHook: function(){ state.hook.revealed = true; render(); },
+    hookChoice: function(v){ state.hook.prediction = v; render(); },
+
+    obsTag: function(v){
+      var idx = state.obs.cardIndex;
+      if (state.obs.tags[idx] !== null) return;
+      var card = OBS.cards[idx];
+      var good = v === card.tag;
+      state.obs.tags[idx] = good ? v : null;
+      state.obs.feedback = good
+        ? {good:true, text:{zh:'对了！', en:'Correct!'}}
+        : {good:false, text:{zh:'再想想：这是亲眼看到的事实，还是没根据的猜测，或者是对原因的解释？', en:'Think again: is this something actually observed, an unproven guess, or an explanation of the cause?'}};
+      if (!good) state.obs.tags[idx] = null;
+      render();
+    },
+    obsNextCard: function(){
+      state.obs.cardIndex = Math.min(state.obs.cardIndex+1, OBS.cards.length-1);
+      state.obs.feedback = null;
+      render();
+    },
+    obsB: function(v){
+      if (state.obs.bAnswer !== null) return;
+      state.obs.bAnswer = v;
+      var opt = OBS.bOptions.filter(function(o){return o.id===v;})[0];
+      state.obs.bCorrect = !!opt.correct;
+      state.obs.bFeedback = opt.correct
+        ? {good:true, text:{zh:'对了！这才是真正的原因。', en:'Correct — that’s the real cause.'}}
+        : {good:false, text:{zh:'这个解释没有跟上证据，再看看哪个解释真正对应了饮食缺少新鲜水果这个事实。', en:'This one doesn’t match the evidence — which explanation actually connects to the missing fresh fruit?'}};
+      if (!opt.correct) state.obs.bAnswer = null;
+      render();
+    },
+
+    modelSkip: function(){ state.model.tank = Math.max(0, state.model.tank-5); state.model.skipCount++; render(); },
+    modelEat: function(){ state.model.tank = Math.min(100, state.model.tank+50); state.model.eatCount++; render(); },
+
+    compareChoice: function(v){ state.compare.prediction = v; render(); },
+    compareRun: function(){
+      if (!state.compare.prediction) return;
+      state.compare.ran = true; state.compare.tick = 0; render();
+      var delay = state.reduced ? 0 : 700;
+      if (delay === 0){ state.compare.tick = 2; render(); return; }
+      var n = 0;
+      var timer = setInterval(function(){
+        n++;
+        state.compare.tick = n;
+        render();
+        if (n>=2) clearInterval(timer);
+      }, delay);
+    },
+    compareResult: function(v){
+      if (state.compare.resultCorrect) return;
+      state.compare.resultAnswer = v;
+      var opt = COMPARE.resultChoices.filter(function(o){return o.id===v;})[0];
+      if (opt.correct){ state.compare.resultCorrect = true; state.compare.showNudge = false; }
+      else { state.compare.showNudge = true; state.compare.resultAnswer = null; }
+      render();
+    },
+
+    fairVerdict: function(v){
+      var idx = state.fair.setupIndex;
+      if (state.fair.verdicts[idx] !== null) return; // already answered correctly, locked
+      var setup = FAIR.setups[idx];
+      var good = (v==='fair') === setup.fair;
+      if (good){
+        state.fair.verdicts[idx] = v;
+        state.fair.feedback[idx] = true;
+        state.fair.wrong[idx] = false;
+      } else {
+        state.fair.wrong[idx] = true; // show a nudge, buttons stay enabled for another try
+      }
+      render();
+    },
+    fairNext: function(){ state.fair.setupIndex = Math.min(state.fair.setupIndex+1, FAIR.setups.length-1); render(); },
+    fairHint: function(v){ state.fair.hintsShown = Math.max(state.fair.hintsShown, parseInt(v,10)+1); render(); },
+    fairBPick: function(v){
+      if (state.fair.bPick !== null) return; // already answered correctly, locked
+      var i = parseInt(v,10);
+      if (FAIR.setups[i].fair === true){
+        state.fair.bPick = i;
+        state.fair.bCorrect = true;
+        state.fair.bWrong = null;
+      } else {
+        state.fair.bWrong = i; // show a nudge on that candidate, all candidates stay pickable
+      }
+      render();
+    },
+
+    transferBlank1: function(v){ if (state.transfer.a.feedback && state.transfer.a.feedback.good) return; state.transfer.a.blank1 = v; state.transfer.a.feedback = null; render(); },
+    transferBlank2: function(v){ if (state.transfer.a.feedback && state.transfer.a.feedback.good) return; state.transfer.a.blank2 = v; state.transfer.a.feedback = null; render(); },
+    transferCheckA: function(){
+      var a = state.transfer.a;
+      var o1 = TRANSFER.blank1.filter(function(o){return o.id===a.blank1;})[0];
+      var o2 = TRANSFER.blank2.filter(function(o){return o.id===a.blank2;})[0];
+      var good = o1.correct && o2.correct;
+      a.feedback = good
+        ? {good:true, text:{zh:'对了！', en:'Correct!'}}
+        : {good:false, text:{zh:'再看看：奶奶缺少的是什么？缺少之后体内的维生素C会怎么样？', en:'Look again: what has grandma been missing, and what happens to her vitamin C because of it?'}};
+      if (!good){ a.blank1 = null; a.blank2 = null; }
+      render();
+    },
+    transferBecause: function(v){
+      var b = state.transfer.b;
+      if (b.feedbackBecause && b.feedbackBecause.good) return;
+      b.because = v;
+      var opt = TRANSFER.because.filter(function(o){return o.id===v;})[0];
+      b.feedbackBecause = opt.correct
+        ? {good:true, text:{zh:'对了！', en:'Correct!'}}
+        : {good:false, text:{zh:'再想想：这个原因跟奶奶缺少新鲜水果这件事有关系吗？', en:'Think again: does this reason actually connect to grandma missing fresh fruit?'}};
+      if (!opt.correct) b.because = null;
+      render();
+    },
+    transferSo: function(v){
+      var b = state.transfer.b;
+      if (b.feedbackSo && b.feedbackSo.good) return;
+      b.so = v;
+      var opt = TRANSFER.so.filter(function(o){return o.id===v;})[0];
+      b.feedbackSo = opt.correct
+        ? {good:true, text:{zh:'对了！', en:'Correct!'}}
+        : {good:false, text:{zh:'这个建议没有解决真正的问题。奶奶需要补充什么？', en:'That suggestion doesn’t address the real problem — what does grandma need to top up?'}};
+      if (!opt.correct) b.so = null;
+      render();
+    }
+  };
+
+  document.addEventListener('click', function(e){
+    var el = e.target.closest('[data-action]');
+    if (!el) return;
+    var action = el.dataset.action;
+    if (handlers[action]) handlers[action](el.dataset.value, el);
+  });
+  document.getElementById('reduced-toggle').addEventListener('change', function(e){
+    handlers.toggleReduced(null, e.target);
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

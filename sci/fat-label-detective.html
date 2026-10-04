@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>脂肪侦探 · Fat Detective</title>
+<style>
+  :root{
+    --ivory:#fbf9f1; --ink:#14312f; --muted:#48605d;
+    --teal:#0f6f6b; --teal-soft:#dcefec;
+    --blue:#2f7fc0; --blue-soft:#e2eefa;
+    --sun:#eab34a; --sun-soft:#fbeecd;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--ivory);color:var(--ink);
+    font-family:"Segoe UI","PingFang SC","Microsoft YaHei",system-ui,sans-serif;}
+  h1,h2,h3,p{margin:0;}
+  button{font:inherit;cursor:pointer;}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+  /* A4 — a visible focus ring on everything that can be reached by keyboard/switch */
+  :focus-visible{outline:3px solid var(--blue);outline-offset:2px;border-radius:6px;}
+  [tabindex="-1"]:focus{outline:3px solid var(--blue);outline-offset:3px;}
+  #stage:focus{outline:none;}
+  .skip{position:absolute;left:-9999px;top:0;background:#fff;padding:12px 16px;min-height:44px;
+    display:inline-flex;align-items:center;border-radius:8px;z-index:100;}
+  .skip:focus{left:16px;top:16px;}
+  [hidden]{display:none!important;}
+
+  header{position:sticky;top:0;z-index:20;background:rgba(255,255,255,.96);
+    border-bottom:1px solid rgba(20,49,47,.15);backdrop-filter:blur(4px);}
+  .header-inner{max-width:1280px;margin:0 auto;padding:10px 20px;display:flex;
+    flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;}
+  .brand{display:flex;align-items:center;gap:10px;min-width:0;}
+  .brand h1{font-size:18px;font-weight:800;white-space:nowrap;}
+  .brand .sub{font-size:12px;color:var(--muted);}
+  .controls{display:flex;flex-wrap:wrap;align-items:center;gap:10px;}
+  .seg{display:flex;border:1px solid rgba(20,49,47,.2);border-radius:999px;padding:3px;background:#fff;}
+  .seg button{border:none;background:transparent;border-radius:999px;padding:0 14px;
+    font-size:13px;font-weight:600;color:var(--muted);min-height:44px;min-width:44px;}
+  .seg button.active{background:var(--teal);color:#fff;}
+  /* A4 — the whole label is the 44px target, and the box itself is finger-sized */
+  .chk{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+    white-space:nowrap;min-height:44px;padding:0 8px;cursor:pointer;}
+  .chk input[type="checkbox"]{width:22px;height:22px;margin:0;}
+  .ghost-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;
+    border-radius:999px;border:1px solid rgba(20,49,47,.3);background:#fff;color:var(--ink);
+    padding:0 16px;font-size:13px;font-weight:600;}
+  .ghost-btn:hover{background:var(--blue-soft);}
+  .primary-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;
+    border-radius:999px;border:none;background:var(--teal);color:#fff;padding:0 26px;
+    font-size:16px;font-weight:700;}
+  .primary-btn:hover{background:#0b5b57;}
+  .primary-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+  main{max-width:1280px;margin:0 auto;padding:20px 16px 110px;min-height:60vh;}
+  .progress-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+  .dots{display:flex;gap:6px;flex:1;}
+  .dot{height:6px;flex:1;border-radius:4px;background:rgba(20,49,47,.15);}
+  .dot.done{background:var(--teal);}
+  .dot.current{background:var(--blue);}
+  .step-label{font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;}
+
+  .scene-grid{display:grid;gap:20px;align-items:start;}
+  @media (min-width:900px) and (orientation:landscape){
+    /* U3/U5/U6 — the stage is a fixed-height shell (viewport minus header and the
+       fixed footer). Each column scrolls inside itself, so the PAGE never scrolls and
+       the fixed footer can never hide the question the child has to answer next.
+       --stage-h is measured from real geometry after every render (syncStageHeight). */
+    main{padding-bottom:16px;}
+    .scene-grid{grid-template-columns:minmax(0,60fr) minmax(0,40fr);height:var(--stage-h,auto);}
+    .left-col,.right-col{max-height:100%;overflow-y:auto;overscroll-behavior:contain;padding-right:4px;}
+  }
+  /* Portrait / narrow: let the header scroll away instead of eating a quarter of a
+     phone screen (the 44px targets make it taller). */
+  @media (max-width:899px){ header{position:static;} }
+  .panel{border-radius:22px;background:rgba(255,255,255,.85);border:1px solid rgba(20,49,47,.15);
+    padding:18px;}
+  .visual-panel{min-height:320px;display:flex;flex-direction:column;justify-content:center;}
+  .right-col{display:flex;flex-direction:column;gap:14px;}
+
+  .narrator{display:flex;gap:12px;border-radius:18px;border:1px solid rgba(15,111,107,.25);
+    background:rgba(255,255,255,.92);padding:14px;box-shadow:0 1px 2px rgba(0,0,0,.04);}
+  .narrator .who{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:4px;}
+  .narrator p{font-size:16px;line-height:1.55;margin-bottom:6px;}
+  .avo{width:38px;height:38px;flex:none;}
+
+  .choice-btn{display:block;width:100%;text-align:left;border-radius:16px;border:2px solid rgba(20,49,47,.22);
+    background:#fff;padding:12px 16px;font-size:15px;line-height:1.4;color:var(--ink);min-height:48px;}
+  .choice-btn:hover{border-color:var(--blue);background:var(--blue-soft);}
+  .choice-btn.selected{border-color:var(--teal);background:var(--teal-soft);}
+  .choice-btn.wrong{border-color:var(--sun);background:var(--sun-soft);}
+  .choice-btn.inline{display:inline-block;width:auto;}
+  .choice-row{display:flex;flex-wrap:wrap;gap:8px;}
+  .choice-col{display:flex;flex-direction:column;gap:8px;}
+
+  .feedback{border-radius:16px;border:2px solid var(--teal);background:var(--teal-soft);
+    padding:12px 16px;font-size:15px;line-height:1.5;}
+  .feedback.hint{border-color:var(--sun);background:var(--sun-soft);}
+  .field-label{font-size:14px;font-weight:700;}
+  .caption{text-align:center;font-size:13px;color:var(--muted);margin-top:8px;}
+
+  footer.nav{position:fixed;left:0;right:0;bottom:0;background:rgba(251,249,241,.97);
+    border-top:1px solid rgba(20,49,47,.15);backdrop-filter:blur(4px);z-index:20;}
+  .nav-inner{max-width:1200px;margin:0 auto;padding:10px 16px;display:flex;
+    align-items:center;justify-content:space-between;}
+
+  .label-card{border-radius:16px;border:2px solid var(--teal);background:#fff;padding:14px;
+    width:150px;text-align:center;}
+  .label-card.dim{background:var(--blue-soft);}
+  .label-card .icon{font-size:34px;}
+  .label-card .name{font-size:12px;color:var(--muted);margin-top:6px;}
+  .label-card .badge{display:inline-block;margin-top:8px;border-radius:999px;background:var(--sun-soft);
+    border:1px solid var(--sun);font-size:10.5px;font-weight:700;padding:3px 10px;}
+  .label-card .row{display:flex;justify-content:space-between;border-top:1px solid rgba(20,49,47,.15);
+    margin-top:10px;padding-top:8px;font-size:12px;}
+  .label-card .row .g{font-weight:800;color:var(--teal);font-size:16px;}
+  .label-pair{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;}
+
+  .food-shape{width:150px;margin:0 auto;text-align:center;}
+  .food-shape .icon{font-size:38px;}
+  .food-shape .shape{margin:12px auto;height:60px;display:flex;align-items:center;justify-content:center;}
+  .shape-solid{width:90px;height:54px;border-radius:10px;background:color-mix(in oklab, var(--sun) 45%, white);
+    border:2.5px solid var(--sun);}
+  .shape-liquid{width:110px;height:26px;border-radius:50%;background:color-mix(in oklab, var(--teal) 35%, white);
+    border:2.5px solid var(--teal);}
+  .food-shape .tag{font-size:13px;font-weight:700;margin-top:4px;}
+
+  .gauge-wrap{display:flex;justify-content:center;gap:60px;align-items:flex-end;padding-top:10px;}
+  .gauge-col{text-align:center;}
+  .gauge-top-icon{height:26px;display:flex;align-items:center;justify-content:center;margin-bottom:6px;}
+  .butter-pat{width:34px;height:20px;border-radius:4px;background:color-mix(in oklab, var(--sun) 45%, white);border:2px solid var(--sun);}
+  .oil-drop{width:26px;height:18px;border-radius:50%;background:color-mix(in oklab, var(--teal) 30%, white);border:2px solid var(--teal);}
+  .gauge-20g{font-size:10px;color:var(--muted);margin-bottom:6px;}
+  .gauge{width:46px;height:130px;border:2px solid rgba(20,49,47,.28);border-radius:9px;background:#fff;
+    position:relative;overflow:hidden;display:flex;flex-direction:column-reverse;}
+  /* M1/M2 — a bar only animates on the render the child's own press created (.anim);
+     every other render paints the static end state, so nothing replays by itself. */
+  .gauge .seg{width:100%;}
+  .gauge .seg.anim{animation:growY .6s ease-out both;transform-origin:bottom;}
+  .gauge .seg.goeasy.anim{animation-delay:.25s;}
+  @keyframes growY{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+  .gauge .seg.friendly{background:var(--teal);}
+  .gauge .seg.goeasy{background:var(--sun);}
+  .gauge-label{margin-top:8px;font-size:12px;font-weight:600;}
+  .legend{display:flex;justify-content:center;gap:16px;margin-top:10px;font-size:12px;color:var(--muted);}
+  .legend .sw{display:inline-block;width:11px;height:11px;border-radius:3px;margin-right:5px;vertical-align:-1px;}
+
+  table.fair-table{width:100%;border-collapse:collapse;font-size:13px;}
+  table.fair-table th,table.fair-table td{padding:6px 8px;text-align:left;border-bottom:1px solid rgba(20,49,47,.1);}
+  table.fair-table thead th{color:var(--teal);border-bottom:2px solid rgba(20,49,47,.2);font-weight:700;}
+  table.fair-table tbody th{color:var(--muted);font-weight:600;}
+  .cand-dots{display:flex;gap:6px;margin-bottom:10px;}
+  /* A4 — 44px numbered step dots (Scene 2 cards, Scene 5B candidate tables) */
+  .cand-dot,.navdot{width:44px;height:44px;border-radius:50%;border:1px solid rgba(20,49,47,.3);background:#fff;
+    font-size:14px;font-weight:700;color:var(--muted);display:inline-flex;align-items:center;justify-content:center;}
+  .cand-dot.current{border-color:var(--teal);background:var(--teal);color:#fff;}
+  .cand-dot.picked{border-color:var(--teal);background:var(--teal-soft);color:var(--ink);}
+
+  .row-cue{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;
+    font-size:12.5px;font-weight:600;}
+  .row-cue.ok{background:var(--teal-soft);}
+  .row-cue.bad{background:var(--sun-soft);}
+  .claim-card{border-radius:16px;border:2px solid rgba(20,49,47,.2);background:#fff;padding:16px;}
+  .claim-card .claim{font-size:15px;line-height:1.5;margin-bottom:10px;}
+  .claim-row{display:flex;align-items:baseline;gap:8px;margin-top:6px;}
+  .claim-row .rk{font-size:13px;color:var(--muted);}
+
+  .xray-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .xray-icon{font-size:22px;width:28px;text-align:center;}
+  .xray-name{font-size:12px;color:var(--muted);width:52px;}
+  .xray-bar{flex:1;height:14px;border-radius:7px;border:1.5px solid rgba(20,49,47,.25);background:#fff;
+    overflow:hidden;display:flex;}
+  .xray-bar .seg{height:100%;}
+  .xray-bar .seg.anim{animation:growX .5s ease-out both;transform-origin:left;}
+  @keyframes growX{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+  .xray-bar .seg.goeasy{background:var(--sun);}
+  .xray-bar .seg.friendly{background:var(--teal);}
+  .shape-anim{animation:settle .45s ease-out both;}
+  @keyframes settle{from{transform:translateY(-16px);opacity:0;}to{transform:none;opacity:1;}}
+
+  .slot{min-height:46px;min-width:90px;border-radius:12px;border:2px dashed rgba(20,49,47,.35);
+    background:#fff;padding:8px 12px;font-size:14px;display:inline-flex;align-items:center;
+    justify-content:center;margin:3px;}
+  .slot.filled{border-style:solid;border-color:var(--teal);background:var(--teal-soft);cursor:pointer;}
+
+  .start-wrap{max-width:720px;margin:20px auto 0;}
+  .start-hero{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .start-hero h1{font-size:26px;font-weight:800;}
+  .start-hero .sub{color:var(--muted);font-size:15px;margin-top:2px;}
+  .start-card{border-radius:20px;border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.85);
+    padding:18px;margin:16px 0;}
+  .start-card .grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  .privacy-note{font-size:13px;color:var(--muted);margin-top:14px;}
+
+  .summary-wrap{max-width:760px;margin:10px auto 0;}
+  .core-idea{border-radius:24px;border:2px solid var(--teal);background:var(--teal-soft);padding:20px;margin:16px 0;}
+  .core-idea .lab{font-size:11px;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--teal);}
+  .core-idea p{font-size:18px;line-height:1.55;margin-top:6px;}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  @media (max-width:640px){.two-col{grid-template-columns:1fr;} .gauge-wrap{gap:30px;}}
+  .mini-card{border-radius:16px;border:1px solid rgba(20,49,47,.15);background:rgba(255,255,255,.85);padding:14px;}
+  .mini-card .lab{font-size:15px;font-weight:700;color:#1e5c93;}
+  .mini-card p{color:#1e5c93;font-size:16px;line-height:1.5;margin-top:4px;}
+  .teaser{margin-top:14px;}
+  .foot-actions{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;}
+  /* M2/M3 — reduced motion. `.rm` goes on <html> for BOTH paths (the operating system
+     setting and the in-app preview toggle), so the toggle really does stop every
+     animation and transition, not just a stagger delay. */
+  html.rm *,html.rm *::before,html.rm *::after{animation:none!important;transition:none!important;scroll-behavior:auto!important;}
+  @media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important;transition:none!important;} }
+</style>
+</head>
+<body>
+<a href="#stage" class="skip" id="skiplink">Skip to content</a>
+<header><div class="header-inner" id="header"></div></header>
+<!-- A2: one persistent live region — never replaced by a render, so a screen reader
+     actually announces the narrator instead of losing the node mid-announcement -->
+<div id="live" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
+<main id="stage" tabindex="-1"></main>
+<footer class="nav" id="footer" hidden><div class="nav-inner" id="footer-inner"></div></footer>
+
+<script>
+"use strict";
+/* ============================================================
+   脂肪侦探 · Fat Detective — standalone, single-file build.
+   No server, no build step, no network calls: open this file
+   directly in a browser (double-click / file://). All progress
+   is stored in this browser's localStorage only.
+   ============================================================ */
+
+// ---------- content ----------------------------------------------------
+function t(c){ return c[STATE.lang]; }
+function tl(c){ return c[STATE.level][STATE.lang]; }
+function fmt(str, vals){ return str.replace(/\{(\w+)\}/g, (_,k)=> (vals[k]!==undefined? vals[k] : "{"+k+"}")); }
+
+const UI = {
+  brandTitle:{zh:"脂肪侦探",en:"Fat Detective"},
+  brandSubtitle:{zh:"两包零食写的总脂肪一样多，它们对身体的影响也一样吗？",en:"Two snacks list the same Total Fat — do they affect your body the same way?"},
+  next:{zh:"下一步",en:"Next"}, back:{zh:"上一步",en:"Back"},
+  startOver:{zh:"重新开始",en:"Start over"},
+  levelLabel:{zh:"年级",en:"Level"}, levelA:{zh:"一年级左右",en:"About Grade 1"}, levelB:{zh:"三年级左右",en:"About Grade 3"},
+  langLabel:{zh:"语言",en:"Language"}, langZh:{zh:"中文",en:"中文"}, langEn:{zh:"English",en:"English"},
+  narrator:{zh:"牛油果侦探说",en:"Avo the detective says"},
+  yourIdeaSaved:{zh:"已记下你的第一个想法（这不是考试）。",en:"Your first idea is saved (this is not a test)."},
+  correct:{zh:"对了！",en:"That works!"},
+  hintButton:{zh:"需要提示",en:"Need a hint"}, hint1Label:{zh:"提示 1",en:"Hint 1"}, hint2Label:{zh:"提示 2",en:"Hint 2"},
+  check:{zh:"检查一下",en:"Check"}, notYet:{zh:"还没有，看看提示",en:"Not yet — see the hint"},
+  modelIsAModel:{zh:"这是一个模型：真正的脂肪分子太小，看不见。我们用“在室温下是固体还是液体”来帮你猜脂肪的种类。",
+    en:"This is a model: real fat molecules are far too small to see. We use “solid or liquid at room temperature” as a clue to guess the fat type."},
+  startTitle:{zh:"选择年级和语言（中文或 English），然后开始",en:"Choose a level and language (中文 or English), then begin"},
+  startBegin:{zh:"开始学习",en:"Begin"},
+  startBlurb:{zh:"大约 5 分钟。你要先猜一猜，再动手试一试，最后用自己的话说清楚。",en:"About 5 minutes. You will predict, try things, and then explain the idea in your own words."},
+  noDataNote:{zh:"不收集姓名、声音或图像。进度只存在这台浏览器里，不会联网。",en:"No name, voice, or photos are collected. Progress stays in this browser only — nothing is sent anywhere."},
+  progressStep:{zh:"第 {n} / 6 步",en:"Step {n} of 6"},
+  startOverConfirm:{zh:"要重新开始吗？这会清除这台浏览器上的记录。",en:"Start over? This clears progress saved in this browser."},
+  skipToContent:{zh:"跳到主要内容",en:"Skip to content"},
+  regionVisual:{zh:"画面",en:"Visual"}, regionPanel:{zh:"旁白和问题",en:"Narration and questions"},
+  reducedMotionPreview:{zh:"减少动画",en:"Reduce motion"},
+  perServing:{zh:"每份",en:"per serving"},
+  prevItem:{zh:"上一个",en:"Previous"}, nextItem:{zh:"下一个",en:"Next"},
+};
+
+/* P10 — plain-language descriptions of every visual for a screen reader. They report
+   what is currently on screen and never state the answer the child still owes. */
+const VISUAL = {
+  hookClosed:{zh:"两包零食的图片并排放着：薯片和坚果，营养标签还没有对比出来。",
+    en:"Two snack packages side by side: chips and nuts. Their nutrition labels have not been compared yet."},
+  hookOpen:{zh:"两张营养标签并排放着。薯片这一张上有一个“无反式脂肪”的小牌子。两张都写着每份总脂肪 14 克。",
+    en:"Two nutrition labels side by side. The chips' label carries a “0g trans fat” badge. Both list Total Fat 14g per serving."},
+  obsCard:{zh:"第 {n} 张卡片，一共 {total} 张，上面写着：{text}",en:"Card {n} of {total}. It reads: {text}"},
+  modelIdle:{zh:"观察台上放着{food}，还没有开始观察，看不出它是硬块还是液体。",
+    en:"{food} is on the observation table. The observation has not run yet, so you cannot tell yet whether it is solid or liquid."},
+  modelSettled:{zh:"观察台上的{food}现在看起来是{state}。已经观察了 {n} / {total} 种食物。",
+    en:"The {food} on the observation table now looks {state}. {n} of {total} foods observed."},
+  gaugeIdle:{zh:"两根一样长的尺子，分别代表黄油里的 20 克脂肪和橄榄油里的 20 克脂肪，现在都还是空的。",
+    en:"Two bars of equal length stand for 20g of fat from butter and 20g of fat from olive oil. Both are still empty."},
+  gaugeRan:{zh:"两根一样长的尺子都填满了。黄油那根里“要悠着点”的颜色占 {a}%，橄榄油那根占 {b}%。",
+    en:"Both equal-length bars are filled in. On the butter bar the go-easy color takes {a}%; on the olive-oil bar it takes {b}%."},
+  fairClaim:{zh:"第 {n} 组对比，一共 {total} 组。说法是：{claim}。份量：{serving}。看了什么：{checked}。",
+    en:"Comparison {n} of {total}. The claim is: {claim}. Serving size: {serving}. What was checked: {checked}."},
+  fairTable:{zh:"候选表 {n}，一共 {total} 张。表里的数字：{rows}",en:"Candidate table {n} of {total}. The numbers in it: {rows}"},
+  xray:{zh:"两根 X 光条：牛奶和三文鱼。条里显示了 {pct}% 的内容，两种颜色分别代表要悠着点的脂肪和更友好的脂肪。",
+    en:"Two X-ray bars, milk and salmon. {pct}% of each bar is filled in; the two colors stand for go-easy fat and friendlier fat."},
+};
+
+const SCENE_LABEL = {
+  start:{zh:"开始",en:"Start"}, hook:{zh:"谜题",en:"Mystery"},
+  observation:{zh:"观察还是猜测",en:"Observe or guess"}, model:{zh:"固体还是液体",en:"Solid or liquid"},
+  compare:{zh:"比一比",en:"Compare"}, fairtest:{zh:"公平比较",en:"Fair comparison"},
+  transfer:{zh:"换个情境",en:"Transfer"}, summary:{zh:"总结",en:"Summary"},
+};
+const SCENE_TIME = { hook:"0:00–0:30", observation:"0:30–1:15", model:"1:15–2:15", compare:"2:15–3:15", fairtest:"3:15–4:10", transfer:"4:10–5:00" };
+const SCENE_ORDER = ["hook","observation","model","compare","fairtest","transfer"];
+
+const HOOK = {
+  chipsName:{zh:"薯片",en:"Chips"}, nutsName:{zh:"坚果",en:"Nuts"},
+  totalFatLabel:{zh:"总脂肪",en:"Total Fat"}, grams:"14g",
+  servingNote:{zh:"每份（两包份量一样）",en:"per serving (same serving size)"},
+  badge:{zh:"无反式脂肪！",en:"0g Trans Fat!"},
+  intro:{ A:{zh:"这两包零食摆在一起，还没对比过。按“对比两张标签”，看看会发现什么。",en:"These two snacks are sitting side by side, not compared yet. Press “Compare the two labels” to see what turns up."},
+          B:{zh:"薯片的包装上印着一句很响亮的话。按“对比两张标签”，把两包的“总脂肪”一起亮出来看看。",en:"The chips' package has a loud claim printed on it. Press “Compare the two labels” to light up both “Total Fat” numbers at once."} },
+  compareBtn:{zh:"对比两张标签",en:"Compare the two labels"}, againBtn:{zh:"再看一次",en:"Compare again"},
+  narrator:{ A:{zh:"两包零食每份写的总脂肪都是14克，一模一样！薯片上还写着“无反式脂肪”。它们对身体的影响也一样吗？",en:"Both snacks list the exact same Total Fat per serving: 14g! The chips also say “0g trans fat.” Do they affect your body the same way?"},
+             B:{zh:"薯片和坚果每份的总脂肪数字完全相同（份量也一样），薯片的包装上还多了一句“无反式脂肪”的广告语。这两包零食，对身体的影响真的一样吗？先猜一猜。",en:"The chips and the nuts list the exact same Total Fat per serving (and the serving sizes match), and the chips' package adds a “0g trans fat” claim on top. Do these two snacks really affect your body the same way? Predict first."} },
+  caption:{zh:"牛油果侦探也很好奇：同样的数字，是不是就代表同样健康？",en:"Avo the detective is curious too: does the same number mean the same healthiness?"},
+  question:{zh:"你的第一个想法是：",en:"My first idea is:"},
+  choices:[
+    {id:"same-because-number", zh:"一样健康，因为总脂肪的数字相同", en:"Equally healthy — the total fat number is the same"},
+    {id:"nuts-because-natural", zh:"坚果更健康，因为它是“天然”食物", en:"Nuts are healthier because they're a “natural” food"},
+    {id:"nuts-because-type", zh:"坚果更健康，因为它的脂肪大多是对身体更友好的“不饱和脂肪”，薯片的脂肪大多是要悠着点的“饱和脂肪”", en:"Nuts are healthier because most of their fat is the body-friendlier “unsaturated fat,” while most of the chips' fat is the go-easy “saturated fat”"},
+    {id:"chips-because-badge", zh:"薯片更健康，因为它写着“无反式脂肪”", en:"The chips are healthier because the package says “0g trans fat”"},
+  ]
+};
+
+const OBSERVATION = {
+  narrator:{ A:{zh:"把每张卡片放好：这是“观察”，还是“猜测”？观察是标签上直接写着的。",en:"Sort each card: is it an observation or a guess? An observation is something the label directly says."},
+             B:{zh:"分类四张卡片。观察是标签上直接写着的；猜测是我们想的原因；有一张是“可能的解释”，还没有被证明。",en:"Sort four cards. An observation is directly on the label; a guess is a reason we imagine; one card is a possible explanation that isn't proven yet."} },
+  buckets:{ observation:{zh:"观察",en:"Observation"}, guess:{zh:"猜测",en:"Guess"}, explanation:{zh:"可能的解释（还没证明）",en:"Possible explanation (not proven)"} },
+  cards:[
+    {id:"chips-14g", kind:"observation", zh:"薯片的营养标签上写着每份总脂肪14克。", en:"The chips' label says Total Fat 14g per serving.",
+      fbzh:"这是标签上直接写着的数字。这是观察。", fben:"That's a number the label directly states. That is an observation."},
+    {id:"nuts-14g", kind:"observation", zh:"坚果的营养标签上也写着每份总脂肪14克。", en:"The nuts' label also says Total Fat 14g per serving.",
+      fbzh:"这也是标签上直接写着的数字。这是观察。", fben:"This is also a number the label directly states. That is an observation."},
+    {id:"nuts-guess", kind:"guess", zh:"我猜坚果里的脂肪对身体更好。", en:"I guess the fat in the nuts is better for the body.",
+      fbzh:"这是我们心里的一个猜测，标签上还没证实。这是猜测。", fben:"That's a guess in our head — the label hasn't confirmed it yet. That is a guess."},
+    {id:"type-explanation", kind:"explanation", levelBOnly:true,
+      zh:"因为坚果里的脂肪大多是不饱和脂肪，薯片里的脂肪大多是饱和脂肪，所以坚果的脂肪对身体更友好。",
+      en:"Because the nuts' fat is mostly unsaturated and the chips' fat is mostly saturated, the nuts' fat is friendlier to the body.",
+      fbzh:"这句话用“种类不同”把猜测和证据连了起来，是一个可能的解释，但还需要看饱和脂肪那一行才能确认。",
+      fben:"This links the guess to evidence with “the type differs” — it's a possible explanation, but it still needs the saturated-fat row to be confirmed."},
+  ],
+  levelBPrompt:{zh:"如果完全不看“饱和脂肪”那一行，下面哪句话还站得住脚？",en:"If you never looked at the “Saturated Fat” row at all, which of these would still hold up?"},
+  /* P11 — the correct option is deliberately not first. */
+  levelBChoices:[
+    {id:"guess-still-true", correct:false, zh:"“我猜坚果更好”这句猜测也还站得住脚", en:"The guess “I think nuts are better” still holds up too"},
+    {id:"only-observations", correct:true, zh:"只有卡片1和2（两个总脂肪数字）还站得住脚", en:"Only cards 1 and 2 (the two Total Fat numbers) still hold up"},
+    {id:"explanation-still-true", correct:false, zh:"坚果更友好的那句解释也还站得住脚", en:"The explanation of why nuts are friendlier still holds up too"},
+  ],
+  wrongFeedback:{zh:"再想想：这句话是标签上直接写的吗？还是我们想的原因，或者还没证明的解释？",en:"Think again: does the label directly say this, or is it a reason we imagined, or an unproven explanation?"},
+};
+
+const MODEL = {
+  narrator:{ A:{zh:"点一种食物，再按“开始观察”，看看它在室温下是变成硬块，还是摊成液体。",en:"Tap a food, then press “Watch closely,” and see whether it settles into a solid block or spreads into a liquid at room temperature."},
+             B:{zh:"把每种食物都点一遍、按“开始观察”。硬块大多是饱和脂肪（要悠着点），液体大多是不饱和脂肪（更友好）——这是一个模型，帮我们猜脂肪的种类。",en:"Tap every food and press “Watch closely” for each. A solid block is mostly saturated fat (go-easy); a liquid is mostly unsaturated fat (friendlier) — this is a model that helps us guess the fat type."} },
+  foods:[
+    {id:"butter", icon:"🧈", zh:"黄油", en:"Butter", state:"solid", tag:"goEasy"},
+    {id:"lard", icon:"🥓", zh:"猪油", en:"Lard", state:"solid", tag:"goEasy"},
+    {id:"olive-oil", icon:"🫒", zh:"橄榄油", en:"Olive oil", state:"liquid", tag:"friendly"},
+    {id:"fish-oil", icon:"🐟", zh:"鱼油", en:"Fish oil", state:"liquid", tag:"friendly"},
+    {id:"walnut-oil", icon:"🌰", zh:"坚果油", en:"Walnut oil", state:"liquid", tag:"friendly"},
+  ],
+  stateLabel:{ solid:{zh:"固体",en:"solid"}, liquid:{zh:"液体",en:"liquid"} },
+  tagLabel:{ goEasy:{zh:"要悠着点的脂肪",en:"go-easy fat"}, friendly:{zh:"更友好的脂肪",en:"friendlier fat"} },
+  pickFood:{zh:"选一种食物",en:"Pick a food"},
+  watchBtn:{zh:"开始观察",en:"Watch closely"}, watchAgainBtn:{zh:"再观察一次",en:"Watch again"},
+  progress:{zh:"已观察 {n} / {total} 种",en:"Observed {n} of {total}"},
+  rule:{zh:"小窍门：室温下摊成液体的，大多是不饱和脂肪；结成硬块的，大多是饱和脂肪。",en:"A trick: what stays liquid at room temperature is usually unsaturated fat; what turns into a solid block is usually saturated fat."},
+  checkPrompt:{zh:"哪一种在室温下会保持液体？",en:"Which one stays liquid at room temperature?"},
+  checkChoices:[ {id:"butter", correct:false, zh:"黄油", en:"Butter"}, {id:"olive-oil", correct:true, zh:"橄榄油", en:"Olive oil"} ],
+  checkWrong:{zh:"再按一次每种食物旁边的“开始观察”，看看哪个变成了硬块，哪个摊成了液体。",en:"Press “Watch closely” again next to each food, and see which one turns solid and which spreads into a liquid."},
+};
+
+const COMPARE = {
+  butterGoEasy:65, oliveGoEasy:14,
+  narrator:{ A:{zh:"黄油里的20克脂肪，和橄榄油里的20克脂肪。先猜一猜：哪一个的“要悠着点”脂肪更多？猜完按“开始观察”看结果。",en:"20g of fat from butter, and 20g of fat from olive oil. First guess: which one has more “go-easy” fat? Then press “Watch closely” to see."},
+             B:{zh:"两份都是20克脂肪。先预测哪一份的饱和脂肪（要悠着点）占比更大，再运行观察，最后在两根一样长的尺子上比较颜色比例。",en:"Both are 20g of fat. Predict which one has the bigger share of saturated (go-easy) fat, then run the observation and compare the color split on two equal-length bars."} },
+  predictPrompt:{zh:"我猜：",en:"My prediction:"},
+  choices:[ {id:"butter-more", zh:"黄油里“要悠着点”的比例更大", en:"Butter has the bigger “go-easy” share"},
+            {id:"olive-more", zh:"橄榄油里更大", en:"Olive oil has the bigger share"},
+            {id:"same", zh:"差不多一样", en:"About the same"} ],
+  runBtn:{zh:"开始观察",en:"Watch closely"}, runAgainBtn:{zh:"再观察一次",en:"Watch again"},
+  aShort:{zh:"黄油",en:"Butter"}, bShort:{zh:"橄榄油",en:"Olive oil"},
+  gaugeUnit:{zh:"20克脂肪",en:"20 g fat"},
+  scaleCaption:{zh:"这两根尺子长度一样——都代表“20克脂肪”，颜色的比例才是关键。",en:"These two bars are the same length — both stand for “20g of fat.” It's the color split that matters."},
+  goEasyLegend:{zh:"要悠着点（饱和）",en:"Go-easy (saturated)"}, friendlyLegend:{zh:"更友好（不饱和）",en:"Friendlier (unsaturated)"},
+  resultPrompt:{zh:"哪一个词能解释这个不同，虽然两份都是20克脂肪？",en:"Which single word explains this difference, even though both are 20g of fat?"},
+  /* P11 — the correct option is deliberately not first. */
+  resultChoices:[ {id:"amount", correct:false, zh:"数量", en:"Amount"}, {id:"color", correct:false, zh:"颜色", en:"Color"}, {id:"type", correct:true, zh:"种类", en:"Type"} ],
+  wrongResult:{zh:"再看看两根尺子——它们的长度一样吗？长度代表的是总量。",en:"Look again at the two bars — is their length the same? Length stands for the total amount."},
+  explain:{ A:{zh:"黄油里的20克脂肪和橄榄油里的20克脂肪一样多，但黄油里大多是要悠着点的脂肪，橄榄油里大多是更友好的脂肪。同样多，种类不一样。",en:"The 20g of fat from butter and the 20g of fat from olive oil are the same amount, but butter's is mostly go-easy fat and olive oil's is mostly friendlier fat. Same amount, different type."},
+           B:{zh:"总脂肪的克数一样，不代表对身体的影响一样——要看饱和脂肪占了多少。这里我们只改变了脂肪的种类（来源），克数没有变。",en:"The same total-fat grams doesn't mean the same effect on the body — it depends how much is saturated. Here only the fat's type (source) changed; the gram amount stayed the same."} },
+};
+
+const FAIRTEST = {
+  /* P10 — the narrator no longer states the fairness rule before the child judges;
+     it points at what to look at and hands the judgement back to the child. */
+  narrator:{ A:{zh:"看看这一组对比：两边的份量怎么样？他们看了标签上的哪几行？你觉得这样比，公平吗？",en:"Look at this comparison: what are the two serving sizes? Which rows of the label did they read? Do you think comparing this way is fair?"},
+             B:{zh:"先把三张候选表都翻一遍，再决定哪一组比得公平。看表里的份量和每一行数字，自己判断。",en:"Flip through all three candidate tables first, then decide which comparison is fair. Look at the serving sizes and every row of numbers, and judge for yourself."} },
+  levelA:{
+    servingLabel:{zh:"份量",en:"Serving size"}, checkedLabel:{zh:"看了什么",en:"What was checked"},
+    question:{zh:"这组对比公平吗？",en:"Is this comparison fair?"}, fairBtn:{zh:"公平",en:"Fair"}, notFairBtn:{zh:"不公平",en:"Not fair"},
+    hint1:{zh:"一样一样地看：两份的份量一样吗？有没有看饱和脂肪那一行？",en:"Check one by one: same serving size? Was the saturated-fat row checked?"},
+    hint2:{zh:"公平的比较：份量要一样，而且真的看了“饱和脂肪”那一行——只看总脂肪或包装广告语都不够。",en:"A fair comparison: matching serving sizes, and the “Saturated Fat” row actually checked — Total Fat alone, or a front-of-package claim alone, isn't enough."},
+    wrongFair:{zh:"再看一次：份量是不是一样？饱和脂肪那一行是不是真的被看到了？两个都对，才算公平。",en:"Look again: is the serving size the same? Was the saturated-fat row actually seen? Both must be true for it to be fair."},
+    wrongNotFair:{zh:"再看一次：这一组里份量一样，也真的看了饱和脂肪那一行——它其实是公平的。",en:"Look again: here the serving size matches, and the saturated-fat row was actually checked — it is actually fair."},
+    allDone:{zh:"公平的比较需要两件事都做到：份量一样，而且真的看到了“饱和脂肪”那一行。",en:"A fair comparison needs both: matching serving sizes, and the “Saturated Fat” row actually seen."},
+    nextBtn:{zh:"下一组对比",en:"Next comparison"},
+    experiments:[
+      {id:"full-check", fair:true, servingOk:true, checkedOk:true,
+        claimzh:"两包都拿“一份”来比，而且总脂肪和饱和脂肪两行都看了：坚果的饱和脂肪更少。",
+        claimen:"Both were compared using “one serving” each, and both the Total Fat and Saturated Fat rows were checked — the nuts have less saturated fat.",
+        servingNeutralzh:"一份 对 一份", servingNeutralen:"One serving vs. one serving",
+        servingzh:"两份份量一样", serviceen:"Same serving size", checkedzh:"总脂肪和饱和脂肪都看了", checkeden:"Checked both Total Fat and Saturated Fat",
+        whyzh:"份量一样，而且看了饱和脂肪那一行，比较才有意义。", whyen:"Same serving size, and the saturated-fat row was actually checked — the comparison means something."},
+      {id:"diff-serving", fair:false, servingOk:false, checkedOk:false,
+        claimzh:"薯片一份的总脂肪，比坚果一大把的总脂肪少，所以薯片更健康。",
+        claimen:"The chips' one serving has less total fat than a big handful of nuts, so the chips are healthier.",
+        servingNeutralzh:"一份 对 一大把", servingNeutralen:"One serving vs. a big handful",
+        servingzh:"一份 vs 一大把，份量不一样", serviceen:"One serving vs. a big handful — different sizes", checkedzh:"只看了总脂肪", checkeden:"Only Total Fat was checked",
+        whyzh:"份量不一样，数字大不一定是脂肪多，可能只是那份更大。", whyen:"The serving sizes differ — a bigger number might just mean a bigger portion, not more fat per bite."},
+      {id:"badge-only", fair:false, servingOk:true, checkedOk:false,
+        claimzh:"薯片包装上写着“无反式脂肪”，所以薯片比坚果更健康。",
+        claimen:"The chips' package says “0g trans fat,” so the chips are healthier than the nuts.",
+        servingNeutralzh:"一份 对 一份", servingNeutralen:"One serving vs. one serving",
+        servingzh:"两份份量一样", serviceen:"Same serving size", checkedzh:"只看了包装广告语，没看饱和脂肪那行", checkeden:"Only the front-of-package claim was checked — not the saturated-fat row",
+        whyzh:"包装上的广告语只讲了一件事，饱和脂肪那一行还没看呢。", whyen:"The front-of-package claim only tells you one thing — the saturated-fat row still hasn't been checked."},
+    ]
+  },
+  levelB:{
+    colA:{zh:"候选表 A",en:"Candidate A"}, colB:{zh:"候选表 B",en:"Candidate B"},
+    rowServing:{zh:"份量",en:"Serving size"}, rowTotal:{zh:"总脂肪（每份）",en:"Total Fat (per serving)"}, rowSat:{zh:"饱和脂肪（每份）",en:"Saturated Fat (per serving)"}, rowClaim:{zh:"包装广告语",en:"Front-of-package claim"},
+    candidateLabel:{zh:"候选表 {n} / {total}",en:"Candidate table {n} of {total}"},
+    seeAllFirst:{zh:"先把 {total} 张候选表都看一遍，还差 {left} 张。",en:"Look at all {total} candidate tables first — {left} still to go."},
+    hint1:{zh:"先看看两份的份量是不是一样。",en:"First check whether the two serving sizes match."},
+    hint2:{zh:"光看“总脂肪”或包装广告语不够，要能在两边都看到“饱和脂肪”那一行才能比较。",en:"Total Fat alone, or a package's front claim alone, isn't enough — you need to see the “Saturated Fat” row on both sides to compare."},
+    correctNote:{zh:"这就是公平的比较：份量一样，而且真的能看到饱和脂肪的数据。",en:"That is a fair comparison: matching serving size, and saturated-fat data you can actually see on both sides."},
+    pickThis:{zh:"选这个作为公平比较",en:"Choose this as the fair comparison"}, picked:{zh:"已选这个",en:"Chosen"},
+    options:[
+      {id:"messy", correct:false,
+        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        b:{serving:"100g", total:"40g", sat:"5g", claimzh:"“无添加糖”", claimen:"“no added sugar”"},
+        whyzh:"份量不一样（30克 vs 100克），数字没法直接比。", whyen:"The serving sizes differ (30g vs. 100g) — the numbers can't be compared directly."},
+      {id:"fair", correct:true,
+        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        b:{serving:"30g", total:"14g", sat:"2g", claimzh:"（无广告语）", claimen:"(no claim printed)"},
+        whyzh:"份量一样，而且饱和脂肪那一行都写清楚了，可以直接比较种类。", whyen:"Same serving size, and the Saturated Fat row is filled in for both — you can directly compare type."},
+      {id:"badge-blind", correct:false,
+        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        b:{serving:"30g", total:"14g", sat:"未标注", claimzh:"“天然食品”", claimen:"“natural food”", satEn:"Not listed"},
+        whyzh:"坚果这一份的“饱和脂肪”没有标出来，没法真的比较种类，只看广告语“天然”不够。", whyen:"This side's Saturated Fat isn't listed on the label, so you can't actually compare type — the “natural” claim on its own isn't enough."},
+    ]
+  }
+};
+
+const TRANSFER = {
+  narrator:{ A:{zh:"新情况：全脂牛奶和三文鱼，标签上都写着总脂肪8克。选对的词卡，拼出一句解释。",en:"New situation: whole milk and salmon both list Total Fat as 8g. Pick the right chips and build one sentence explaining why."},
+             B:{zh:"新情况：牛奶和三文鱼总脂肪一样多，都是8克。先选出最好的证据，再用“因为……所以……”完成解释。",en:"New situation: milk and salmon have the same Total Fat, 8g. First choose the best evidence, then finish the explanation with “because … so …”."} },
+  milkName:{zh:"牛奶",en:"Milk"}, salmonName:{zh:"三文鱼",en:"Salmon"},
+  milkGoEasy:65, salmonGoEasy:14,
+  /* P11 — display order only. `slot` still decides what is right, so the word chips
+     are no longer sitting on screen in the order that answers the question. */
+  aChips:[
+    {id:"color-distractor", slot:-1, zh:"牛奶是白色的，三文鱼是粉色的", en:"Milk is white and salmon is pink"},
+    {id:"milk-saturated", slot:1, zh:"牛奶里的脂肪大多是饱和脂肪", en:"most of milk's fat is saturated fat"},
+    {id:"vitamin-distractor", slot:-1, zh:"三文鱼还含有维生素D", en:"Salmon also contains vitamin D"},
+    {id:"so-salmon-friendlier", slot:2, zh:"所以三文鱼的脂肪对身体更友好，牛奶适量喝就好", en:"so salmon's fat is friendlier to the body, and milk is fine in a reasonable amount"},
+    {id:"salmon-unsaturated", slot:0, zh:"三文鱼里的脂肪大多是不饱和脂肪", en:"Most of salmon's fat is unsaturated fat"},
+  ],
+  aWrongChip:{zh:"这一句不是我们要说明的重点。想想哪句话真的和“脂肪种类不同”有关。",en:"That piece doesn't fit. Think about which lines are really about “the fat type differs.”"},
+  aWrongOrder:{zh:"顺序还不对。先说三文鱼的脂肪种类，再说牛奶的脂肪种类，最后说结论。",en:"The order isn't right yet. First say salmon's fat type, then milk's fat type, then the conclusion."},
+  bEvidencePrompt:{zh:"哪一个是最好的证据？",en:"Which one is the best evidence?"},
+  /* P11 — in all three groups the correct option is deliberately not first. */
+  bEvidence:[ {id:"salmon-pink", correct:false, zh:"三文鱼是粉色的，牛奶是白色的", en:"Salmon is pink and milk is white"},
+              {id:"both-8g-diff-type", correct:true, zh:"两者标签都写着总脂肪8克，但三文鱼的脂肪大多不饱和，牛奶的脂肪大多饱和", en:"Both labels list Total Fat as 8g, but salmon's fat is mostly unsaturated and milk's is mostly saturated"},
+              {id:"milk-cheaper", correct:false, zh:"牛奶通常比三文鱼便宜", en:"Milk is usually cheaper than salmon"} ],
+  bBecausePrompt:{zh:"因为……",en:"Because …"},
+  bBecause:[ {id:"amount-differs", correct:false, zh:"总脂肪的克数不同", en:"the total fat amount differs"},
+             {id:"color-differs", correct:false, zh:"食物的颜色不同", en:"the food's color differs"},
+             {id:"fat-type-differs", correct:true, zh:"脂肪的种类不同", en:"the fat type differs"} ],
+  bSoPrompt:{zh:"所以……",en:"so …"},
+  bSo:[ {id:"milk-avoid", correct:false, zh:"以后再也不能喝牛奶了", en:"milk should never be drunk again"},
+        {id:"salmon-friendlier-milk-moderate", correct:true, zh:"三文鱼的脂肪对身体更友好，牛奶适量喝就好", en:"salmon's fat is friendlier to the body, and milk is fine in a reasonable amount"},
+        {id:"same-healthy", correct:false, zh:"两个其实一样健康", en:"the two are actually equally healthy"} ],
+  bWrong:{zh:"再想想：哪个证据 / 因为 / 所以真的和“脂肪种类不同”有关，并且和三文鱼、牛奶这个例子对得上？",en:"Think again: which evidence / because / so option is really about “the fat type differs” and matches the salmon-and-milk example?"},
+  invisibleCaption:{zh:"你看不出食物里脂肪的种类——营养标签帮你“看见”看不见的东西。",en:"You can't tell a food's fat type just by looking at it — the nutrition label helps you “see” the invisible."},
+  /* P10 — the tip used to name the answer to the Level B “because …” question. */
+  tip:{zh:"提示：先看看两者的总脂肪是不是一样，再看看 X 光条里两种颜色各占多少。",en:"Tip: first check whether the total fat is the same, then look at how much of each color fills the X-ray bars."},
+};
+
+const SUMMARY = {
+  title:{zh:"你成了脂肪侦探",en:"You've become a Fat Detective"},
+  coreIdeaLabel:{zh:"核心结论",en:"The core idea"},
+  coreIdea:{ A:{zh:"有的食物里的脂肪能帮我的身体，室温下它是液体的；有的食物里的脂肪吃多了要悠着点，室温下它是硬的。",en:"Some food's fat helps my body, and it stays liquid at room temperature; some food's fat means I should go easy on it, and it stays solid at room temperature."},
+             B:{zh:"总脂肪克数一样，不代表一样健康——要看“饱和脂肪”占了多少。饱和脂肪少、不饱和脂肪多的食物，对身体更友好。",en:"Same total-fat grams doesn't mean equally healthy — it depends how much is “saturated fat.” A food with less saturated fat and more unsaturated fat is friendlier to your body."} },
+  startLabel:{zh:"你一开始的想法",en:"Your first idea"}, endLabel:{zh:"你最后的解释",en:"Your explanation now"},
+  teaserLabel:{zh:"下一个问题",en:"Next question"},
+  teaser:{zh:"那“蛋白质”呢？食物标签上的蛋白质，是不是也分“更友好”和“要悠着点”？",en:"What about “Protein”? Does the Protein line on a label also split into a friendlier kind and a go-easy kind?"},
+  replay:{zh:"再做一次",en:"Do it again"},
+  notRecorded:{zh:"（本次未记录）",en:"(not recorded this run)"},
+};
+
+// ---------- state ---------------------------------------------------------
+const STORAGE_KEY = "fmlos.fat-label-detective.standalone.v1";
+let STATE = loadState();
+
+function freshProgress(){ return { phase:"start", sceneIndex:0, record:{}, hintsUsed:{} }; }
+function freshState(){ return { level:"A", lang:"en", reducedMotionPreview:false, byLevel:{ A:freshProgress(), B:freshProgress() } }; }
+function loadState(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return freshState();
+    const parsed = JSON.parse(raw);
+    if(!parsed || !parsed.byLevel || !parsed.byLevel.A || !parsed.byLevel.B) return freshState();
+    return parsed;
+  }catch(e){ return freshState(); }
+}
+function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); }catch(e){} }
+
+/* M2/M3 — one switch for both paths: the operating system setting and the in-app
+   preview toggle. render() puts `.rm` on <html>, which kills every animation. */
+let osReducedMotion = false;
+try{ osReducedMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){}
+function reducedMotion(){ return osReducedMotion || STATE.reducedMotionPreview===true; }
+
+/* A3 — the control the child just pressed, remembered across the re-render so that
+   (a) only what this press created may animate and (b) focus can be put back on it
+   instead of falling to the top of the page. Inline onclick handlers are used
+   throughout this file, so the handler text itself is the key. */
+let lastActKey = null, lastActFn = null, lastFocusedQuestion = null;
+document.addEventListener("click", function(e){
+  const el = e.target && e.target.closest ? e.target.closest("[onclick]") : null;
+  if(!el) return;
+  lastActKey = el.getAttribute("onclick");
+  lastActFn = (lastActKey.match(/^\s*([A-Za-z0-9_$]+)/)||[])[1] || null;
+}, true);
+
+/* A3 — a renderer calls this to say "this is what the child must do next"; after the
+   render it is scrolled into its column's visible area and given focus. */
+let pendingQuestionId = null;
+function markQuestion(id){ pendingQuestionId = id; return id; }
+function fieldLabel(text, id){
+  return '<div class="field-label"'+(id? ' id="'+id+'" tabindex="-1"' : '')+'>'+text+'</div>';
+}
+/* P10/A2 — a description of what is on screen right now, for a screen reader. */
+function visual(desc, html){ return '<div role="img" aria-label="'+escAttr(desc)+'">'+html+'</div>'; }
+function escAttr(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;"); }
+
+function prog(){ return STATE.byLevel[STATE.level]; }
+function rec(){ return prog().record; }
+function patchRecord(patch){ Object.assign(rec(), patch); saveState(); render(); }
+function setPhaseScene(phase, idx){ prog().phase = phase; if(idx!==undefined) prog().sceneIndex = idx; saveState(); render(); }
+
+// ---------- completion logic -----------------------------------------------
+function observationCards(){ return OBSERVATION.cards.filter(c => STATE.level==="B" || !c.levelBOnly); }
+function observationDone(){
+  const p = rec().observationPlacements || {};
+  const cards = observationCards();
+  const allRight = cards.every(c => p[c.id]===c.kind);
+  const explainOk = STATE.level==="A" || (OBSERVATION.levelBChoices.find(x=>x.id===rec().observationExplainChoice)||{}).correct===true;
+  return allRight && explainOk;
+}
+function modelDone(){
+  const r = rec();
+  const observed = r.modelObservedFoods || [];
+  return observed.length >= MODEL.foods.length && (r.modelRuns||0) >= 1 &&
+    (MODEL.checkChoices.find(c=>c.id===r.modelCheckChoice)||{}).correct===true;
+}
+function compareDone(){
+  const r = rec();
+  return !!r.comparePrediction && !!r.compareRan &&
+    (COMPARE.resultChoices.find(c=>c.id===r.compareResultChoice)||{}).correct===true;
+}
+function fairDone(){
+  const r = rec();
+  if(STATE.level==="A"){
+    return FAIRTEST.levelA.experiments.every(e => r.fairAAnswers && r.fairAAnswers[e.id] === (e.fair?"fair":"unfair"));
+  }
+  return (FAIRTEST.levelB.options.find(o=>o.id===r.fairChecked)||{}).correct===true;
+}
+function transferDone(){
+  const r = rec();
+  if(STATE.level==="A"){
+    const slots = r.transferSlots || [];
+    if(slots.length!==3 || slots.some(s=>s==null)) return false;
+    return slots.every((id,i)=> (TRANSFER.aChips.find(c=>c.id===id)||{}).slot===i);
+  }
+  const ev=(TRANSFER.bEvidence.find(c=>c.id===r.transferEvidence)||{}).correct===true;
+  const bc=(TRANSFER.bBecause.find(c=>c.id===r.transferBecause)||{}).correct===true;
+  const so=(TRANSFER.bSo.find(c=>c.id===r.transferSo)||{}).correct===true;
+  return ev&&bc&&so;
+}
+function isSceneComplete(scene){
+  switch(scene){
+    case "hook": return !!rec().hookPrediction;
+    case "observation": return observationDone();
+    case "model": return modelDone();
+    case "compare": return compareDone();
+    case "fairtest": return fairDone();
+    case "transfer": return transferDone();
+  }
+  return false;
+}
+function cap(s){ return s.length? s[0].toUpperCase()+s.slice(1) : s; }
+function deriveExplanation(){
+  if(!transferDone()) return null;
+  const r = rec();
+  if(STATE.level==="A"){
+    const parts = (r.transferSlots||[]).map(id => t(pickCopy(TRANSFER.aChips.find(c=>c.id===id))));
+    return parts.join(STATE.lang==="zh" ? "，" : " ") + (STATE.lang==="zh" ? "。" : ".");
+  }
+  const bc = t(pickCopy(TRANSFER.bBecause.find(c=>c.id===r.transferBecause)));
+  const so = t(pickCopy(TRANSFER.bSo.find(c=>c.id===r.transferSo)));
+  return STATE.lang==="zh" ? ("因为"+bc+"，所以"+so+"。") : (cap(bc)+", so "+so+".");
+}
+function pickCopy(obj){ return {zh:obj.zh, en:obj.en}; }
+function hookChoiceLabel(id){ const c = HOOK.choices.find(x=>x.id===id); return c? t(pickCopy(c)) : id; }
+
+// ---------- small render helpers -------------------------------------------
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+/* A2 — whatever the narrator says is mirrored into the one live region that survives
+   a re-render, so a screen reader announces it instead of losing the node. */
+let currentNarratorText = "", announcedText = "";
+function narrator(html, extra){
+  currentNarratorText = String(html).replace(/<[^>]*>/g," ").replace(/&amp;/g,"&").replace(/&lt;/g,"<").replace(/\s+/g," ").trim();
+  return '<div class="narrator"><svg class="avo" viewBox="0 0 48 56" aria-hidden="true">'+avoSvg()+'</svg>'+
+    '<div><div class="who">'+esc(t(UI.narrator))+'</div><div>'+html+'</div>'+(extra||"")+'</div></div>';
+}
+function avoSvg(){
+  return '<path d="M24 3C11 3 5 18 5 30a19 19 0 0 0 38 0C43 18 37 3 24 3Z" fill="color-mix(in oklab, var(--teal) 22%, white)" stroke="var(--teal)" stroke-width="2"/>'+
+  '<circle cx="24" cy="33" r="9" fill="var(--sun)" fill-opacity=".55" stroke="var(--sun)" stroke-width="1.5"/>'+
+  '<path d="M9 12 Q24 4 39 12 L36 15 Q24 10 12 15 Z" fill="var(--ink)" fill-opacity=".75"/>'+
+  '<rect x="16" y="4" width="16" height="8" rx="2" fill="var(--ink)" fill-opacity=".75"/>'+
+  '<circle cx="18" cy="24" r="3" fill="#fff" stroke="var(--teal)" stroke-width="1"/>'+
+  '<circle cx="30" cy="24" r="3" fill="#fff" stroke="var(--teal)" stroke-width="1"/>'+
+  '<circle cx="18" cy="24.6" r="1.4" fill="var(--ink)"/><circle cx="30" cy="24.6" r="1.4" fill="var(--ink)"/>'+
+  '<path d="M17 41c3 2.4 11 2.4 14 0" stroke="var(--ink)" stroke-width="2" stroke-linecap="round" fill="none"/>';
+}
+function choiceBtn(id, label, opts){
+  opts = opts || {};
+  const cls = ["choice-btn"];
+  if(opts.inline) cls.push("inline");
+  if(opts.selected) cls.push(opts.wrong ? "wrong" : "selected");
+  return '<button type="button" class="'+cls.join(" ")+'" onclick="'+opts.onclick+'">'+label+'</button>';
+}
+function feedback(html, tone){ return '<div class="feedback'+(tone==="hint"?" hint":"")+'">'+html+'</div>'; }
+
+// ---------- scene renderers --------------------------------------------
+function sceneShell(left, right){
+  return '<div class="scene-grid">'+
+    '<section class="left-col" aria-label="'+escAttr(t(UI.regionVisual))+'"><div class="panel visual-panel">'+left+'</div></section>'+
+    '<section class="right-col" tabindex="-1" aria-label="'+escAttr(t(UI.regionPanel))+'">'+right+'</section></div>';
+}
+
+function renderHook(){
+  const r = rec();
+  const revealed = r.hookRevealed === true;
+  const chosen = r.hookPrediction;
+  let left = visual(t(revealed? VISUAL.hookOpen : VISUAL.hookClosed),
+    '<div class="label-pair">'+
+    labelCard(true, "🍟", t(HOOK.chipsName), revealed, t(HOOK.badge))+
+    labelCard(false, "🥜", t(HOOK.nutsName), revealed, null)+
+    '</div>');
+  let right = narrator(esc(revealed? tl(HOOK.narrator) : tl(HOOK.intro)),
+    revealed? '<p style="margin-top:8px;font-size:14px;font-weight:600;color:#1e5c93;">'+esc(t(HOOK.caption))+'</p>' : "");
+  right += '<div>';
+  right += revealed
+    ? '<button class="ghost-btn" onclick="hookAgain()">'+esc(t(HOOK.againBtn))+'</button>'
+    : '<button class="primary-btn" onclick="hookReveal()">'+esc(t(HOOK.compareBtn))+'</button>';
+  right += '</div>';
+  if(revealed){
+    right += fieldLabel(esc(t(HOOK.question)), "q-hook")+'<div class="choice-col">';
+    if(!chosen) markQuestion("q-hook");
+    HOOK.choices.forEach(c=>{
+      right += choiceBtn(c.id, esc(t(pickCopy(c))), {selected: chosen===c.id, onclick:"hookPredict('"+c.id+"')"});
+    });
+    right += '</div>';
+    if(chosen) right += feedback(esc(t(UI.yourIdeaSaved)), "good");
+  }
+  return sceneShell(left, right);
+}
+function labelCard(hasBadge, icon, name, revealed, badge){
+  if(!revealed){
+    return '<div class="label-card dim"><div class="icon">'+icon+'</div><div class="name">'+esc(name)+'</div></div>';
+  }
+  return '<div class="label-card"><div style="font-size:12px;color:var(--muted);">'+icon+' '+esc(name)+'</div>'+
+    (badge? '<div class="badge">'+esc(badge)+'</div>' : '<div style="height:26px;"></div>')+
+    '<div class="row"><span>'+esc(t(HOOK.totalFatLabel))+'</span><span class="g">'+HOOK.grams+'</span></div>'+
+    '<div style="font-size:10.5px;color:var(--muted);text-align:right;margin-top:4px;">'+esc(t(HOOK.servingNote))+'</div></div>';
+}
+window.hookReveal = function(){ patchRecord({hookRevealed:true}); };
+window.hookAgain = function(){ patchRecord({hookRevealed:false, hookPrediction:undefined}); };
+window.hookPredict = function(id){ patchRecord({hookPrediction:id}); };
+
+let obsIdx = 0;
+function renderObservation(){
+  const cards = observationCards();
+  const placements = rec().observationPlacements || {};
+  const firstIncomplete = cards.findIndex(c=>placements[c.id]!==c.kind);
+  if(obsIdx===undefined || obsIdx>=cards.length) obsIdx = 0;
+  if(!renderObservation._touched) obsIdx = firstIncomplete===-1? cards.length-1 : Math.max(0,firstIncomplete);
+  const card = cards[obsIdx];
+  const placed = placements[card.id];
+  const isRight = placed===card.kind, isWrong = !!placed && !isRight;
+  const buckets = STATE.level==="B" ? ["observation","guess","explanation"] : ["observation","guess"];
+
+  let left = visual(fmt(t(VISUAL.obsCard), {n:obsIdx+1, total:cards.length, text:t(pickCopy(card))}),
+    '<div style="font-size:12px;font-weight:700;color:var(--muted);">'+(obsIdx+1)+' / '+cards.length+'</div>'+
+    '<p style="font-size:20px;font-weight:600;line-height:1.5;margin-top:8px;">“'+esc(t(pickCopy(card)))+'”</p>');
+  left += '<div style="margin-top:14px;display:flex;gap:6px;flex-wrap:wrap;">';
+  cards.forEach((c,i)=>{
+    const done = placements[c.id]===c.kind;
+    const aria = fmt(t({zh:"第 {n} 张卡片，共 {total} 张",en:"Card {n} of {total}"}), {n:i+1, total:cards.length});
+    left += '<button type="button" class="navdot" onclick="obsGoto('+i+')" aria-label="'+escAttr(aria)+'" aria-current="'+(i===obsIdx?'true':'false')+'" style="'+
+      'border:1px solid '+(i===obsIdx?'var(--teal)':'rgba(20,49,47,.3)')+';'+
+      'background:'+(i===obsIdx?'var(--teal)':(done?'var(--teal-soft)':'#fff'))+';'+
+      'color:'+(i===obsIdx?'#fff':'var(--ink)')+';">'+(i+1)+'</button>';
+  });
+  left += '</div>';
+
+  let right = narrator(esc(tl(OBSERVATION.narrator)));
+  right += fieldLabel(esc(fmt(t({zh:"第 {n} 张卡片放哪里？",en:"Where does card {n} belong?"}),{n:obsIdx+1})), "q-obs");
+  if(!isRight) markQuestion("q-obs");
+  right += '<div class="choice-row">';
+  buckets.forEach(b=>{
+    const sel = placed===b;
+    right += '<button class="choice-btn inline'+(sel?(isRight?' selected':' wrong'):'')+'" onclick="obsPlace(\''+card.id+'\',\''+b+'\')">'+esc(t(OBSERVATION.buckets[b]))+'</button>';
+  });
+  right += '</div>';
+  if(isRight) right += feedback(esc(t(pickCopy({zh:card.fbzh,en:card.fben}))), "good");
+  if(isWrong) right += feedback(esc(t(OBSERVATION.wrongFeedback)), "hint");
+  right += '<div style="display:flex;gap:8px;">'+
+    '<button class="ghost-btn" '+(obsIdx===0?'disabled':'')+' onclick="obsGoto('+(obsIdx-1)+')">'+esc(t(UI.back))+'</button>'+
+    '<button class="ghost-btn" '+(obsIdx>=cards.length-1?'disabled':'')+' onclick="obsGoto('+(obsIdx+1)+')">'+esc(t(UI.next))+'</button>'+
+    '</div>';
+
+  const allPlacedRight = cards.every(c=>placements[c.id]===c.kind);
+  if(STATE.level==="B" && allPlacedRight){
+    const ec = rec().observationExplainChoice;
+    const ok = (OBSERVATION.levelBChoices.find(x=>x.id===ec)||{}).correct===true;
+    right += '<div style="border-top:1px solid rgba(20,49,47,.15);padding-top:12px;">'+
+      fieldLabel(esc(t(OBSERVATION.levelBPrompt)), "q-obsexplain")+'<div class="choice-col" style="margin-top:8px;">';
+    if(!ok) markQuestion("q-obsexplain");
+    OBSERVATION.levelBChoices.forEach(c=>{
+      const sel = ec===c.id;
+      right += '<button class="choice-btn'+(sel?(c.correct?' selected':' wrong'):'')+'" onclick="obsExplain(\''+c.id+'\')">'+esc(t(pickCopy(c)))+'</button>';
+    });
+    right += '</div>';
+    if(ec && !ok) right += feedback(esc(t(OBSERVATION.wrongFeedback)), "hint");
+    right += '</div>';
+  }
+  if(isSceneComplete("observation")) right += feedback(esc(t(UI.correct)), "good");
+  return sceneShell(left, right);
+}
+window.obsGoto = function(i){ obsIdx = Math.max(0, Math.min(i, observationCards().length-1)); render(); };
+window.obsPlace = function(cardId, bucket){
+  renderObservation._touched = true;
+  const cards = observationCards();
+  const c = cards.find(x=>x.id===cardId);
+  const placements = Object.assign({}, rec().observationPlacements||{});
+  placements[cardId] = bucket;
+  patchRecord({observationPlacements: placements});
+  if(c && bucket===c.kind){
+    const nextIncomplete = cards.findIndex(x=>x.id!==cardId && placements[x.id]!==x.kind);
+    /* A3 — the auto-advance is still the child's own action, so it must carry focus to
+       the new card's question instead of dropping it at the top of the page. */
+    if(nextIncomplete!==-1) setTimeout(()=>{
+      obsIdx = nextIncomplete; lastFocusedQuestion = null; lastActKey = "obsGoto("+nextIncomplete+")"; render();
+    }, 500);
+  }
+};
+window.obsExplain = function(id){ renderObservation._touched = true; patchRecord({observationExplainChoice:id}); };
+
+function renderModel(){
+  const r = rec();
+  const selectedId = r.modelSelectedFood || MODEL.foods[0].id;
+  const food = MODEL.foods.find(f=>f.id===selectedId) || MODEL.foods[0];
+  const observed = r.modelObservedFoods || [];
+  const settled = observed.includes(food.id);
+  /* M1 — the shape only settles on the render the child's own "Watch closely" made. */
+  const animate = settled && !reducedMotion() && lastActFn==="modelWatch";
+  const foodName = t(pickCopy(food));
+  const desc = settled
+    ? fmt(t(VISUAL.modelSettled), {food:foodName, state:t(MODEL.stateLabel[food.state]), n:observed.length, total:MODEL.foods.length})
+    : fmt(t(VISUAL.modelIdle), {food:foodName});
+  let left = visual(desc, '<div class="food-shape"><div class="icon" aria-hidden="true">'+food.icon+'</div>'+
+    '<div class="shape">'+(settled ? '<div class="'+(food.state==="solid"?"shape-solid":"shape-liquid")+(animate?' shape-anim':'')+'"></div>' : '<div style="width:80px;height:6px;background:rgba(20,49,47,.12);border-radius:3px;"></div>')+'</div>'+
+    '<div class="tag">'+(settled? esc(t(MODEL.stateLabel[food.state]))+' · '+esc(t(MODEL.tagLabel[food.tag])) : '')+'</div>'+
+    '<div style="font-size:12px;color:var(--muted);margin-top:10px;">'+fmt(esc(t(MODEL.progress)), {n:observed.length, total:MODEL.foods.length})+'</div></div>')+
+    '<p class="caption">'+esc(t(MODEL.rule))+'</p>';
+
+  let right = narrator(esc(tl(MODEL.narrator)));
+  right += fieldLabel(esc(t(MODEL.pickFood)), "q-modelpick");
+  if(observed.length<MODEL.foods.length) markQuestion("q-modelpick");
+  right += '<div class="choice-row">';
+  MODEL.foods.forEach(f=>{
+    right += '<button class="choice-btn inline'+(f.id===food.id?' selected':'')+'" onclick="modelSelect(\''+f.id+'\')">'+f.icon+' '+esc(t(pickCopy(f)))+(observed.includes(f.id)?' ✓':'')+'</button>';
+  });
+  right += '</div><button class="ghost-btn" onclick="modelWatch()">'+esc(settled? t(MODEL.watchAgainBtn) : t(MODEL.watchBtn))+'</button>';
+
+  if(observed.length>=MODEL.foods.length){
+    const cc = r.modelCheckChoice;
+    const ok = (MODEL.checkChoices.find(c=>c.id===cc)||{}).correct===true;
+    right += fieldLabel(esc(t(MODEL.checkPrompt)), "q-modelcheck")+'<div class="choice-row">';
+    if(!ok) markQuestion("q-modelcheck");
+    MODEL.checkChoices.forEach(c=>{
+      const sel = cc===c.id;
+      right += '<button class="choice-btn inline'+(sel?(c.correct?' selected':' wrong'):'')+'" onclick="modelCheck(\''+c.id+'\')">'+esc(t(pickCopy(c)))+'</button>';
+    });
+    right += '</div>';
+    if(cc && !ok) right += feedback(esc(t(MODEL.checkWrong)), "hint");
+    if(ok) right += feedback(esc(t(UI.correct)), "good");
+  }
+  return sceneShell(left, right);
+}
+window.modelSelect = function(id){ patchRecord({modelSelectedFood:id}); };
+window.modelWatch = function(){
+  const r = rec();
+  const selectedId = r.modelSelectedFood || MODEL.foods[0].id;
+  const observed = (r.modelObservedFoods||[]).slice();
+  if(!observed.includes(selectedId)) observed.push(selectedId);
+  patchRecord({ modelObservedFoods: observed, modelRuns: (r.modelRuns||0)+1 });
+};
+window.modelCheck = function(id){ patchRecord({modelCheckChoice:id}); };
+
+function renderCompare(){
+  const r = rec();
+  const ran = r.compareRan===true;
+  const desc = ran? fmt(t(VISUAL.gaugeRan), {a:COMPARE.butterGoEasy, b:COMPARE.oliveGoEasy}) : t(VISUAL.gaugeIdle);
+  let left = visual(desc, '<div class="gauge-wrap">'+
+    compareGaugeCol("butter-pat", COMPARE_A_GO_EASY(), t(COMPARE.aShort), ran)+
+    compareGaugeCol("oil-drop", COMPARE_B_GO_EASY(), t(COMPARE.bShort), ran)+
+    '</div>')+'<p class="caption">'+esc(t(COMPARE.scaleCaption))+'</p>';
+  if(ran){
+    left += '<div class="legend"><span><span class="sw" style="background:var(--sun);"></span>'+esc(t(COMPARE.goEasyLegend))+'</span>'+
+      '<span><span class="sw" style="background:var(--teal);"></span>'+esc(t(COMPARE.friendlyLegend))+'</span></div>';
+  }
+
+  let right = narrator(esc(tl(COMPARE.narrator)));
+  right += fieldLabel(esc(t(COMPARE.predictPrompt)), "q-comppredict")+'<div class="choice-col">';
+  if(!r.comparePrediction) markQuestion("q-comppredict");
+  COMPARE.choices.forEach(c=>{
+    right += choiceBtn(c.id, esc(t(pickCopy(c))), {selected:r.comparePrediction===c.id, onclick:"comparePredict('"+c.id+"')"});
+  });
+  right += '</div>';
+  if(r.comparePrediction) right += '<button class="ghost-btn" onclick="compareRun()">'+esc(ran? t(COMPARE.runAgainBtn) : t(COMPARE.runBtn))+'</button>';
+  if(ran){
+    const rc = r.compareResultChoice;
+    const ok = (COMPARE.resultChoices.find(c=>c.id===rc)||{}).correct===true;
+    right += fieldLabel(esc(t(COMPARE.resultPrompt)), "q-compresult")+'<div class="choice-col">';
+    if(!ok) markQuestion("q-compresult");
+    COMPARE.resultChoices.forEach(c=>{
+      const sel = rc===c.id;
+      right += '<button class="choice-btn'+(sel?(c.correct?' selected':' wrong'):'')+'" onclick="compareResult(\''+c.id+'\')">'+esc(t(pickCopy(c)))+'</button>';
+    });
+    right += '</div>';
+    if(rc && !ok) right += feedback(esc(t(COMPARE.wrongResult)), "hint");
+    if(ok) right += feedback(esc(tl(COMPARE.explain)), "good");
+  }
+  return sceneShell(left, right);
+}
+function COMPARE_A_GO_EASY(){ return rec().compareRan ? COMPARE.butterGoEasy : 0; }
+function COMPARE_B_GO_EASY(){ return rec().compareRan ? COMPARE.oliveGoEasy : 0; }
+function compareGaugeCol(shapeClass, goEasyPct, label, ran){
+  const friendlyPct = 100-goEasyPct;
+  /* M1 — grow the bars only on the render the child's own "Watch closely" created. */
+  const a = (ran && !reducedMotion() && lastActFn==="compareRun") ? " anim" : "";
+  return '<div class="gauge-col"><div class="gauge-top-icon"><div class="'+shapeClass+'"></div></div>'+
+    '<div class="gauge-20g">'+esc(t(COMPARE.gaugeUnit))+'</div>'+
+    '<div class="gauge"><div class="seg friendly'+a+'" style="height:'+(ran? friendlyPct : 0)+'%;"></div>'+
+    '<div class="seg goeasy'+a+'" style="height:'+(ran? goEasyPct : 0)+'%;"></div></div>'+
+    '<div class="gauge-label">'+esc(label)+'</div></div>';
+}
+window.comparePredict = function(id){ patchRecord({comparePrediction:id}); };
+window.compareRun = function(){ patchRecord({compareRan:true}); };
+window.compareResult = function(id){ patchRecord({compareResultChoice:id}); };
+
+let fairAHints = 0, fairBHints = 0;
+function renderFairtest(){
+  return STATE.level==="A" ? renderFairA() : renderFairB();
+}
+function renderFairA(){
+  const A = FAIRTEST.levelA;
+  const answers = rec().fairAAnswers || {};
+  const step = Math.min(rec().fairAStep||0, A.experiments.length-1);
+  const exp = A.experiments[step];
+  const answer = answers[exp.id];
+  const correctAns = exp.fair ? "fair" : "unfair";
+  const answeredRight = answer===correctAns;
+
+  /* P10 — the ✓ / ✕ cue IS the answer, so it stays hidden until the child has
+     committed a judgement; before that the rows show the plain facts only. */
+  const showCue = !!answer;
+  const servingText = showCue ? t({zh:exp.servingzh,en:exp.serviceen}) : t({zh:exp.servingNeutralzh,en:exp.servingNeutralen});
+  const checkedText = t({zh:exp.checkedzh,en:exp.checkeden});
+  const desc = fmt(t(VISUAL.fairClaim), {n:step+1, total:A.experiments.length,
+    claim:t({zh:exp.claimzh,en:exp.claimen}), serving:servingText, checked:checkedText});
+  let left = '<p style="font-size:13px;color:var(--muted);">'+fmt(esc(t({zh:"第 {n} / {total} 组对比",en:"Comparison {n} of {total}"})),{n:step+1,total:A.experiments.length})+'</p>';
+  left += visual(desc, '<div class="claim-card"><div class="claim">“'+esc(t({zh:exp.claimzh,en:exp.claimen}))+'”</div>'+
+    fairRow("🥣", t(A.servingLabel), exp.servingOk, servingText, showCue)+
+    fairRow("🔍", t(A.checkedLabel), exp.checkedOk, checkedText, showCue)+
+    '</div>');
+
+  let right = narrator(esc(tl(FAIRTEST.narrator)));
+  right += fieldLabel(esc(t(A.question)), "q-faira");
+  if(!answeredRight) markQuestion("q-faira");
+  right += '<div class="choice-row">'+
+    '<button class="choice-btn inline'+(answer==="fair"?(answeredRight?' selected':' wrong'):'')+'" onclick="fairAJudge(\'fair\')">'+esc(t(A.fairBtn))+'</button>'+
+    '<button class="choice-btn inline'+(answer==="unfair"?(answeredRight?' selected':' wrong'):'')+'" onclick="fairAJudge(\'unfair\')">'+esc(t(A.notFairBtn))+'</button></div>';
+
+  if(answer && !answeredRight){
+    right += feedback(esc(t(answer==="fair"?A.wrongFair:A.wrongNotFair)), "hint");
+    right += hintPanel(t(A.hint1), t(A.hint2), fairAHints, "fairAHint");
+  }
+  if(answeredRight){
+    right += feedback(esc(t({zh:exp.whyzh,en:exp.whyen})), "good");
+  }
+  if(answeredRight && step < A.experiments.length-1){
+    right += '<button class="primary-btn" onclick="fairANext()">'+esc(t(A.nextBtn))+'</button>';
+  }
+  if(fairDone()) right += feedback(esc(t(A.allDone)), "good");
+  return sceneShell(left, right);
+}
+function fairRow(icon, label, ok, valueText, showCue){
+  const cue = showCue
+    ? '<span class="row-cue '+(ok?'ok':'bad')+'">'+(ok?'✓':'✕')+' '+esc(valueText)+'</span>'
+    : '<span class="row-cue" style="background:transparent;color:var(--ink);font-weight:600;">'+esc(valueText)+'</span>';
+  return '<div class="claim-row"><span aria-hidden="true">'+icon+'</span><span class="rk">'+esc(label)+':</span>'+cue+'</div>';
+}
+function hintPanel(h1, h2, shown, fnName){
+  let html = '<div>';
+  if(shown<1) html += '<button class="ghost-btn" onclick="'+fnName+'()">'+esc(t(UI.hintButton))+'</button>';
+  if(shown>=1) html += '<div class="feedback" style="border-color:var(--blue);background:var(--blue-soft);margin-top:6px;"><b>'+esc(t(UI.hint1Label))+':</b> '+esc(h1)+'</div>';
+  if(shown>=1 && shown<2) html += '<button class="ghost-btn" style="margin-top:6px;" onclick="'+fnName+'()">'+esc(t(UI.hint2Label))+'</button>';
+  if(shown>=2) html += '<div class="feedback" style="border-color:var(--blue);background:var(--blue-soft);margin-top:6px;"><b>'+esc(t(UI.hint2Label))+':</b> '+esc(h2)+'</div>';
+  html += '</div>';
+  return html;
+}
+window.fairAHint = function(){ fairAHints = Math.min(2, fairAHints+1); render(); };
+window.fairAJudge = function(v){
+  const A = FAIRTEST.levelA;
+  const step = Math.min(rec().fairAStep||0, A.experiments.length-1);
+  const exp = A.experiments[step];
+  const right = v===(exp.fair?"fair":"unfair");
+  const answers = Object.assign({}, rec().fairAAnswers||{});
+  answers[exp.id] = v;
+  if(!right && fairAHints<2) fairAHints = Math.min(2, fairAHints+1);
+  patchRecord({fairAAnswers:answers});
+};
+window.fairANext = function(){
+  const A = FAIRTEST.levelA;
+  fairAHints = 0;
+  patchRecord({fairAStep: Math.min((rec().fairAStep||0)+1, A.experiments.length-1)});
+};
+
+let fairBView = 0;
+function renderFairB(){
+  const B = FAIRTEST.levelB;
+  const choice = rec().fairChoice;
+  const checked = rec().fairChecked;
+  const checkedOpt = B.options.find(o=>o.id===checked);
+  const isCorrect = checkedOpt && checkedOpt.correct===true;
+  if(fairBView>=B.options.length) fairBView = 0;
+  const shown = B.options[fairBView];
+  const shownPicked = choice===shown.id;
+
+  /* P3/P10 — the child must actually look at every candidate table before Check
+     unlocks, so "pick the fair one" cannot be satisfied by taking the first one shown. */
+  const seen = (rec().fairBSeen||[]).slice();
+  if(!seen.includes(shown.id)){ seen.push(shown.id); rec().fairBSeen = seen; saveState(); }
+  const seenAll = B.options.every(o=>seen.includes(o.id));
+  const stillToSee = B.options.length - seen.length;
+
+  const rowsDesc = [
+    t(B.rowServing)+': '+shown.a.serving+' / '+shown.b.serving,
+    t(B.rowTotal)+': '+shown.a.total+' / '+shown.b.total,
+    t(B.rowSat)+': '+shown.a.sat+' / '+((shown.b.satEn && STATE.lang==="en")? shown.b.satEn : shown.b.sat),
+    t(B.rowClaim)+': '+t({zh:shown.a.claimzh,en:shown.a.claimen})+' / '+t({zh:shown.b.claimzh,en:shown.b.claimen})
+  ].join("; ");
+
+  let left = '<div class="cand-dots">';
+  B.options.forEach((o,i)=>{
+    const aria = fmt(t(B.candidateLabel), {n:i+1, total:B.options.length});
+    left += '<button type="button" class="cand-dot'+(i===fairBView?' current':(seen.includes(o.id)?' picked':''))+
+      '" aria-label="'+escAttr(aria)+'" aria-current="'+(i===fairBView?'true':'false')+'" onclick="fairBGoto('+i+')">'+(i+1)+'</button>';
+  });
+  left += '</div><div class="panel" style="padding:12px;border-width:2px;'+
+    (checked===shown.id ? (shown.correct?'border-color:var(--teal);background:var(--teal-soft);':'border-color:var(--sun);background:var(--sun-soft);') : (shownPicked?'border-color:var(--teal);background:var(--teal-soft);':'')) +'">';
+  left += '<table class="fair-table"><caption class="sr-only">'+esc(fmt(t(VISUAL.fairTable),{n:fairBView+1,total:B.options.length,rows:rowsDesc}))+'</caption>'+
+    '<thead><tr><td></td><th>'+esc(t(B.colA))+'</th><th>'+esc(t(B.colB))+'</th></tr></thead><tbody>'+
+    fairBRow(t(B.rowServing), shown.a.serving, shown.b.serving)+
+    fairBRow(t(B.rowTotal), shown.a.total, shown.b.total)+
+    fairBRow(t(B.rowSat), shown.a.sat, shown.b.satEn && STATE.lang==="en" ? shown.b.satEn : shown.b.sat)+
+    fairBRow(t(B.rowClaim), t({zh:shown.a.claimzh,en:shown.a.claimen}), t({zh:shown.b.claimzh,en:shown.b.claimen}))+
+    '</tbody></table></div>'+
+    '<div class="choice-row" style="justify-content:center;margin-top:10px;">'+
+    '<button type="button" class="ghost-btn" onclick="fairBStep(-1)">'+esc(t(UI.prevItem))+'</button>'+
+    '<button type="button" class="ghost-btn" onclick="fairBStep(1)">'+esc(t(UI.nextItem))+'</button></div>';
+
+  let right = narrator(esc(tl(FAIRTEST.narrator)));
+  right += fieldLabel(esc(fmt(t(B.candidateLabel),{n:fairBView+1,total:B.options.length})), "q-fairb");
+  if(!isCorrect) markQuestion("q-fairb");
+  right += '<div class="choice-row">'+
+    '<button class="choice-btn inline'+(shownPicked?' selected':'')+'" onclick="fairBPick(\''+shown.id+'\')">'+esc(shownPicked? t(B.picked) : t(B.pickThis))+'</button>'+
+    '<button class="primary-btn" '+((!choice||isCorrect||!seenAll)?'disabled':'')+' onclick="fairBCheck()">'+esc(t(UI.check))+'</button></div>';
+  if(!seenAll) right += '<p style="color:var(--muted);font-size:14px;">'+esc(fmt(t(B.seeAllFirst),{total:B.options.length,left:stillToSee}))+'</p>';
+  if(checked && !isCorrect && checkedOpt){
+    right += feedback(esc(t(UI.notYet))+' — '+esc(t({zh:checkedOpt.whyzh,en:checkedOpt.whyen})), "hint");
+    right += hintPanel(t(B.hint1), t(B.hint2), fairBHints, "fairBHint");
+  }
+  if(isCorrect){
+    right += feedback(esc(t(B.correctNote))+(checkedOpt.whyzh? ' '+esc(t({zh:checkedOpt.whyzh,en:checkedOpt.whyen})) : ''), "good");
+  }
+  return sceneShell(left, right);
+}
+function fairBRow(label, a, b){ return '<tr><th>'+esc(label)+'</th><td>'+esc(a)+'</td><td>'+esc(b)+'</td></tr>'; }
+window.fairBGoto = function(i){ fairBView = i; render(); };
+window.fairBStep = function(d){
+  const n = FAIRTEST.levelB.options.length;
+  fairBView = (fairBView + d + n) % n;
+  render();
+};
+window.fairBPick = function(id){ patchRecord({fairChoice:id}); };
+window.fairBHint = function(){ fairBHints = Math.min(2, fairBHints+1); render(); };
+window.fairBCheck = function(){
+  const B = FAIRTEST.levelB;
+  const choice = rec().fairChoice;
+  if(!choice) return;
+  const opt = B.options.find(o=>o.id===choice);
+  const correct = opt && opt.correct===true;
+  if(!correct && fairBHints<2) fairBHints = Math.min(2, fairBHints+1);
+  patchRecord({fairChecked:choice});
+};
+
+function renderTransfer(){
+  return STATE.level==="A" ? renderTransferA() : renderTransferB();
+}
+function xrayVisual(progress){
+  const milk = TRANSFER.milkGoEasy, salmon = TRANSFER.salmonGoEasy;
+  /* M1 — the bars only grow on the render the child's own pick created. */
+  const anim = !reducedMotion() && (lastActFn==="transferAAdd" || lastActFn==="transferBSet");
+  return visual(fmt(t(VISUAL.xray), {pct:Math.round(100*progress)}), '<div>'+
+    xrayRow("🥛", t(TRANSFER.milkName), milk, progress, anim)+
+    xrayRow("🐟", t(TRANSFER.salmonName), salmon, progress, anim)+
+    '</div>')+'<p class="caption">'+esc(t(TRANSFER.invisibleCaption))+'</p>';
+}
+function xrayRow(icon, name, goEasyPct, progress, anim){
+  const shownPct = 100*progress;
+  const goEasyW = shownPct*(goEasyPct/100);
+  const friendlyW = shownPct - goEasyW;
+  const a = anim? " anim" : "";
+  return '<div class="xray-row"><span class="xray-icon" aria-hidden="true">'+icon+'</span><span class="xray-name">'+esc(name)+'</span>'+
+    '<div class="xray-bar"><div class="seg goeasy'+a+'" style="width:'+goEasyW+'%;"></div><div class="seg friendly'+a+'" style="width:'+friendlyW+'%;"></div></div></div>';
+}
+function renderTransferA(){
+  const slots = rec().transferSlots || [null,null,null];
+  const used = slots.filter(Boolean);
+  const filled = slots.every(s=>s!==null);
+  const distractor = filled && slots.some(id => (TRANSFER.aChips.find(c=>c.id===id)||{}).slot===-1);
+  const done = transferDone();
+  const progress = done? 1 : used.length/3;
+
+  let left = xrayVisual(progress);
+  let right = narrator(esc(tl(TRANSFER.narrator)));
+  right += fieldLabel(esc(t({zh:"用词卡把三个空格填满",en:"Fill the three slots with word chips"})), "q-transfera");
+  if(!done) markQuestion("q-transfera");
+  /* one wrapper so "bring the question into view" covers the slots AND the word chips
+     the child has to reach, not just the slots */
+  right += '<div><div>';
+  slots.forEach((id,i)=>{
+    const label = id? t(pickCopy(TRANSFER.aChips.find(c=>c.id===id))) : (i+1);
+    const aria = id? fmt(t({zh:"第 {n} 格，已填：{text}。按一下清空",en:"Slot {n}, filled with: {text}. Press to clear"}),{n:i+1,text:label})
+                   : fmt(t({zh:"第 {n} 格，还是空的",en:"Slot {n}, still empty"}),{n:i+1});
+    right += '<button class="slot'+(id?' filled':'')+'" aria-label="'+escAttr(aria)+'" onclick="transferAClear('+i+')">'+esc(String(label))+'</button>';
+  });
+  right += '</div><div class="choice-row">';
+  TRANSFER.aChips.forEach(c=>{
+    const isUsed = used.includes(c.id);
+    right += '<button class="choice-btn inline" '+(isUsed?'disabled style="opacity:.4;"':'')+' onclick="transferAAdd(\''+c.id+'\')">'+esc(t(pickCopy(c)))+'</button>';
+  });
+  right += '</div></div>';
+  if(filled && distractor) right += feedback(esc(t(TRANSFER.aWrongChip)), "hint");
+  if(filled && !distractor && !done) right += feedback(esc(t(TRANSFER.aWrongOrder)), "hint");
+  if(done) right += feedback(esc(t(UI.correct)), "good");
+  if(used.length) right += '<button class="ghost-btn" onclick="transferAReset()">'+esc(t({zh:"再试一次",en:"Try again"}))+'</button>';
+  right += '<p class="caption">'+esc(t(TRANSFER.tip))+'</p>';
+  return sceneShell(left, right);
+}
+window.transferAAdd = function(id){
+  const slots = (rec().transferSlots||[null,null,null]).slice();
+  const idx = slots.findIndex(s=>s===null);
+  if(idx===-1) return;
+  slots[idx] = id;
+  patchRecord({transferSlots:slots});
+};
+window.transferAClear = function(i){
+  const slots = (rec().transferSlots||[null,null,null]).slice();
+  if(!slots[i]) return;
+  slots[i] = null;
+  patchRecord({transferSlots:slots});
+};
+window.transferAReset = function(){ patchRecord({transferSlots:[null,null,null]}); };
+
+function renderTransferB(){
+  const r = rec();
+  const evOk = (TRANSFER.bEvidence.find(c=>c.id===r.transferEvidence)||{}).correct===true;
+  const bcOk = (TRANSFER.bBecause.find(c=>c.id===r.transferBecause)||{}).correct===true;
+  const soOk = (TRANSFER.bSo.find(c=>c.id===r.transferSo)||{}).correct===true;
+  const done = transferDone();
+  const anyWrong = (r.transferEvidence && !evOk) || (r.transferBecause && !bcOk) || (r.transferSo && !soOk);
+  const steps = [evOk,bcOk,soOk].filter(Boolean).length;
+  const progress = done? 1 : 0.15+steps*0.28;
+
+  let left = xrayVisual(progress);
+  let right = narrator(esc(tl(TRANSFER.narrator)));
+  right += transferBGroup(TRANSFER.bEvidencePrompt, TRANSFER.bEvidence, r.transferEvidence, "transferEvidence", "q-transferev");
+  if(!evOk) markQuestion("q-transferev");
+  if(evOk){
+    right += transferBGroup(TRANSFER.bBecausePrompt, TRANSFER.bBecause, r.transferBecause, "transferBecause", "q-transferbc");
+    if(!bcOk) markQuestion("q-transferbc");
+  }
+  if(evOk && bcOk){
+    right += transferBGroup(TRANSFER.bSoPrompt, TRANSFER.bSo, r.transferSo, "transferSo", "q-transferso");
+    if(!soOk) markQuestion("q-transferso");
+  }
+  if(anyWrong) right += feedback(esc(t(TRANSFER.bWrong)), "hint");
+  if(done) right += feedback(esc(deriveExplanation()), "good");
+  right += '<p class="caption">'+esc(t(TRANSFER.tip))+'</p>';
+  return sceneShell(left, right);
+}
+function transferBGroup(promptCopy, choices, selected, field, qid){
+  let html = fieldLabel(esc(t(promptCopy)), qid)+'<div class="choice-col">';
+  choices.forEach(c=>{
+    const sel = selected===c.id;
+    html += '<button class="choice-btn'+(sel?(c.correct?' selected':' wrong'):'')+'" onclick="transferBSet(\''+field+'\',\''+c.id+'\')">'+esc(t(pickCopy(c)))+'</button>';
+  });
+  html += '</div>';
+  return html;
+}
+window.transferBSet = function(field, id){ const p = {}; p[field]=id; patchRecord(p); };
+
+function renderSummary(){
+  const start = rec().hookPrediction ? hookChoiceLabel(rec().hookPrediction) : t(SUMMARY.notRecorded);
+  const end = deriveExplanation() || t(SUMMARY.notRecorded);
+  return '<div class="summary-wrap">'+
+    '<div style="display:flex;align-items:center;gap:10px;"><svg class="avo" style="width:44px;height:44px;" viewBox="0 0 48 56">'+avoSvg()+'</svg>'+
+    '<h2 style="font-size:24px;font-weight:800;">'+esc(t(SUMMARY.title))+'</h2></div>'+
+    '<div class="core-idea"><div class="lab">'+esc(t(SUMMARY.coreIdeaLabel))+'</div><p>'+esc(tl(SUMMARY.coreIdea))+'</p></div>'+
+    '<div class="two-col">'+
+    '<div class="mini-card"><div class="lab">'+esc(t(SUMMARY.startLabel))+'</div><p>'+esc(start)+'</p></div>'+
+    '<div class="mini-card"><div class="lab">'+esc(t(SUMMARY.endLabel))+'</div><p>'+esc(end)+'</p></div>'+
+    '</div>'+
+    '<div class="feedback hint teaser"><b>'+esc(t(SUMMARY.teaserLabel))+':</b> '+esc(t(SUMMARY.teaser))+'</div>'+
+    '<div class="foot-actions"><button class="ghost-btn" onclick="replay()">'+esc(t(SUMMARY.replay))+'</button></div>'+
+    '</div>';
+}
+window.replay = function(){
+  if(confirm(t(UI.startOverConfirm))){
+    STATE.byLevel[STATE.level] = freshProgress();
+    saveState(); render();
+  }
+};
+
+// ---------- start screen + shell -----------------------------------------
+function renderStart(){
+  return '<div class="start-wrap">'+
+    '<div class="start-hero"><svg class="avo" style="width:52px;height:52px;" viewBox="0 0 48 56">'+avoSvg()+'</svg>'+
+    '<div><h1>'+esc(t(UI.brandTitle))+'</h1><div class="sub">'+esc(t(UI.brandSubtitle))+'</div></div></div>'+
+    '<p style="font-size:16px;line-height:1.5;">'+esc(t(UI.startBlurb))+'</p>'+
+    '<div class="start-card"><div class="field-label">'+esc(t(UI.startTitle))+'</div>'+
+    '<div class="grid2">'+
+    '<button class="choice-btn'+(STATE.level==="A"?" selected":"")+'" onclick="setLevel(\'A\')">'+esc(t(UI.levelA))+'</button>'+
+    '<button class="choice-btn'+(STATE.level==="B"?" selected":"")+'" onclick="setLevel(\'B\')">'+esc(t(UI.levelB))+'</button>'+
+    '</div><div class="grid2">'+
+    '<button class="choice-btn'+(STATE.lang==="zh"?" selected":"")+'" onclick="setLang(\'zh\')">'+esc(t(UI.langZh))+'</button>'+
+    '<button class="choice-btn'+(STATE.lang==="en"?" selected":"")+'" onclick="setLang(\'en\')">'+esc(t(UI.langEn))+'</button>'+
+    '</div></div>'+
+    '<button class="primary-btn" onclick="begin()">'+esc(t(UI.startBegin))+'</button>'+
+    '<p class="privacy-note">'+esc(t(UI.noDataNote))+'</p>'+
+    '</div>';
+}
+window.setLevel = function(l){ STATE.level=l; saveState(); render(); };
+window.setLang = function(l){ STATE.lang=l; document.documentElement.lang = (l==="zh"?"zh-Hans":"en"); saveState(); render(); };
+window.begin = function(){ prog().phase="scene"; prog().sceneIndex=0; saveState(); render(); };
+window.startOver = function(){
+  if(confirm(t(UI.startOverConfirm))){
+    STATE = freshState(); saveState(); render();
+  }
+};
+window.goBack = function(){
+  const p = prog();
+  if(p.phase==="summary"){ p.phase="scene"; p.sceneIndex = SCENE_ORDER.length-1; }
+  else if(p.phase==="scene" && p.sceneIndex>0){ p.sceneIndex--; }
+  saveState(); render();
+};
+window.goNext = function(){
+  const p = prog();
+  if(p.phase!=="scene") return;
+  if(!isSceneComplete(SCENE_ORDER[p.sceneIndex])) return;
+  const ni = p.sceneIndex+1;
+  if(ni>=SCENE_ORDER.length){ p.phase="summary"; } else { p.sceneIndex=ni; }
+  fairAHints=0; fairBHints=0; fairBView=0; obsIdx=0; renderObservation._touched=false;
+  saveState(); render();
+};
+
+const SCENE_RENDERERS = { hook:renderHook, observation:renderObservation, model:renderModel, compare:renderCompare, fairtest:renderFairtest, transfer:renderTransfer };
+
+function renderHeader(){
+  document.getElementById("header").innerHTML =
+    '<div class="brand"><svg class="avo" style="width:32px;height:32px;" viewBox="0 0 48 56" aria-hidden="true">'+avoSvg()+'</svg>'+
+    '<div><h1>'+esc(t(UI.brandTitle))+'</h1></div></div>'+
+    '<div class="controls">'+
+    '<div class="seg"><button type="button" class="'+(STATE.level==="A"?"active":"")+'" onclick="setLevel(\'A\')">'+esc(t(UI.levelA))+'</button>'+
+    '<button type="button" class="'+(STATE.level==="B"?"active":"")+'" onclick="setLevel(\'B\')">'+esc(t(UI.levelB))+'</button></div>'+
+    '<div class="seg"><button type="button" class="'+(STATE.lang==="zh"?"active":"")+'" onclick="setLang(\'zh\')">中文</button>'+
+    '<button type="button" class="'+(STATE.lang==="en"?"active":"")+'" onclick="setLang(\'en\')">English</button></div>'+
+    '<label class="chk"><input type="checkbox" id="rmToggle" '+(STATE.reducedMotionPreview?'checked':'')+' onclick="toggleReducedMotion(this)"> '+esc(t(UI.reducedMotionPreview))+'</label>'+
+    '<button type="button" class="ghost-btn" onclick="startOver()">'+esc(t(UI.startOver))+'</button>'+
+    '</div>';
+}
+window.toggleReducedMotion = function(el){ STATE.reducedMotionPreview = !!el.checked; saveState(); render(); };
+
+function renderFooter(){
+  const p = prog();
+  const footerEl = document.getElementById("footer");
+  /* the buttons are removed, not just hidden: a control that keeps focus while it is
+     display:none drops the child's focus onto <body> (the page top) */
+  if(p.phase!=="scene"){ footerEl.hidden = true; document.getElementById("footer-inner").innerHTML = ""; return; }
+  footerEl.hidden = false;
+  const sceneId = SCENE_ORDER[p.sceneIndex];
+  const canAdvance = isSceneComplete(sceneId);
+  document.getElementById("footer-inner").innerHTML =
+    '<button type="button" class="ghost-btn" onclick="goBack()">'+esc(t(UI.back))+'</button>'+
+    '<button type="button" class="primary-btn" '+(canAdvance?'':'disabled')+' onclick="goNext()">'+esc(p.sceneIndex===SCENE_ORDER.length-1? t(SCENE_LABEL.summary) : t(UI.next))+'</button>';
+}
+
+/* U3/U5/U6 — measure real geometry and give the landscape stage an exact height, so
+   the two columns scroll inside themselves and the page itself never scrolls. */
+function syncStageHeight(){
+  const root = document.documentElement;
+  const grid = document.querySelector("#stage .scene-grid");
+  const landscape = window.matchMedia("(min-width:900px) and (orientation:landscape)").matches;
+  if(!grid || !landscape){ root.style.removeProperty("--stage-h"); return; }
+  if(window.scrollY) window.scrollTo(0,0);
+  const footer = document.getElementById("footer");
+  const fh = (footer && !footer.hidden)? footer.offsetHeight : 0;
+  const top = grid.getBoundingClientRect().top;
+  root.style.setProperty("--stage-h", Math.max(220, Math.round(window.innerHeight - top - fh - 10))+"px");
+}
+
+/* U5 — bring the whole question BLOCK (its label *and* the choices under it) into the
+   visible part of its own column. Scrolling the label alone is not enough: the choices
+   are what the child has to reach, and the fixed footer covers the bottom of the screen. */
+function scrollQuestionIntoView(q){
+  const group = q.nextElementSibling;
+  const col = q.closest(".right-col");
+  const scrolls = col && col.scrollHeight > col.clientHeight+1;
+  const footer = document.getElementById("footer");
+  const top = scrolls? col.getBoundingClientRect().top : 0;
+  const bottom = scrolls? col.getBoundingClientRect().bottom
+                        : ((footer && !footer.hidden)? footer.getBoundingClientRect().top : window.innerHeight);
+  const qr = q.getBoundingClientRect();
+  const gr = group? group.getBoundingClientRect() : qr;
+  const blockFits = (gr.bottom-qr.top) <= (bottom-top);
+  if(!blockFits || gr.bottom>bottom || qr.top<top) q.scrollIntoView({block:"start", inline:"nearest"});
+}
+
+/* A3 — after the child acts: bring what they must do next into view inside its own
+   column and move focus there. If nothing new appeared, put focus back on the control
+   they just used, so a keyboard / switch user is never thrown to the top of the page. */
+function applyFocusAndScroll(){
+  const q = pendingQuestionId? document.getElementById(pendingQuestionId) : null;
+  if(q){
+    scrollQuestionIntoView(q);
+    if(lastActKey && pendingQuestionId!==lastFocusedQuestion){
+      try{ q.focus({preventScroll:true}); }catch(e){ q.focus(); }
+      lastFocusedQuestion = pendingQuestionId;
+    }
+  } else {
+    lastFocusedQuestion = null;
+    /* nothing left to answer here: make sure the feedback the child just earned and
+       the button that carries them onward are both readable without hunting */
+    const tails = document.querySelectorAll("#stage .right-col .feedback, #stage .right-col .primary-btn, #stage .right-col .ghost-btn");
+    const tail = tails[tails.length-1];
+    if(tail && lastActKey) tail.scrollIntoView({block:"nearest", inline:"nearest"});
+  }
+  if(lastActKey && (!q || pendingQuestionId===lastFocusedQuestion)){
+    let el = null;
+    try{ el = document.querySelector('[onclick="'+lastActKey.replace(/"/g,'\\"')+'"]'); }catch(e){ el = null; }
+    /* getClientRects() (not offsetParent) — the footer is position:fixed, whose
+       offsetParent is always null even when it is perfectly visible */
+    const onScreen = e => !!e && e.getClientRects().length>0;
+    if(el && (el.disabled || !onScreen(el))) el = null;
+    const ae = document.activeElement;
+    const focusLost = !ae || ae===document.body || ae===document.documentElement || !onScreen(ae);
+    if(el && ae!==el && (!q || focusLost)){
+      try{ el.focus({preventScroll:true}); }catch(e){}
+    } else if(!el && focusLost){
+      /* the control the child used is gone or now disabled (a used word chip, a hint
+         button replaced by its hint): keep focus in the content, not at the page top */
+      const col = document.querySelector("#stage .right-col") || document.getElementById("stage");
+      if(col){ try{ col.focus({preventScroll:true}); }catch(e){} }
+    }
+  }
+  lastActKey = null; lastActFn = null;
+}
+
+function render(){
+  const p = prog();
+  pendingQuestionId = null;
+  currentNarratorText = "";
+  document.documentElement.classList.toggle("rm", reducedMotion());
+  document.documentElement.lang = STATE.lang==="zh" ? "zh-Hans" : "en";
+  const skip = document.getElementById("skiplink"); if(skip) skip.textContent = t(UI.skipToContent);
+  renderHeader();
+
+  let html = "";
+  if(p.phase==="start"){
+    html += renderStart();
+  } else if(p.phase==="scene"){
+    const sceneId = SCENE_ORDER[p.sceneIndex];
+    html += '<div class="progress-row"><div class="dots" aria-hidden="true">';
+    SCENE_ORDER.forEach((s,i)=>{
+      html += '<span class="dot'+(i<p.sceneIndex?" done":(i===p.sceneIndex?" current":""))+'"></span>';
+    });
+    html += '</div><span class="step-label">'+fmt(esc(t(UI.progressStep)),{n:p.sceneIndex+1})+' · '+esc(t(SCENE_LABEL[sceneId]))+' · '+SCENE_TIME[sceneId]+' · '+esc(STATE.level==="A"?t(UI.levelA):t(UI.levelB))+'</span></div>';
+    html += SCENE_RENDERERS[sceneId]();
+  } else if(p.phase==="summary"){
+    html += renderSummary();
+  }
+  document.getElementById("stage").innerHTML = html;
+  renderFooter();
+
+  /* A2 — mirror the narrator into the one live region that survives re-renders */
+  const live = document.getElementById("live");
+  if(live && currentNarratorText && currentNarratorText!==announcedText){ live.textContent = currentNarratorText; announcedText = currentNarratorText; }
+  syncStageHeight();
+  applyFocusAndScroll();
+}
+window.addEventListener("resize", syncStageHeight);
+window.addEventListener("orientationchange", syncStageHeight);
+
+render();
+</script>
+</body>
+</html>
