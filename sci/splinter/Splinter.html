@@ -13,7 +13,7 @@
   <meta name="apple-mobile-web-app-title" content="5分钟科学" />
   <link rel="apple-touch-icon" href="icons/apple-touch-icon-180.png" />
   <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png" />
-  <title>手指上的倒刺去哪儿了？· Lesson Player Preview</title>
+  <title>Where Does a Splinter Go? · Lesson</title>
   <style>
     * { box-sizing: border-box; }
     :root {
@@ -487,10 +487,10 @@
 
         <div class="app-content">
           <div class="voice-row">
-            <div class="voice-label" id="langLabel">语言</div>
+            <div class="voice-label" id="langLabel">Language</div>
             <div class="voice-toggle" role="group" aria-label="Language">
-              <button type="button" class="voice-choice" data-lang="zh" aria-pressed="true">中文</button>
-              <button type="button" class="voice-choice" data-lang="en" aria-pressed="false">English</button>
+              <button type="button" class="voice-choice" data-lang="zh" aria-pressed="false">中文</button>
+              <button type="button" class="voice-choice" data-lang="en" aria-pressed="true">English</button>
             </div>
             <div class="voice-toggle sound-toggle" role="group" aria-label="Sound">
               <button type="button" class="voice-choice" id="muteToggle" aria-pressed="false">🔊 <span id="muteLabel">声音</span></button>
@@ -501,12 +501,12 @@
           </div>
 
           <div class="lesson-title" id="lessonTitle">
-            <h2 id="lessonTitleText">手指上的倒刺去哪儿了？</h2>
+            <h2 id="lessonTitleText">Where Does a Splinter Go?</h2>
           </div>
 
           <section class="video-view" id="videoView">
             <div class="video-stage">
-              <video id="lessonVideo" src="out/bio-01-splinter-zh.mp4" poster="out/bio-01-splinter-poster.jpg" controls playsinline preload="metadata"></video>
+              <video id="lessonVideo" src="out/bio-01-splinter-en.mp4" poster="out/bio-01-splinter-poster.jpg" controls playsinline preload="metadata"></video>
             </div>
             <div class="video-actions">
               <button type="button" class="secondary-action" id="startPractice">开始练习</button>
@@ -712,7 +712,7 @@
     const ICON_SOUND = "🔊 ";
     const ICON_MUTED = "🔇 ";
 
-    let lang = "zh";
+    let lang = "en";   /* English first; the Chinese version is one tap away */
     let muted = false;
     let currentQuestion = 0;
     let firstTry = true;
