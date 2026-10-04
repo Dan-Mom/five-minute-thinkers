@@ -1,109 +1,220 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>What Matters Now 总览</title>
+<title>What Matters Now</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#fbf6ec;--card:#ffffff;--ink:#23303f;--mute:#6a7686;--line:#e4dccb;--brand:#1f5f99;--brand-ink:#ffffff;--good:#1d7a4a;--goodbg:#e2f4ea;--mid:#8a5a00;--midbg:#fdf0d2;--low:#5c6675;--lowbg:#eceff3;--shadow:0 1px 3px rgba(40,30,10,.12)}
-@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#171b22;--card:#212733;--ink:#eef1f6;--mute:#a3adbd;--line:#343c4b;--brand:#6fb0ee;--brand-ink:#0d1a2a;--good:#7fe0a8;--goodbg:#1b3a2b;--mid:#f3c969;--midbg:#3b3017;--low:#b3bccb;--lowbg:#2b3240;--shadow:none}}
+:root{
+  color-scheme:light;
+  --ink:#1d2b4f; --mute:#4f5d7e; --page:#fff6e3; --card:#ffffff;
+  --orange:#d95b00; --orange-s:#ffe2c4; --orange-m:#ff9a3d;
+  --pink:#d6246e;   --pink-s:#ffd8ea;   --pink-m:#ff6fa8;
+  --teal:#0b8a7c;   --teal-s:#c8f3ec;   --teal-m:#2fd0bd;
+  --green:#1f8f45;  --green-s:#d3f4dd;  --green-m:#4fd37c;
+  --purple:#6d3fd8; --purple-s:#e4dbff; --purple-m:#a07cff;
+  --blue:#1b6fd1;   --blue-s:#d5e9ff;   --blue-m:#4fa8ff;
+  --gray:#4b5a7a;   --gray-s:#e6eaf2;   --gray-m:#8a97b3;
+  --display:"Baloo 2","Nunito","Trebuchet MS","Segoe UI Rounded",ui-rounded,system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
+  --body:"Nunito","Trebuchet MS",system-ui,"PingFang SC","Microsoft YaHei",sans-serif;
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif}
-header{padding:28px 16px 8px;max-width:1100px;margin:0 auto}
-h1{margin:0 0 4px;font-size:1.7rem}
-.sub{color:var(--mute);margin:0}
-.stats{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0 0}
-.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px 14px;box-shadow:var(--shadow)}
-.stat b{font-size:1.25rem;display:block}
-nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line);margin-top:14px}
-nav .in{max-width:1100px;margin:0 auto;padding:8px 16px;display:flex;gap:8px;overflow-x:auto}
-nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:8px 14px;font:inherit;cursor:pointer;min-height:44px}
-nav button[aria-selected=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
-main{max-width:1100px;margin:0 auto;padding:16px}
-.intro{color:var(--mute);margin:4px 0 16px}
-h2{font-size:1.1rem;margin:22px 0 8px}
-h2 small{color:var(--mute);font-weight:400;margin-left:8px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:12px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px}
-.card h3{margin:0;font-size:1rem;line-height:1.3}
-.card p{margin:0;color:var(--mute);font-size:.92rem}
-.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:auto;padding-top:8px}
-.chip{font-size:.78rem;border-radius:999px;padding:2px 9px;font-weight:600}
-.chip.good{background:var(--goodbg);color:var(--good)}.chip.mid{background:var(--midbg);color:var(--mid)}.chip.low{background:var(--lowbg);color:var(--low)}
-.meta{font-size:.78rem;color:var(--mute)}
-.btn{border:0;background:var(--brand);color:var(--brand-ink);border-radius:10px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center}
-.btn.alt{background:transparent;color:var(--brand);border:1px solid var(--brand)}
-.btn[aria-disabled=true]{opacity:.45;pointer-events:none}
-.seen{color:var(--good);font-size:.85rem}
-.area{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;box-shadow:var(--shadow)}
-.area h3{margin:0 0 4px;font-size:1rem}.area .next{margin:8px 0 0;padding:8px 10px;background:var(--bg);border-radius:8px;font-size:.92rem}
-.note{margin:28px 0 8px;padding:14px;border:1px dashed var(--line);border-radius:12px;color:var(--mute);font-size:.92rem}
-#viewer{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;z-index:20;flex-direction:column}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--page);color:var(--ink);font:700 17px/1.45 var(--body);overflow-x:hidden}
+button,a{font-family:inherit}
+.c-orange{--c:var(--orange);--cs:var(--orange-s);--cm:var(--orange-m)}
+.c-pink{--c:var(--pink);--cs:var(--pink-s);--cm:var(--pink-m)}
+.c-teal{--c:var(--teal);--cs:var(--teal-s);--cm:var(--teal-m)}
+.c-green{--c:var(--green);--cs:var(--green-s);--cm:var(--green-m)}
+.c-purple{--c:var(--purple);--cs:var(--purple-s);--cm:var(--purple-m)}
+.c-blue{--c:var(--blue);--cs:var(--blue-s);--cm:var(--blue-m)}
+.c-gray{--c:var(--gray);--cs:var(--gray-s);--cm:var(--gray-m)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:linear-gradient(180deg,#7ccbff 0%,#b9e6ff 55%,#fff0c9 100%);padding:28px 16px 70px;overflow:hidden}
+.hero .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85;filter:blur(.3px);animation:drift 40s linear infinite}
+.hero .cloud::before,.hero .cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud.a{width:120px;height:34px;top:22px;left:-140px}.cloud.a::before{width:52px;height:52px;left:18px;top:-24px}.cloud.a::after{width:40px;height:40px;left:62px;top:-16px}
+.cloud.b{width:90px;height:26px;top:96px;left:-120px;animation-duration:55s;animation-delay:-18s}.cloud.b::before{width:40px;height:40px;left:12px;top:-18px}.cloud.b::after{width:30px;height:30px;left:46px;top:-12px}
+.cloud.c{width:140px;height:38px;top:50px;left:-160px;animation-duration:70s;animation-delay:-40s}.cloud.c::before{width:60px;height:60px;left:22px;top:-28px}.cloud.c::after{width:46px;height:46px;left:76px;top:-18px}
+@keyframes drift{to{transform:translateX(calc(100vw + 360px))}}
+.spark{position:absolute;font-size:26px;animation:floaty 5s ease-in-out infinite;opacity:.9}
+@keyframes floaty{50%{transform:translateY(-12px) rotate(8deg)}}
+.hero-in{position:relative;max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.mascot{width:158px;height:158px;flex:0 0 auto;animation:bob 3s ease-in-out infinite;filter:drop-shadow(0 8px 0 rgba(31,42,68,.12))}
+@keyframes bob{50%{transform:translateY(-8px) rotate(-2deg)}}
+.hero h1{margin:0;font:800 clamp(34px,6vw,56px)/1.02 var(--display);color:#fff;text-shadow:0 4px 0 #1b6fd1,0 8px 0 rgba(27,111,209,.35);letter-spacing:.5px}
+.hero .tag{margin:10px 0 0;font:700 clamp(17px,2.4vw,21px)/1.35 var(--body);color:#12306b;max-width:560px}
+.hero .tag small{display:block;font-weight:700;color:#2a4a8a;font-size:.88em;margin-top:2px}
+.starbar{display:inline-flex;align-items:center;gap:8px;margin-top:14px;background:#fff;color:var(--ink);border-radius:999px;padding:8px 18px;font:800 18px var(--display);box-shadow:0 4px 0 rgba(31,42,68,.14)}
+.starbar .big{font-size:24px;animation:pop 2.4s ease-in-out infinite}
+@keyframes pop{50%{transform:scale(1.18) rotate(10deg)}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;height:48px;display:block;width:100%}
+
+/* ---------- layout ---------- */
+main{max-width:1080px;margin:0 auto;padding:6px 16px 40px;min-height:50vh}
+h2.sect{font:800 clamp(24px,4vw,32px)/1.1 var(--display);margin:6px 0 4px}
+.lead{margin:0 0 18px;color:var(--mute);font-weight:700}
+
+/* ---------- world tiles ---------- */
+.worlds{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,236px),1fr));gap:18px;margin-top:8px}
+.world{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;cursor:pointer;color:#fff;border-radius:28px;padding:20px 20px 18px;min-height:230px;background:linear-gradient(150deg,var(--cm) 0%,var(--c) 100%);box-shadow:0 8px 0 rgba(20,30,60,.22),0 18px 28px rgba(20,30,60,.12);transition:transform .15s,box-shadow .15s;overflow:hidden;font:inherit}
+.world:hover{transform:translateY(-5px) rotate(-.6deg);box-shadow:0 13px 0 rgba(20,30,60,.2),0 24px 32px rgba(20,30,60,.14)}
+.world:active{transform:translateY(3px);box-shadow:0 4px 0 rgba(20,30,60,.22)}
+.world .bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,.16)}
+.world .b1{width:150px;height:150px;right:-40px;top:-40px}.world .b2{width:90px;height:90px;right:60px;bottom:-34px}
+.world .em{font-size:76px;line-height:1;filter:drop-shadow(0 6px 0 rgba(0,0,0,.18));animation:bob 3.4s ease-in-out infinite;display:inline-block;width:fit-content}
+.world:nth-child(2) .em{animation-delay:-.8s}.world:nth-child(3) .em{animation-delay:-1.6s}.world:nth-child(4) .em{animation-delay:-2.4s}
+.world h3{margin:6px 0 0;font:800 28px/1.05 var(--display);text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.world p{margin:0;font-weight:700;font-size:16px;opacity:.97}
+.world .zh{font-size:14px;opacity:.9}
+.world .foot{margin-top:auto;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding-top:8px}
+.pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.95);color:var(--c);border-radius:999px;padding:6px 14px;font:800 16px var(--display)}
+.go{margin-left:auto;display:inline-flex;align-items:center;justify-content:center;width:48px;height:48px;border-radius:50%;background:#fff;color:var(--c);font-size:24px;font-weight:800}
+
+/* ---------- inside a world ---------- */
+.crumb{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:4px 0 8px}
+.back{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:8px 18px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:800 18px var(--display);cursor:pointer;box-shadow:0 4px 0 rgba(20,30,60,.18);transition:transform .12s}
+.back:hover{transform:translateY(-2px)}
+.world-title{display:flex;align-items:center;gap:14px;margin:6px 0 4px}
+.world-title .em{font-size:54px;line-height:1}
+.world-title h2{margin:0;font:800 clamp(30px,5vw,42px)/1 var(--display);color:var(--c)}
+.group-h{display:inline-flex;align-items:center;gap:10px;margin:26px 0 12px;background:var(--cs);color:var(--c);border-radius:999px;padding:7px 18px;font:800 20px var(--display)}
+.group-h small{font:700 15px var(--body);color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,255px),1fr));gap:16px}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--cs),0 12px 22px rgba(20,30,60,.1);border:3px solid var(--cs);transition:transform .15s,box-shadow .15s;animation:rise .45s both}
+.card:hover{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 10px 0 var(--cs),0 18px 26px rgba(20,30,60,.12)}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}}
+.card .art{display:flex;align-items:center;justify-content:center;height:104px;background:linear-gradient(150deg,var(--cs),#fff 140%);font-size:58px;position:relative}
+.card .art span{filter:drop-shadow(0 5px 0 rgba(0,0,0,.12));display:inline-block;transition:transform .2s}
+.card:hover .art span{transform:scale(1.14) rotate(-6deg)}
+.card .ribbon{position:absolute;top:10px;right:10px;background:#ffd23f;color:#5a3d00;border-radius:999px;padding:3px 10px;font:800 13px var(--display);box-shadow:0 2px 0 rgba(0,0,0,.15)}
+.card .body{padding:12px 16px 16px;display:flex;flex-direction:column;gap:6px;flex:1}
+.card h3{margin:0;font:800 21px/1.12 var(--display)}
+.card .zh{margin:0;color:var(--mute);font-size:14.5px;font-weight:700;line-height:1.4}
+.card .tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag-chip{font-size:12.5px;font-weight:800;border-radius:999px;padding:2px 10px;background:var(--cs);color:var(--c)}
+.tag-chip.low{background:#eceff5;color:#4b5a7a}
+.actions{margin-top:auto;display:flex;gap:8px;align-items:center;padding-top:8px;flex-wrap:wrap}
+.play{flex:1;min-height:52px;border:0;border-radius:16px;background:var(--c);color:#fff;font:800 22px var(--display);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.25);transition:transform .1s,box-shadow .1s;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-width:130px}
+.play:hover{transform:translateY(-2px);box-shadow:0 7px 0 rgba(0,0,0,.25)}
+.play:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.play[aria-disabled=true]{background:#b8c0d2;box-shadow:0 5px 0 rgba(0,0,0,.12);pointer-events:none}
+.tab{min-height:48px;min-width:48px;border:3px solid var(--cs);background:#fff;color:var(--c);border-radius:14px;font:800 20px var(--display);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+.tab:hover{background:var(--cs)}
+.note{margin:6px 0 0;font-size:13px;color:var(--mute)}
+.area{background:#fff;border-radius:22px;padding:16px 18px;margin:0 0 14px;box-shadow:0 5px 0 var(--cs);border:3px solid var(--cs)}
+.area h3{margin:0 0 4px;font:800 21px var(--display)}
+.area .next{margin:10px 0 0;padding:10px 12px;background:var(--cs);border-radius:14px;font-size:15px}
+footer{max-width:1080px;margin:0 auto;padding:6px 16px 40px;color:var(--mute);font-size:14px;font-weight:700;text-align:center}
+
+/* ---------- play window ---------- */
+#viewer{position:fixed;inset:0;background:rgba(18,30,70,.62);display:none;z-index:50;flex-direction:column;padding:10px}
 #viewer.on{display:flex}
-#viewer .bar{background:var(--card);padding:8px 12px;display:flex;gap:8px;align-items:center}
-#viewer .bar b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#viewer iframe{flex:1;border:0;background:#fff;width:100%}
-:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+#viewer .bar{display:flex;gap:10px;align-items:center;background:var(--c,#1b6fd1);color:#fff;border-radius:20px 20px 0 0;padding:8px 10px}
+#viewer .bar b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 20px var(--display)}
+#viewer .vb{min-height:48px;border:0;border-radius:14px;padding:6px 18px;font:800 18px var(--display);cursor:pointer;background:#fff;color:var(--c,#1b6fd1);text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+#viewer iframe{flex:1;border:0;background:#fff;width:100%;border-radius:0 0 20px 20px}
+:focus-visible{outline:4px solid #ffd23f;outline-offset:2px;box-shadow:0 0 0 2px #1d2b4f}
+@media (max-width:560px){.spark{display:none}.hero{padding-bottom:60px}.mascot{width:96px;height:96px}.world{min-height:200px}.world .em{font-size:64px}}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
-<header>
-  <h1>What Matters Now 总览</h1>
-  <p class="sub">所有已经做出来的成品，一页看完。点「打开」就能玩 / 看。<b>测试版</b>，更新于 <span id="gen"></span>。</p>
-  <div class="stats" id="stats"></div>
+<header class="hero">
+  <div class="cloud a" aria-hidden="true"></div><div class="cloud b" aria-hidden="true"></div><div class="cloud c" aria-hidden="true"></div>
+  <span class="spark" style="left:6%;top:48%" aria-hidden="true">⭐</span>
+  <span class="spark" style="right:8%;top:20%;animation-delay:-1.5s" aria-hidden="true">✨</span>
+  <span class="spark" style="right:22%;top:62%;animation-delay:-3s" aria-hidden="true">🌈</span>
+  <div class="hero-in">
+    <div class="mascot" id="mascot" aria-hidden="true"></div>
+    <div>
+      <h1>What Matters Now</h1>
+      <p class="tag">Little lessons, big thinking. Pick a world and start playing!<small id="zhTag">选一个世界，开始玩吧！</small></p>
+      <div class="starbar" aria-live="polite"><span class="big" aria-hidden="true">⭐</span><span><span id="starN">0</span> played so far</span></div>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C150 60 300 0 450 24 C600 48 750 4 900 26 C1050 48 1130 12 1200 28 L1200 60 L0 60Z" fill="#fff6e3"/></svg>
 </header>
-<nav><div class="in" role="tablist" id="tabs"></div></nav>
 <main id="main"></main>
-<div id="viewer" role="dialog" aria-modal="true" aria-label="预览">
-  <div class="bar"><b id="vt"></b><a class="btn alt" id="vnew" target="_blank" rel="noopener">新窗口打开</a><button class="btn" id="vx" type="button">关闭</button></div>
-  <iframe id="vf" title="预览"></iframe>
+<footer id="foot"></footer>
+<div id="viewer" role="dialog" aria-modal="true" aria-label="Lesson window">
+  <div class="bar"><button class="vb" id="vx" type="button">← Back</button><b id="vt"></b><a class="vb" id="vnew" target="_blank" rel="noopener">↗ New tab</a></div>
+  <iframe id="vf" title="Lesson"></iframe>
 </div>
 <script>
-var DATA={"generated":"2026-10-04","v":1791119500124,"sections":[{"id":"math","zh":"数学课","icon":"➕","count":24,"intro":"英文互动数学课，每课约 5 分钟，约 7–9 岁。点开就能玩，进度存在你这台电脑的浏览器里。","groups":[{"zh":"数与加减乘除","en":"Numbers and the four operations","items":[{"title":"Cou-Cou Packs Ten","zh":"10 的拆分：两个数合起来是 10，顺序可以换。","status":"自检过","tone":"mid","href":"lessons/ten-composition.html","meta":"221 KB"},{"title":"Cou-Cou Bundles Tens","zh":"几个十和几个一；10 个一换成 1 个十。","status":"自检过","tone":"mid","href":"lessons/tens-and-ones.html","meta":"217 KB"},{"title":"Cou-Cou’s Make-Ten Trick","zh":"凑十法：8 + 5 先凑成 10 再加 3。","status":"自检过","tone":"mid","href":"lessons/make-ten-addition.html","meta":"217 KB"},{"title":"Cou-Cou’s Break-the-Ten Trick","zh":"破十法：14 − 8 先减到 10 再减剩下的。","status":"已审核","tone":"good","href":"lessons/subtract-through-ten.html","meta":"218 KB"},{"title":"Cou-Cou Trades Up","zh":"两位数加法进位：满十进一。","status":"已审核","tone":"good","href":"lessons/add-regroup.html","meta":"224 KB"},{"title":"Cou-Cou Trades Back","zh":"两位数减法借位：退一当十。","status":"已审核","tone":"good","href":"lessons/subtract-regroup.html","meta":"225 KB"},{"title":"Cou-Cou’s Cookie Trays","zh":"用点阵理解乘法：几行、每行几个，交换后总数不变。","status":"自检过","tone":"mid","href":"lessons/multiplication-arrays.html","meta":"220 KB"},{"title":"Cou-Cou’s Fair Share","zh":"平均分：除法就是分成相同的几份。","status":"已审核","tone":"good","href":"lessons/division-sharing.html","meta":"217 KB"},{"title":"Cou-Cou’s Split-the-Tray Trick","zh":"面积模型：把长方形拆开算乘法。","status":"已审核","tone":"good","href":"lessons/area-model-multiply.html","meta":"221 KB"},{"title":"Cou-Cou’s Carry-the-Ten Trick","zh":"多位数乘一位数的进位。","status":"已审核","tone":"good","href":"lessons/multiply-regroup.html","meta":"223 KB"},{"title":"Cou-Cou’s Fact Family","zh":"乘法和除法互为逆运算。","status":"已审核","tone":"good","href":"lessons/mult-div-inverse.html","meta":"225 KB"},{"title":"Cou-Cou’s Undo Trick","zh":"加法和减法互为逆运算，用来验算。","status":"已审核","tone":"good","href":"lessons/add-sub-inverse.html","meta":"223 KB"},{"title":"Cou-Cou’s Fact Tricks","zh":"乘法口诀的策略：拆成已经会的口诀。","status":"已审核","tone":"good","href":"lessons/times-strategies.html","meta":"223 KB"},{"title":"Cou-Cou’s Leftovers","zh":"有余数的除法：分不完的还剩几个。","status":"已审核","tone":"good","href":"lessons/division-remainders.html","meta":"224 KB"},{"title":"Cou-Cou’s Growing Squares","zh":"规律：连续奇数相加等于平方数。","status":"已审核","tone":"good","href":"lessons/odd-numbers-squares.html","meta":"220 KB"}]},{"zh":"分数与小数","en":"Fractions and decimals","items":[{"title":"Cou-Cou’s Fair Shares","zh":"分数启蒙：平均分成几份、取几份；份数越多，每份越小。","status":"已审核","tone":"good","href":"lessons/fraction-intro.html","meta":"221 KB"},{"title":"Cou-Cou’s Decimal Squares","zh":"小数：十分位和百分位，0.4 和 0.35 谁大。","status":"已审核","tone":"good","href":"lessons/decimals-intro.html","meta":"237 KB"},{"title":"Cou-Cou’s Two Names","zh":"同一个量的两个名字：3/10 = 0.3，63/100 = 0.63。","status":"已审核","tone":"good","href":"lessons/fraction-decimal-link.html","meta":"251 KB"},{"title":"Cou-Cou’s Fraction Add-Ups","zh":"同分母分数相加：上面相加，下面不变。","status":"已审核","tone":"good","href":"lessons/fraction-add.html","meta":"252 KB"},{"title":"Cou-Cou’s Fraction Showdown","zh":"比较分数：切成同样大的块来比，或者和 1/2 比。","status":"已审核","tone":"good","href":"lessons/fraction-compare.html","meta":"256 KB"}]},{"zh":"时间与钱","en":"Time and money","items":[{"title":"Cou-Cou’s Clock Time","zh":"认钟表：整点、半点，到几分钟。","status":"已审核","tone":"good","href":"lessons/telling-time.html","meta":"224 KB"},{"title":"Cou-Cou’s Time Hops","zh":"经过的时间：从几点到几点过了多久。","status":"已审核","tone":"good","href":"lessons/elapsed-time.html","meta":"227 KB"},{"title":"Cou-Cou’s Calendar Weeks","zh":"日历和星期：每 7 天回到同一个星期几。","status":"已审核","tone":"good","href":"lessons/calendar-weeks.html","meta":"228 KB"},{"title":"Cou-Cou’s Coin Jar","zh":"美国硬币：数钱、找零、最少硬币。","status":"已审核","tone":"good","href":"lessons/counting-coins.html","meta":"232 KB"}]}]},{"id":"sci","zh":"科学与生活","icon":"🔬","count":10,"intro":"标签侦探系列、历史谜题、地理、理财、生物课。中英双语。","groups":[{"zh":"","en":"","items":[{"title":"The Sugar Detective","zh":"糖侦探：食物标签里的隐藏糖 · 读营养标签","status":"可试玩","tone":"mid","href":"sci/sugar-label-detective.html","meta":"606 KB"},{"title":"Fat Detective","zh":"脂肪侦探：友好脂肪和悠着点脂肪 · 读脂肪标签","status":"可试玩","tone":"mid","href":"sci/fat-label-detective.html","meta":"91 KB"},{"title":"The Color Detective","zh":"色素侦探：蓝莓味冰棍为什么是蓝的 · 读色素标签","status":"可试玩","tone":"mid","href":"sci/color-label-detective.html","meta":"96 KB"},{"title":"The Warning Label Detective","zh":"警告标签侦探：“致癌警告”到底什么意思 · 加州 Prop 65 警告","status":"可试玩","tone":"mid","href":"sci/warning-label-detective.html","meta":"93 KB"},{"title":"The Package Claims Detective","zh":"包装话术侦探：“树上熟”“太阳晒干” · 读包装广告话（带配音视频）","status":"待复核","tone":"mid","href":"sci/package-claims-detective.html","meta":"12.5 MB"},{"title":"The Scurvy Mystery","zh":"坏血病之谜：水手为什么会生病 · 维生素 C 与公平测试","status":"可试玩","tone":"mid","href":"sci/vitamin-c.html","meta":"55 KB"},{"title":"The Invisible Borders of Continents and Oceans","zh":"七大洲四大洋的隐形边界 · 地理","status":"可试玩","tone":"mid","href":"sci/continents-and-oceans.html","meta":"181 KB"},{"title":"The Travel Piggy Bank","zh":"旅行储蓄罐：利滚利 · 复利（理财启蒙）","status":"可试玩","tone":"mid","href":"sci/travel-piggy-bank.html","meta":"82 KB"},{"title":"The Tooth Timeline","zh":"换牙时间线 · 人体","status":"可试玩","tone":"mid","href":"sci/tooth-timeline.html","meta":"607 KB"},{"title":"Splinter · Bio 01","zh":"Splinter 生物课（含配音和视频）· 生物","status":"已在线","tone":"good","href":"https://dan-mom.github.io/Sci/Splinter.html","meta":"在线页"}]}]},{"id":"games","zh":"游戏与应用","icon":"🎮","count":2,"intro":"能直接玩的小应用。","groups":[{"zh":"","en":"","items":[{"title":"魔方小探险 · Little Cube Quest","zh":"20 关中英双语引导课，真魔方 + 慢动作示范 + 小问题","status":"等你走一遍","tone":"mid","href":"games/cube.html","meta":"9.6 MB","note":"文件大（含配音），第一次打开要等几秒"},{"title":"罗马数字王国 · Roman Numeral Kingdom","zh":"小游戏，女儿已一次通关；本地已修，等你说“发布”才推 GitHub","status":"已完成","tone":"good","href":"games/roman/index.html","meta":"140 KB"}]}]},{"id":"brand","zh":"品牌与视频","icon":"🎬","count":2,"intro":"What Matters Now 频道：品牌蓝图、动态数据图、已发布的视频。","groups":[{"zh":"","en":"","items":[{"title":"亿万富翁榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/billionaire-race.html","meta":"183 KB","video":false},{"title":"互联网流量榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/internet-traffic-race.html","meta":"39 KB","video":false}]}]}],"site":true};
+var DATA={"generated":"2026-10-04","v":1791119882336,"sections":[{"id":"math","zh":"数学课","icon":"➕","count":24,"intro":"英文互动数学课，每课约 5 分钟，约 7–9 岁。点开就能玩，进度存在你这台电脑的浏览器里。","groups":[{"zh":"数与加减乘除","en":"Numbers and the four operations","items":[{"id":"ten-composition","title":"Cou-Cou Packs Ten","zh":"10 的拆分：两个数合起来是 10，顺序可以换。","status":"自检过","tone":"mid","href":"lessons/ten-composition.html","meta":"222 KB","emoji":"🔟","color":"orange"},{"id":"tens-and-ones","title":"Cou-Cou Bundles Tens","zh":"几个十和几个一；10 个一换成 1 个十。","status":"自检过","tone":"mid","href":"lessons/tens-and-ones.html","meta":"218 KB","emoji":"🧱","color":"orange"},{"id":"make-ten-addition","title":"Cou-Cou’s Make-Ten Trick","zh":"凑十法：8 + 5 先凑成 10 再加 3。","status":"自检过","tone":"mid","href":"lessons/make-ten-addition.html","meta":"218 KB","emoji":"➕","color":"orange"},{"id":"subtract-through-ten","title":"Cou-Cou’s Break-the-Ten Trick","zh":"破十法：14 − 8 先减到 10 再减剩下的。","status":"已审核","tone":"good","href":"lessons/subtract-through-ten.html","meta":"219 KB","emoji":"🎈","color":"orange"},{"id":"add-regroup","title":"Cou-Cou Trades Up","zh":"两位数加法进位：满十进一。","status":"已审核","tone":"good","href":"lessons/add-regroup.html","meta":"225 KB","emoji":"🎒","color":"orange"},{"id":"subtract-regroup","title":"Cou-Cou Trades Back","zh":"两位数减法借位：退一当十。","status":"已审核","tone":"good","href":"lessons/subtract-regroup.html","meta":"226 KB","emoji":"🪙","color":"orange"},{"id":"multiplication-arrays","title":"Cou-Cou’s Cookie Trays","zh":"用点阵理解乘法：几行、每行几个，交换后总数不变。","status":"自检过","tone":"mid","href":"lessons/multiplication-arrays.html","meta":"221 KB","emoji":"🟧","color":"orange"},{"id":"division-sharing","title":"Cou-Cou’s Fair Share","zh":"平均分：除法就是分成相同的几份。","status":"已审核","tone":"good","href":"lessons/division-sharing.html","meta":"218 KB","emoji":"🍕","color":"orange"},{"id":"area-model-multiply","title":"Cou-Cou’s Split-the-Tray Trick","zh":"面积模型：把长方形拆开算乘法。","status":"已审核","tone":"good","href":"lessons/area-model-multiply.html","meta":"222 KB","emoji":"📐","color":"orange"},{"id":"multiply-regroup","title":"Cou-Cou’s Carry-the-Ten Trick","zh":"多位数乘一位数的进位。","status":"已审核","tone":"good","href":"lessons/multiply-regroup.html","meta":"224 KB","emoji":"✖️","color":"orange"},{"id":"mult-div-inverse","title":"Cou-Cou’s Fact Family","zh":"乘法和除法互为逆运算。","status":"已审核","tone":"good","href":"lessons/mult-div-inverse.html","meta":"226 KB","emoji":"🔄","color":"orange"},{"id":"add-sub-inverse","title":"Cou-Cou’s Undo Trick","zh":"加法和减法互为逆运算，用来验算。","status":"已审核","tone":"good","href":"lessons/add-sub-inverse.html","meta":"224 KB","emoji":"↔️","color":"orange"},{"id":"times-strategies","title":"Cou-Cou’s Fact Tricks","zh":"乘法口诀的策略：拆成已经会的口诀。","status":"已审核","tone":"good","href":"lessons/times-strategies.html","meta":"224 KB","emoji":"🧩","color":"orange"},{"id":"division-remainders","title":"Cou-Cou’s Leftovers","zh":"有余数的除法：分不完的还剩几个。","status":"已审核","tone":"good","href":"lessons/division-remainders.html","meta":"225 KB","emoji":"🍪","color":"orange"},{"id":"odd-numbers-squares","title":"Cou-Cou’s Growing Squares","zh":"规律：连续奇数相加等于平方数。","status":"已审核","tone":"good","href":"lessons/odd-numbers-squares.html","meta":"221 KB","emoji":"🟩","color":"orange"}],"color":"orange"},{"zh":"分数与小数","en":"Fractions and decimals","items":[{"id":"fraction-intro","title":"Cou-Cou’s Fair Shares","zh":"分数启蒙：平均分成几份、取几份；份数越多，每份越小。","status":"已审核","tone":"good","href":"lessons/fraction-intro.html","meta":"222 KB","emoji":"🍰","color":"pink"},{"id":"decimals-intro","title":"Cou-Cou’s Decimal Squares","zh":"小数：十分位和百分位，0.4 和 0.35 谁大。","status":"已审核","tone":"good","href":"lessons/decimals-intro.html","meta":"238 KB","emoji":"💧","color":"pink"},{"id":"fraction-decimal-link","title":"Cou-Cou’s Two Names","zh":"同一个量的两个名字：3/10 = 0.3，63/100 = 0.63。","status":"已审核","tone":"good","href":"lessons/fraction-decimal-link.html","meta":"252 KB","emoji":"🔗","color":"pink"},{"id":"fraction-add","title":"Cou-Cou’s Fraction Add-Ups","zh":"同分母分数相加：上面相加，下面不变。","status":"已审核","tone":"good","href":"lessons/fraction-add.html","meta":"253 KB","emoji":"🍫","color":"pink"},{"id":"fraction-compare","title":"Cou-Cou’s Fraction Showdown","zh":"比较分数：切成同样大的块来比，或者和 1/2 比。","status":"已审核","tone":"good","href":"lessons/fraction-compare.html","meta":"257 KB","emoji":"⚖️","color":"pink"}],"color":"pink"},{"zh":"时间与钱","en":"Time and money","items":[{"id":"telling-time","title":"Cou-Cou’s Clock Time","zh":"认钟表：整点、半点，到几分钟。","status":"已审核","tone":"good","href":"lessons/telling-time.html","meta":"225 KB","emoji":"🕒","color":"teal"},{"id":"elapsed-time","title":"Cou-Cou’s Time Hops","zh":"经过的时间：从几点到几点过了多久。","status":"已审核","tone":"good","href":"lessons/elapsed-time.html","meta":"228 KB","emoji":"⏳","color":"teal"},{"id":"calendar-weeks","title":"Cou-Cou’s Calendar Weeks","zh":"日历和星期：每 7 天回到同一个星期几。","status":"已审核","tone":"good","href":"lessons/calendar-weeks.html","meta":"229 KB","emoji":"📅","color":"teal"},{"id":"counting-coins","title":"Cou-Cou’s Coin Jar","zh":"美国硬币：数钱、找零、最少硬币。","status":"已审核","tone":"good","href":"lessons/counting-coins.html","meta":"233 KB","emoji":"💰","color":"teal"}],"color":"teal"}],"en":"Math Land","emoji":"🧮","color":"orange","tag":"Numbers, fractions, time and money"},{"id":"sci","zh":"科学与生活","icon":"🔬","count":10,"intro":"标签侦探系列、历史谜题、地理、理财、生物课。中英双语。","groups":[{"zh":"","en":"","items":[{"id":"sugar-label-detective","title":"The Sugar Detective","zh":"糖侦探：食物标签里的隐藏糖 · 读营养标签","status":"可试玩","tone":"mid","href":"sci/sugar-label-detective.html","meta":"606 KB","emoji":"🍬","color":"green"},{"id":"fat-label-detective","title":"Fat Detective","zh":"脂肪侦探：友好脂肪和悠着点脂肪 · 读脂肪标签","status":"可试玩","tone":"mid","href":"sci/fat-label-detective.html","meta":"91 KB","emoji":"🥑","color":"green"},{"id":"color-label-detective","title":"The Color Detective","zh":"色素侦探：蓝莓味冰棍为什么是蓝的 · 读色素标签","status":"可试玩","tone":"mid","href":"sci/color-label-detective.html","meta":"96 KB","emoji":"🫐","color":"green"},{"id":"warning-label-detective","title":"The Warning Label Detective","zh":"警告标签侦探：“致癌警告”到底什么意思 · 加州 Prop 65 警告","status":"可试玩","tone":"mid","href":"sci/warning-label-detective.html","meta":"93 KB","emoji":"⚠️","color":"green"},{"id":"package-claims-detective","title":"The Package Claims Detective","zh":"包装话术侦探：“树上熟”“太阳晒干” · 读包装广告话（带配音视频）","status":"待复核","tone":"mid","href":"sci/package-claims-detective.html","meta":"12.5 MB","emoji":"📦","color":"green"},{"id":"vitamin-c","title":"The Scurvy Mystery","zh":"坏血病之谜：水手为什么会生病 · 维生素 C 与公平测试","status":"可试玩","tone":"mid","href":"sci/vitamin-c.html","meta":"55 KB","emoji":"🍊","color":"green"},{"id":"continents-and-oceans","title":"The Invisible Borders of Continents and Oceans","zh":"七大洲四大洋的隐形边界 · 地理","status":"可试玩","tone":"mid","href":"sci/continents-and-oceans.html","meta":"181 KB","emoji":"🌍","color":"green"},{"id":"travel-piggy-bank","title":"The Travel Piggy Bank","zh":"旅行储蓄罐：利滚利 · 复利（理财启蒙）","status":"可试玩","tone":"mid","href":"sci/travel-piggy-bank.html","meta":"82 KB","emoji":"🐷","color":"green"},{"id":"tooth-timeline","title":"The Tooth Timeline","zh":"换牙时间线 · 人体","status":"可试玩","tone":"mid","href":"sci/tooth-timeline.html","meta":"607 KB","emoji":"🦷","color":"green"},{"title":"Splinter · Bio 01","zh":"Splinter 生物课（含配音和视频）· 生物","status":"已在线","tone":"good","href":"https://dan-mom.github.io/Sci/Splinter.html","meta":"在线页","emoji":"🪵","color":"green"}],"color":"green"}],"en":"Science Lab","emoji":"🔬","color":"green","tag":"Detectives, mysteries and discoveries"},{"id":"games","zh":"游戏与应用","icon":"🎮","count":2,"intro":"能直接玩的小应用。","groups":[{"zh":"","en":"","items":[{"title":"魔方小探险 · Little Cube Quest","zh":"20 关中英双语引导课，真魔方 + 慢动作示范 + 小问题","status":"等你走一遍","tone":"mid","href":"games/cube.html","meta":"9.6 MB","note":"文件大（含配音），第一次打开要等几秒","emoji":"🧊","color":"purple"},{"title":"罗马数字王国 · Roman Numeral Kingdom","zh":"小游戏，女儿已一次通关；本地已修，等你说“发布”才推 GitHub","status":"已完成","tone":"good","href":"games/roman/index.html","meta":"140 KB","emoji":"🏰","color":"purple"}],"color":"purple"}],"en":"Game Zone","emoji":"🎮","color":"purple","tag":"Cubes, kingdoms and puzzles"},{"id":"brand","zh":"品牌与视频","icon":"🎬","count":2,"intro":"What Matters Now 频道：品牌蓝图、动态数据图、已发布的视频。","groups":[{"zh":"","en":"","items":[{"title":"亿万富翁榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/billionaire-race.html","meta":"183 KB","video":false,"emoji":"💰","color":"blue"},{"title":"互联网流量榜（动态图）","zh":"数据可视化视频的网页版","status":"素材","tone":"mid","href":"brand/internet-traffic-race.html","meta":"39 KB","video":false,"emoji":"🌐","color":"blue"}],"color":"blue"}],"en":"Show Time","emoji":"🎬","color":"blue","tag":"Charts that race!"}],"site":true};
 function E(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e}
 function seenGet(){try{return JSON.parse(localStorage.getItem('wmn-seen')||'{}')}catch(e){return{}}}
 function seenSet(k){try{var s=seenGet();s[k]=1;localStorage.setItem('wmn-seen',JSON.stringify(s))}catch(e){}}
-document.getElementById('gen').textContent=DATA.generated;
-var total=0,playable=0;DATA.sections.forEach(function(s){if(s.groups)s.groups.forEach(function(g){g.items.forEach(function(i){total++;if(i.href)playable++})})});
-DATA.sections.filter(function(s){return s.groups}).map(function(s){return [s.zh,s.count]}).concat([['合计可打开',playable]]).forEach(function(x){var d=E('div','stat');d.appendChild(E('b',null,x[1]));d.appendChild(E('span',null,x[0]));document.getElementById('stats').appendChild(d)});
-var tabs=document.getElementById('tabs'),main=document.getElementById('main'),cur=0;
-DATA.sections.forEach(function(s,i){var b=E('button',null,s.icon+' '+s.zh+(s.count?' · '+s.count:''));b.type='button';b.setAttribute('role','tab');b.onclick=function(){show(i)};tabs.appendChild(b)});
 var HUB=decodeURIComponent((location.pathname.split('/').pop())||'')||'index.html';
-function withHome(h){if(/^https?:/.test(h))return h;var depth=h.split('/').length-1,up='';for(var i=0;i<depth;i++)up+='../';return h+'?home='+encodeURIComponent(up+(HUB||'index.html')).replace(/%2F/g,'/')+'&v='+DATA.v}
-window.addEventListener('message',function(e){if(e.data&&e.data.fmpHome&&V.classList.contains('on'))closeV()});
-function card(it){
-  var c=E('div','card');c.appendChild(E('h3',null,it.title));if(it.zh)c.appendChild(E('p',null,it.zh));
-  var r=E('div','row');r.appendChild(E('span','chip '+(it.tone||'mid'),it.status||''));
-  if(it.meta)r.appendChild(E('span','meta',it.meta));
-  var key=it.href||it.title;if(it.href&&seenGet()[key]){r.appendChild(E('span','seen','✓ 打开过'))}
-  c.appendChild(r);
-  var r2=E('div','row');
+function withHome(h){if(/^https?:/.test(h))return h;var d=h.split('/').length-1,up='';for(var i=0;i<d;i++)up+='../';return h+'?home='+encodeURIComponent(up+HUB).replace(/%2F/g,'/')+'&v='+DATA.v}
+var main=document.getElementById('main'),V=document.getElementById('viewer'),VF=document.getElementById('vf');
+/* mascot (the same orange box that guides the math lessons) */
+document.getElementById('mascot').innerHTML='<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg"><ellipse cx="60" cy="113" rx="36" ry="5" fill="rgba(31,42,68,.16)"/><ellipse cx="22" cy="54" rx="13" ry="25" transform="rotate(-16 22 54)" fill="#9a6a34" stroke="#6a4219" stroke-width="3.5"/><ellipse cx="98" cy="54" rx="13" ry="25" transform="rotate(16 98 54)" fill="#9a6a34" stroke="#6a4219" stroke-width="3.5"/><ellipse cx="60" cy="62" rx="40" ry="37" fill="#f4c37a" stroke="#b8782f" stroke-width="4"/><path d="M60 26 C52 38 52 50 60 58 C68 50 68 38 60 26Z" fill="#fff3dc" opacity=".9"/><ellipse cx="60" cy="80" rx="21" ry="15" fill="#fff3dc"/><circle cx="43" cy="58" r="7" fill="#fff"/><circle cx="77" cy="58" r="7" fill="#fff"/><circle cx="44" cy="59" r="4.6" fill="#1f2a44"/><circle cx="78" cy="59" r="4.6" fill="#1f2a44"/><circle cx="45.6" cy="57.2" r="1.6" fill="#fff"/><circle cx="79.6" cy="57.2" r="1.6" fill="#fff"/><ellipse cx="29" cy="76" rx="6" ry="4" fill="#ff8f9b" opacity=".55"/><ellipse cx="91" cy="76" rx="6" ry="4" fill="#ff8f9b" opacity=".55"/><ellipse cx="60" cy="72" rx="7.5" ry="5.2" fill="#3a2a22"/><ellipse cx="58" cy="70.6" rx="2.2" ry="1.2" fill="#fff" opacity=".6"/><path d="M60 77 V82 M60 82 Q53 90 47 84 M60 82 Q67 90 73 84" fill="none" stroke="#3a2a22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 87 Q60 104 66 87 Q60 91 54 87Z" fill="#ff6f86" stroke="#c2415a" stroke-width="2" stroke-linejoin="round"/><path d="M30 100 Q60 116 90 100" fill="none" stroke="#1b6fd1" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="110" r="5.5" fill="#ffd23f" stroke="#b8860b" stroke-width="2"/></svg>';
+
+function allItems(){var a=[];DATA.sections.forEach(function(s){(s.groups||[]).forEach(function(g){g.items.forEach(function(i){a.push(i)})})});return a}
+function updateStars(){var s=seenGet(),n=0;allItems().forEach(function(i){if(i.href&&s[i.href])n++});document.getElementById('starN').textContent=n+' of '+allItems().filter(function(i){return i.href}).length}
+function sec(id){for(var i=0;i<DATA.sections.length;i++)if(DATA.sections[i].id===id)return DATA.sections[i];return null}
+
+function renderHome(){
+  main.innerHTML='';
+  main.appendChild(E('h2','sect','Choose your world'));
+  main.appendChild(E('p','lead','Every world has lessons and games you can play right now.'));
+  var wr=E('div','worlds');
+  DATA.sections.forEach(function(s){
+    var b=E('button','world c-'+s.color);b.type='button';b.setAttribute('aria-label',s.en+' - '+s.count+' things to play');
+    b.appendChild(E('span','bubble b1'));b.appendChild(E('span','bubble b2'));
+    b.appendChild(E('span','em',s.emoji));b.appendChild(E('h3',null,s.en));b.appendChild(E('p',null,s.tag));b.appendChild(E('p','zh',s.zh));
+    var f=E('div','foot');f.appendChild(E('span','pill',s.count+(s.areas?' projects':' to play')));f.appendChild(E('span','go','→'));b.appendChild(f);
+    b.onclick=function(){location.hash=s.id};wr.appendChild(b)});
+  main.appendChild(wr);
+}
+function card(it,g,idx){
+  var c=E('div','card c-'+(it.color||g.color));c.style.animationDelay=(Math.min(idx,12)*35)+'ms';
+  var art=E('div','art');art.appendChild(E('span',null,it.emoji||'⭐'));
+  var seen=it.href&&seenGet()[it.href];if(seen)art.appendChild(E('span','ribbon','⭐ Played'));
+  c.appendChild(art);
+  var b=E('div','body');b.appendChild(E('h3',null,it.title));if(it.zh)b.appendChild(E('p','zh',it.zh));
+  if(!DATA.site&&it.status){var tg=E('div','tags');tg.appendChild(E('span','tag-chip'+(it.tone==='low'?' low':''),it.status));if(it.meta)tg.appendChild(E('span','tag-chip low',it.meta));b.appendChild(tg)}
+  var ac=E('div','actions');
   if(it.href){
-    var b=E('button','btn','打开');b.type='button';b.onclick=function(){openIt(it,key)};r2.appendChild(b);
-    if(DATA.site||DATA.sections[cur].id==='math'){var a=E('a','btn alt','新窗口');a.href=withHome(it.href);a.target='_blank';a.rel='noopener';a.onclick=function(){seenSet(key)};r2.appendChild(a)}
-  } else {var d=E('span','btn alt','还没有可打开的页面');d.setAttribute('aria-disabled','true');r2.appendChild(d)}
-  r2.style.paddingTop='4px';c.appendChild(r2);
-  if(it.note){c.appendChild(E('p','meta',it.note))}
-  return c}
-function show(i){
-  cur=i;var s=DATA.sections[i];main.innerHTML='';
-  [].forEach.call(tabs.children,function(b,j){b.setAttribute('aria-selected',String(j===i))});
-  main.appendChild(E('p','intro',s.intro));
-  if(s.areas){s.areas.forEach(function(a){var d=E('div','area');d.appendChild(E('h3',null,a.title));d.appendChild(E('p','meta',a.zh));
-    var r=E('div','row');r.appendChild(E('span','chip '+a.tone,a.status));if(a.waiting)r.appendChild(E('span','chip mid',a.waiting));if(a.updated)r.appendChild(E('span','meta','更新 '+a.updated));d.appendChild(r);
-    if(a.next)d.appendChild(E('p','next','下一步：'+a.next));if(a.extra)d.appendChild(E('p','meta',a.extra));main.appendChild(d)})}
-  else s.groups.forEach(function(g){
-    if(g.zh){var h=E('h2',null,g.zh);if(g.en)h.appendChild(E('small',null,g.en));main.appendChild(h)}
-    var gr=E('div','grid');g.items.forEach(function(it){gr.appendChild(card(it))});main.appendChild(gr)});
-  if(s.id==='math'&&!DATA.site){main.appendChild(E('div','note','数学课另有一份备份在你的私有 GitHub 仓库（Dan-Mom/five-minute-math）。要变成别人也能点开的公开网址，需要你同意开启 GitHub Pages；现在还没发布任何东西。'))}
-  window.scrollTo(0,0)}
-var V=document.getElementById('viewer'),VF=document.getElementById('vf');
-function openIt(it,key){seenSet(key);document.getElementById('vt').textContent=it.title;document.getElementById('vnew').href=withHome(it.href);
+    var p=E('button','play','▶ Play');p.type='button';p.onclick=function(){openIt(it)};ac.appendChild(p);
+    if(DATA.site||DATA.cur==='math'){var a=E('a','tab','↗');a.href=withHome(it.href);a.target='_blank';a.rel='noopener';a.setAttribute('aria-label','Open '+it.title+' in a new tab');a.title='Open in a new tab';a.onclick=function(){seenSet(it.href)};ac.appendChild(a)}
+  }else{var d=E('span','play','Coming soon');d.setAttribute('aria-disabled','true');ac.appendChild(d)}
+  b.appendChild(ac);if(it.note)b.appendChild(E('p','note',it.note));c.appendChild(b);return c}
+function renderWorld(s){
+  DATA.cur=s.id;main.innerHTML='';main.className='c-'+s.color;
+  var cr=E('div','crumb');var bk=E('button','back','← All worlds');bk.type='button';bk.onclick=function(){location.hash=''};cr.appendChild(bk);main.appendChild(cr);
+  var t=E('div','world-title');t.appendChild(E('span','em',s.emoji));var h=E('h2',null,s.en);t.appendChild(h);main.appendChild(t);
+  main.appendChild(E('p','lead',s.tag+'  ·  '+s.zh));
+  if(s.areas){s.areas.forEach(function(a){var d=E('div','area c-'+s.color);d.appendChild(E('h3',null,a.title));d.appendChild(E('p','zh',a.zh));var tg=E('div','tags');tg.appendChild(E('span','tag-chip',a.status));if(a.waiting)tg.appendChild(E('span','tag-chip low',a.waiting));if(a.updated)tg.appendChild(E('span','tag-chip low','updated '+a.updated));d.appendChild(tg);if(a.next)d.appendChild(E('p','next','Next: '+a.next));if(a.extra)d.appendChild(E('p','note',a.extra));main.appendChild(d)});return}
+  var idx=0;
+  s.groups.forEach(function(g){
+    if(g.en||g.zh){var gh=E('div','group-h c-'+g.color,g.en||g.zh);if(g.en&&g.zh)gh.appendChild(E('small',null,g.zh));main.appendChild(gh)}
+    var gr=E('div','grid c-'+g.color);g.items.forEach(function(it){gr.appendChild(card(it,g,idx++))});main.appendChild(gr)});
+  if(s.id==='math'&&!DATA.site)main.appendChild(E('p','note','Math lessons also have a private backup on GitHub (Dan-Mom/five-minute-math).'))}
+function route(){
+  var id=(location.hash||'').replace('#','');var s=id&&sec(id);
+  main.className='';DATA.cur=null;
+  if(s)renderWorld(s);else renderHome();
+  updateStars();window.scrollTo(0,0)}
+function openIt(it){
+  seenSet(it.href);document.getElementById('vt').textContent=it.title;
+  var bar=V.querySelector('.bar');V.style.setProperty('--c',getComputedStyle(main.firstChild&&main.className?main:document.body).getPropertyValue('--c')||'#1b6fd1');
+  document.getElementById('vnew').href=withHome(it.href);
   if(it.video){window.open(it.href,'_blank');return}
-  VF.src=/^https?:/.test(it.href)?it.href:it.href+"?v="+DATA.v;V.classList.add('on');document.getElementById('vx').focus()}
-function closeV(){V.classList.remove('on');VF.src='about:blank';show(cur)}
-document.getElementById('vx').onclick=closeV;document.addEventListener('keydown',function(e){if(e.key==='Escape'&&V.classList.contains('on'))closeV()});
-show(0);
+  VF.src=/^https?:/.test(it.href)?it.href:it.href+'?v='+DATA.v;V.classList.add('on');document.getElementById('vx').focus()}
+function closeV(){V.classList.remove('on');VF.src='about:blank';route()}
+document.getElementById('vx').onclick=closeV;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&V.classList.contains('on'))closeV()});
+window.addEventListener('message',function(e){if(e.data&&e.data.fmpHome&&V.classList.contains('on'))closeV()});
+window.addEventListener('hashchange',route);
+document.getElementById('foot').textContent=(DATA.site?'Test version':'Your full overview (includes work in progress)')+' · updated '+DATA.generated;
+route();
 </script>
 </body>
 </html>

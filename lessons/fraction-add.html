@@ -2008,7 +2008,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   /* ---------------- leaving the lesson ---------------- */
   function homeTarget() {
     var inFrame = false; try { inFrame = !!global.parent && global.parent !== global; } catch (e) { inFrame = true; }
-    if (inFrame) return { frame: true };
+    if (inFrame) return null;   /* inside the menu pop-up the pop-up has its own big Back button */
     var m = /[?&]home=([^&]*)/.exec((global.location && global.location.search) || ''), hu = '';
     try { hu = m ? decodeURIComponent(m[1]) : ''; } catch (e) { hu = ''; }
     if (hu && /^[\w.\-\/%~]+$/.test(hu) && hu.indexOf('//') < 0) return { url: hu };   /* a relative file link only - never a scheme such as javascript: */
@@ -2101,12 +2101,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   /* ---------------- mascot ---------------- */
   function mascot(size, label) {
     var svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120"' + (label ? ' role="img" aria-label="' + String(label).replace(/[&<>"]/g, function (ch) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch]; }) + '"' : ' aria-hidden="true"') + (size ? ' width="' + size + '" height="' + size + '"' : '') + '>' +
-      '<rect x="14" y="26" width="92" height="82" rx="20" fill="#f28c1b" stroke="#b85f00" stroke-width="4"/>' +
-      '<rect x="14" y="26" width="92" height="20" rx="10" fill="#ffb14d" stroke="#b85f00" stroke-width="4"/>' +
-      '<rect x="50" y="26" width="20" height="20" fill="#f7d9a3" stroke="#b85f00" stroke-width="3"/>' +
-      '<circle cx="42" cy="72" r="9" fill="#fff"/><circle cx="78" cy="72" r="9" fill="#fff"/>' +
-      '<circle cx="44" cy="74" r="4.5" fill="#1f2a44"/><circle cx="80" cy="74" r="4.5" fill="#1f2a44"/>' +
-      '<path d="M46 90 Q60 102 74 90" fill="none" stroke="#1f2a44" stroke-width="4" stroke-linecap="round"/></svg>';
+      '<ellipse cx="60" cy="113" rx="36" ry="5" fill="rgba(31,42,68,.16)"/><ellipse cx="22" cy="54" rx="13" ry="25" transform="rotate(-16 22 54)" fill="#9a6a34" stroke="#6a4219" stroke-width="3.5"/><ellipse cx="98" cy="54" rx="13" ry="25" transform="rotate(16 98 54)" fill="#9a6a34" stroke="#6a4219" stroke-width="3.5"/><ellipse cx="60" cy="62" rx="40" ry="37" fill="#f4c37a" stroke="#b8782f" stroke-width="4"/><path d="M60 26 C52 38 52 50 60 58 C68 50 68 38 60 26Z" fill="#fff3dc" opacity=".9"/><ellipse cx="60" cy="80" rx="21" ry="15" fill="#fff3dc"/><circle cx="43" cy="58" r="7" fill="#fff"/><circle cx="77" cy="58" r="7" fill="#fff"/><circle cx="44" cy="59" r="4.6" fill="#1f2a44"/><circle cx="78" cy="59" r="4.6" fill="#1f2a44"/><circle cx="45.6" cy="57.2" r="1.6" fill="#fff"/><circle cx="79.6" cy="57.2" r="1.6" fill="#fff"/><ellipse cx="29" cy="76" rx="6" ry="4" fill="#ff8f9b" opacity=".55"/><ellipse cx="91" cy="76" rx="6" ry="4" fill="#ff8f9b" opacity=".55"/><ellipse cx="60" cy="72" rx="7.5" ry="5.2" fill="#3a2a22"/><ellipse cx="58" cy="70.6" rx="2.2" ry="1.2" fill="#fff" opacity=".6"/><path d="M60 77 V82 M60 82 Q53 90 47 84 M60 82 Q67 90 73 84" fill="none" stroke="#3a2a22" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><path d="M54 87 Q60 104 66 87 Q60 91 54 87Z" fill="#ff6f86" stroke="#c2415a" stroke-width="2" stroke-linejoin="round"/><path d="M30 100 Q60 116 90 100" fill="none" stroke="#1b6fd1" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="110" r="5.5" fill="#ffd23f" stroke="#b8860b" stroke-width="2"/></svg>';
     var w = D.createElement('span'); w.innerHTML = svg; return w.firstChild;
   }
 
