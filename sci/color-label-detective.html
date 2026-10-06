@@ -336,7 +336,7 @@ var MODEL_FOODS = [
   { id:"green-apple-candy", zh:"绿苹果糖", en:"Green apple candy", hasColorant:true,
    colorants:[{id:"blue-1", zh:"亮蓝1号", en:"Blue 1"},{id:"tartrazine", zh:"柠檬黄", en:"Tartrazine"}] },
   { id:"orange-cracker", zh:"橙色芝士饼干", en:"Orange cheese cracker", hasColorant:true,
-   colorants:[{id:"beta-carotene", zh:"胭萝卜素", en:"beta-carotene"}] }
+   colorants:[{id:"beta-carotene", zh:"胡萝卜素", en:"beta-carotene"}] }
 ];
 
 var MODEL = {
@@ -363,12 +363,12 @@ var MODEL = {
     { id:"two", correct:true, zh:"2 种", en:"2" },
     { id:"three", correct:false, zh:"3 种", en:"3" }
   ],
-  checkWrong: { zh: "再翻一遍每种食物：蓝色冰棍的&ldquo;亮蓝1号&rdquo;和橙色饼干的&ldquo;胭萝卜素&rdquo;，它们在名单上吗？", en: "Flip through each food again &mdash; are the blue popsicle's \"Blue 1\" and the orange cracker's \"beta-carotene\" on the list?" },
+  checkWrong: { zh: "再翻一遍每种食物：蓝色冰棍的&ldquo;亮蓝1号&rdquo;和橙色饼干的&ldquo;胡萝卜素&rdquo;，它们在名单上吗？", en: "Flip through each food again &mdash; are the blue popsicle's \"Blue 1\" and the orange cracker's \"beta-carotene\" on the list?" },
   explain: {
-    A: { zh:"橙子和草莓没有配料表，颜色是本来的。蓝色冰棍、绿苹果糖、橙色饼干都加了颜色&mdash;&mdash;但只有&ldquo;柠檬黄&rdquo;在特别留意名单上，&ldquo;亮蓝1号&rdquo;和&ldquo;胭萝卜素&rdquo;都不在。",
+    A: { zh:"橙子和草莓没有配料表，颜色是本来的。蓝色冰棍、绿苹果糖、橙色饼干都加了颜色&mdash;&mdash;但只有&ldquo;柠檬黄&rdquo;在特别留意名单上，&ldquo;亮蓝1号&rdquo;和&ldquo;胡萝卜素&rdquo;都不在。",
        en:"The orange and strawberry have no ingredient list &mdash; their color is their own. The blue popsicle, green apple candy, and orange cracker all have added color &mdash; but only \"Tartrazine\" is on the caution list; \"Blue 1\" and \"beta-carotene\" are not." },
-    B: { zh:"加了颜色，不代表这个颜色的名字就在特别留意名单上&mdash;&mdash;要一个名字一个名字地查。天然来源的色素（比如胭萝卜素）也不在这份名单上，名单只针对这4个具体的合成色素名字。",
-       en:"Having an added color doesn't mean its name is on the caution list &mdash; each name must be checked individually. A natural-source colorant (like beta-carotene) isn't on this list either &mdash; the list is specific to these 4 named synthetic dyes." }
+    B: { zh:"加了颜色，不代表这个颜色的名字就在特别留意名单上&mdash;&mdash;要一个名字一个名字地查。比如橙色饼干里的胡萝卜素，也不在这份名单上，名单只针对这4个具体的名字。",
+       en:"Having an added color doesn't mean its name is on the caution list &mdash; each name must be checked individually. For example, the beta-carotene in the orange cracker isn't on this list either &mdash; the list is specific to these 4 named dyes." }
   }
 };
 

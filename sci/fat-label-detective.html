@@ -445,8 +445,8 @@ const FAIRTEST = {
 };
 
 const TRANSFER = {
-  narrator:{ A:{zh:"新情况：全脂牛奶和三文鱼，标签上都写着总脂肪8克。选对的词卡，拼出一句解释。",en:"New situation: whole milk and salmon both list Total Fat as 8g. Pick the right chips and build one sentence explaining why."},
-             B:{zh:"新情况：牛奶和三文鱼总脂肪一样多，都是8克。先选出最好的证据，再用“因为……所以……”完成解释。",en:"New situation: milk and salmon have the same Total Fat, 8g. First choose the best evidence, then finish the explanation with “because … so …”."} },
+  narrator:{ A:{zh:"新情况：全脂牛奶和三文鱼的示例标签上，每份总脂肪都写着8克（各按自己标签上的一份）。选对的词卡，拼出一句解释。",en:"New situation: on the example labels for whole milk and salmon, Total Fat is 8g per serving (each by its own label’s serving). Pick the right chips and build one sentence explaining why."},
+             B:{zh:"新情况：牛奶和三文鱼的示例标签上，每份总脂肪一样多，都是8克（各按自己标签上的一份）。先选出最好的证据，再用“因为……所以……”完成解释。",en:"New situation: on their example labels, milk and salmon have the same Total Fat per serving, 8g (each by its own label’s serving). First choose the best evidence, then finish the explanation with “because … so …”."} },
   milkName:{zh:"牛奶",en:"Milk"}, salmonName:{zh:"三文鱼",en:"Salmon"},
   milkGoEasy:65, salmonGoEasy:14,
   /* P11 — display order only. `slot` still decides what is right, so the word chips
@@ -463,7 +463,7 @@ const TRANSFER = {
   bEvidencePrompt:{zh:"哪一个是最好的证据？",en:"Which one is the best evidence?"},
   /* P11 — in all three groups the correct option is deliberately not first. */
   bEvidence:[ {id:"salmon-pink", correct:false, zh:"三文鱼是粉色的，牛奶是白色的", en:"Salmon is pink and milk is white"},
-              {id:"both-8g-diff-type", correct:true, zh:"两者标签都写着总脂肪8克，但三文鱼的脂肪大多不饱和，牛奶的脂肪大多饱和", en:"Both labels list Total Fat as 8g, but salmon's fat is mostly unsaturated and milk's is mostly saturated"},
+              {id:"both-8g-diff-type", correct:true, zh:"两者示例标签都写着每份总脂肪8克，但三文鱼的脂肪大多不饱和，牛奶的脂肪大多饱和", en:"Both example labels list Total Fat as 8g per serving, but salmon's fat is mostly unsaturated and milk's is mostly saturated"},
               {id:"milk-cheaper", correct:false, zh:"牛奶通常比三文鱼便宜", en:"Milk is usually cheaper than salmon"} ],
   bBecausePrompt:{zh:"因为……",en:"Because …"},
   bBecause:[ {id:"amount-differs", correct:false, zh:"总脂肪的克数不同", en:"the total fat amount differs"},
@@ -474,9 +474,10 @@ const TRANSFER = {
         {id:"salmon-friendlier-milk-moderate", correct:true, zh:"三文鱼的脂肪对身体更友好，牛奶适量喝就好", en:"salmon's fat is friendlier to the body, and milk is fine in a reasonable amount"},
         {id:"same-healthy", correct:false, zh:"两个其实一样健康", en:"the two are actually equally healthy"} ],
   bWrong:{zh:"再想想：哪个证据 / 因为 / 所以真的和“脂肪种类不同”有关，并且和三文鱼、牛奶这个例子对得上？",en:"Think again: which evidence / because / so option is really about “the fat type differs” and matches the salmon-and-milk example?"},
+  exampleLabelNote:{zh:"示例标签：牛奶和三文鱼的克数是示例数字，各按自己标签上的一份。",en:"Example label: the milk and salmon grams are example numbers, each per one serving on its own label."},
   invisibleCaption:{zh:"你看不出食物里脂肪的种类——营养标签帮你“看见”看不见的东西。",en:"You can't tell a food's fat type just by looking at it — the nutrition label helps you “see” the invisible."},
   /* P10 — the tip used to name the answer to the Level B “because …” question. */
-  tip:{zh:"提示：先看看两者的总脂肪是不是一样，再看看 X 光条里两种颜色各占多少。",en:"Tip: first check whether the total fat is the same, then look at how much of each color fills the X-ray bars."},
+  tip:{zh:"提示：先看看两者每份的总脂肪是不是一样，再看看 X 光条里两种颜色各占多少。",en:"Tip: first check whether the Total Fat per serving is the same, then look at how much of each color fills the X-ray bars."},
 };
 
 const SUMMARY = {
@@ -1033,7 +1034,7 @@ function xrayVisual(progress){
   return visual(fmt(t(VISUAL.xray), {pct:Math.round(100*progress)}), '<div>'+
     xrayRow("🥛", t(TRANSFER.milkName), milk, progress, anim)+
     xrayRow("🐟", t(TRANSFER.salmonName), salmon, progress, anim)+
-    '</div>')+'<p class="caption">'+esc(t(TRANSFER.invisibleCaption))+'</p>';
+    '</div>')+'<p class="caption">'+esc(t(TRANSFER.exampleLabelNote))+'</p><p class="caption">'+esc(t(TRANSFER.invisibleCaption))+'</p>';
 }
 function xrayRow(icon, name, goEasyPct, progress, anim){
   const shownPct = 100*progress;
