@@ -1,6 +1,218 @@
 <!doctype html>
 <html lang="zh-CN">
-<head>
+<head><script>/* ---------- Science lessons -> My Passport (added to the public copy of each lesson by build-hub.cjs) ----------
+   The science lessons were not built on the maths player, so they never reported anything. This small script sits in the
+   COPY of each lesson on the public site (the lesson files themselves are not touched) and reports what the child did, in the
+   same event format the maths lessons use (schema 1). Rules it follows:
+     - It only does anything when the lesson was opened from the site by a child who picked an animal (?profile=<animal>).
+       Opened any other way, it does nothing at all and the lesson behaves exactly as before.
+     - Effort earns sparks, speed never does. Nothing is sent over the network: events go to this device's own storage and,
+       if the lesson is inside the site, to the site page that holds it (same origin only).
+     - Nothing personal is sent: only the lesson id, the scene name, the level and option ids.
+     - The same thing never counts twice: the passport keeps one ledger line per scene, so replaying earns nothing new. */
+(function (CFG) {
+  'use strict';
+  var AN = ['lion', 'fox', 'panda', 'owl', 'frog', 'penguin'], who, hostOk = false;
+  try {
+    who = new URLSearchParams(location.search).get('profile');
+    if (AN.indexOf(who) < 0 || !CFG || !CFG.id) return;
+    hostOk = new URLSearchParams(location.search).get('host') === location.origin && location.origin !== 'null';
+  } catch (e) { return; }
+
+  var QK = 'lp_events_v1', session = Math.random().toString(36).slice(2, 10), level = 'A', started = false, t0 = Date.now();
+  var nGet = Storage.prototype.getItem, nSet = Storage.prototype.setItem, nRem = Storage.prototype.removeItem;
+
+  function emit(name, data) {
+    try {
+      var d = {}, k; for (k in (data || {})) d[k] = data[k]; d.level = level;
+      var evt = { schema: 1, lesson_id: CFG.id, event: name, ts: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), session: session, profile: who, data: d };
+      started = true;
+      try {
+        var arr = JSON.parse(nGet.call(window.localStorage, QK) || '[]'); if (!Array.isArray(arr)) arr = [];
+        arr.push(evt); if (arr.length > 500) arr = arr.slice(arr.length - 500);
+        nSet.call(window.localStorage, QK, JSON.stringify(arr));
+      } catch (e) { /* storage blocked: the event is simply not kept */ }
+      try { if (hostOk && window.parent && window.parent !== window) window.parent.postMessage({ type: 'learning-event', event: evt }, location.origin); } catch (e) { /* ignore */ }
+    } catch (e) { /* never break the lesson */ }
+  }
+  function pred(item) { emit('prediction_made', { unit: 'lesson', item: item }); }
+  function done(item, extra) { var d = { unit: 'lesson', activity: item }, k; for (k in (extra || {})) d[k] = extra[k]; emit('activity_completed', d); }
+  function hint(item) { emit('hint_used', { unit: 'lesson', activity: item }); }
+  function retried(item) { emit('answer_checked', { unit: 'lesson', item: item, correct: true, attempt: 2 }); }
+  function finish() { emit('unit_completed', { unit: 'lesson' }); }
+
+  /* time spent: for the grown-ups page only (worth no sparks) */
+  function endSession() { if (!started) return; var s = Math.round((Date.now() - t0) / 1000); if (s > 0) { emit('session_end', { seconds: s }); t0 = Date.now(); } }
+  window.addEventListener('pagehide', endSession);
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'hidden') endSession(); else t0 = Date.now(); });
+
+  function has(v) {
+    if (v === undefined || v === null || v === false || v === '' || v === 0) return false;
+    if (Array.isArray(v)) return v.some(function (x) { return x !== null && x !== undefined; });
+    if (typeof v === 'object') return Object.keys(v).length > 0;
+    return true;
+  }
+
+  /* ---- lessons that keep their progress in localStorage: give each child their own save and read the changes ----
+     onChange(previous, next, known): previous is what was loaded or last saved (known=false if the lesson never loaded a save). */
+  function watchStorage(onChange) {
+    var K0 = CFG.key, K1 = 'fmlos.sample.' + CFG.id + '.h_' + who + '.v1', cur = null, known = false;
+    function parse(v) { try { var o = JSON.parse(v); return o && typeof o === 'object' ? o : null; } catch (e) { return null; } }
+    function mine(self, k) { try { return k === K0 && self === window.localStorage; } catch (e) { return false; } }
+    Storage.prototype.getItem = function (k) {
+      if (mine(this, k)) { var v = nGet.call(this, K1); cur = parse(v); known = true; return v; }
+      return nGet.apply(this, arguments);
+    };
+    Storage.prototype.setItem = function (k, v) {
+      if (mine(this, k)) {
+        var r = nSet.call(this, K1, v);
+        try { var nx = parse(v); if (nx) { onChange(cur, nx, known); cur = nx; } } catch (e) { /* ignore */ }
+        return r;
+      }
+      return nSet.apply(this, arguments);
+    };
+    Storage.prototype.removeItem = function (k) {
+      if (mine(this, k)) { nRem.call(this, K1); cur = null; known = true; return; }
+      return nRem.apply(this, arguments);
+    };
+  }
+
+  /* ---- mode "state": the lessons with six scenes (hook, observation, model, compare, fairtest, transfer) ---- */
+  var SC = ['hook', 'observation', 'model', 'compare', 'fairtest', 'transfer'], PFX = { hook: 'hook', observation: 'observation', model: 'model', compare: 'compare', fairtest: 'fair', transfer: 'transfer' };
+  /* the lessons keep the same facts under slightly different names; read them into one shape */
+  function norm(o) {
+    if (!o) return null;
+    var L = o.level === 'B' ? 'B' : 'A', b;
+    if (CFG.shape === 'flat') return { level: L, phase: o.phase, idx: o.sceneIndex | 0, rec: o.record || {}, hints: o.hintsUsed || {}, used: false };
+    b = (o.byLevel || {})[L]; if (!b) return null;
+    if (CFG.shape === 'cont') return { level: L, phase: o.phase, idx: o.i | 0, rec: b.rec || {}, hints: b.hints || {}, used: !!b.reviewUsed };
+    return { level: L, phase: b.phase, idx: b.sceneIndex | 0, rec: b.record || {}, hints: b.hintsUsed || {}, used: !!b.reviewModeUsed };
+  }
+  /* is this scene really finished? Ask the lesson itself (the same rule that unlocks its Next button). null = cannot tell */
+  function complete(s, n) {
+    var f = CFG.fn ? window[CFG.fn] : null; if (typeof f !== 'function') return null;
+    try { return !!(CFG.fn === 'sceneDone' ? f(s) : f(s, n.rec, n.level)); } catch (e) { return null; }
+  }
+  function reviewOn() {
+    try { var c = document.querySelectorAll('input[type="checkbox"]'); for (var i = 0; i < c.length; i++) { var lb = c[i].closest('label'); if (c[i].checked && lb && /review|审阅|审核|复核/i.test(lb.textContent || '')) return true; } } catch (e) { /* ignore */ }
+    return false;
+  }
+  function sceneTouched(rec, s) {
+    if (s === 'hook') return !!rec.hookPrediction;
+    for (var k in rec) if (k.indexOf(PFX[s]) === 0 && has(rec[k])) return true;
+    return false;
+  }
+  function sceneMissed(rec, s) {
+    for (var k in rec) if (k.indexOf(PFX[s]) === 0 && /HadWrong$/.test(k) && rec[k] === true) return true;
+    return s === 'fairtest' && +rec.fairAttempts > 0;
+  }
+  var credited = {};
+  function onFramework(prev, next, known) {
+    var n = norm(next); if (!n) return;
+    var p = known && prev ? norm(prev) : null, pl = p && p.level === n.level ? p : null;
+    level = n.level;
+    var pr = pl ? pl.rec : {}, nr = n.rec, ph = pl ? pl.hints : {}, nh = n.hints;
+    if (known) {
+      ['hookPrediction', 'comparePrediction'].forEach(function (k) { if (nr[k] && !pr[k]) pred(k.replace('Prediction', '')); });
+      SC.forEach(function (s) { if ((nh[s] || 0) > (ph[s] || 0)) hint(s); });
+    }
+    var comp = SC.map(function (s) { return complete(s, n); });
+    if (comp[0] !== null) {
+      /* the lesson told us which scenes are really complete */
+      SC.forEach(function (s, i) {
+        if (!comp[i] || credited[n.level + s]) return;
+        credited[n.level + s] = 1;
+        var miss = sceneMissed(nr, s);
+        done(s, { attempts: miss ? 2 : 1, hints: nh[s] || 0 });
+        if (miss) retried(s);
+      });
+      if (known && n.phase === 'summary' && (!p || p.phase !== 'summary') && comp.every(Boolean)) finish();
+    } else if (pl) {
+      /* cannot ask the lesson: count a scene when the child moves on from it with the Next button, outside review mode */
+      var i = pl.idx, review = reviewOn();
+      if (pl.phase === 'scene' && SC[i] && !review) {
+        var adv = (n.phase === 'scene' && n.idx === i + 1) || (n.phase === 'summary' && i === SC.length - 1);
+        if (adv && sceneTouched(nr, SC[i]) && !credited[n.level + SC[i]]) {
+          credited[n.level + SC[i]] = 1;
+          var m2 = sceneMissed(pr, SC[i]) || sceneMissed(nr, SC[i]);
+          done(SC[i], { attempts: m2 ? 2 : 1, hints: nh[SC[i]] || 0 });
+          if (m2) retried(SC[i]);
+        }
+      }
+      if (n.phase === 'summary' && pl.phase !== 'summary' && !review && !n.used && SC.every(function (s) { return sceneTouched(nr, s); })) finish();
+    }
+  }
+
+  /* ---- mode "claims": the package-claims lesson (its own save format: answers per step, summary flag) ---- */
+  /* "the whole lesson is finished" means the child really got to the end of THEIR route (checked from the lesson's own save):
+       - the 5-minute route (save has fast !== false) goes scenes 0, 1, 2, 3 and then jumps to the last scene 5 (scene 4 is not part of it)
+       - the full investigation (fast === false) goes through scenes 0 to 5
+     "done" in the save is set by the lesson itself when a scene's last step is finished, and the last scene (5) also needs its three
+     sentence-building answers. Reaching the summary page alone, or answering a few questions, does not count. */
+  function claimsFinished(nl) {
+    var d = nl.done || {}, a = nl.answers || {}, need = nl.fast === false ? [0, 1, 2, 3, 4, 5] : [0, 1, 2, 3, 5], i;
+    for (i = 0; i < need.length; i++) if (!d[need[i]]) return false;
+    for (i = 0; i < 3; i++) if (!(('5-' + i) in a)) return false;
+    return true;
+  }
+  function onClaims(prev, next, known) {
+    if (!known) return;
+    var L = next.level === 'B' ? 'B' : 'A', pl = ((prev && prev.byLevel) || {})[L] || {}, nl = (next.byLevel || {})[L];
+    if (!nl) return; level = L;
+    var pa = pl.answers || {}, na = nl.answers || {};
+    Object.keys(na).forEach(function (k) { if (!(k in pa)) { if (/^0-/.test(k)) pred('s' + k); else done('s' + k); } });
+    if (nl.summary && !pl.summary && claimsFinished(nl)) finish();
+  }
+
+  /* ---- mode "vitaminc": a hand-written lesson with no save; watch the buttons the child presses ---- */
+  function startVitaminC() {
+    function sceneNo() { var el = document.getElementById('step-label'), m = el && /^\s*(\d+)\s*\//.exec(el.textContent || ''); return m ? +m[1] : 0; }
+    document.addEventListener('click', function (ev) {
+      var el = ev.target && ev.target.closest ? ev.target.closest('[data-action]') : null; if (!el) return;
+      var act = el.getAttribute('data-action'), sc = sceneNo();
+      if (act === 'toggleLevel') { level = level === 'A' ? 'B' : 'A'; return; }
+      if (act === 'hookChoice' && sc === 1) pred('hook');
+      else if (act === 'compareChoice' && sc === 4) pred('compare');
+      else if (act === 'fairHint' && sc === 5) hint('fairtest');
+      else if (act === 'navNext' && !el.disabled && sc >= 1 && sc <= 6)
+        setTimeout(function () { if (sceneNo() === sc + 1) { done(SC[sc - 1]); if (sc === 6) finish(); } }, 0);
+    }, true);
+  }
+
+  /* ---- mode "splinter": a video and three questions; watch the answer buttons and the results page ---- */
+  function startSplinter() {
+    function ready() {
+      var qc = document.getElementById('questionCount'), rv = document.getElementById('resultView'), opts = document.getElementById('options'), ht = document.getElementById('hintToggle');
+      if (!qc || !rv || !opts) return;
+      var wrong = {}, got = {};
+      function qn() { var m = /^\s*(\d+)\s*\/\s*(\d+)/.exec(qc.textContent || ''); return m ? [+m[1], +m[2]] : [0, 0]; }
+      opts.addEventListener('click', function (ev) {
+        var b = ev.target && ev.target.closest ? ev.target.closest('.option') : null; if (!b) return;
+        var q = qn()[0];
+        setTimeout(function () {
+          if (b.classList.contains('wrong')) wrong[q] = (wrong[q] || 0) + 1;
+          else if (b.classList.contains('correct') && !got[q]) { got[q] = 1; var w = wrong[q] || 0; done('q' + q, { attempts: w + 1 }); if (w) retried('q' + q); }
+        }, 0);
+      }, true);
+      if (ht) ht.addEventListener('click', function () { setTimeout(function () { if (ht.getAttribute('aria-expanded') === 'true') hint('q' + qn()[0]); }, 0); }, true);
+      var was = rv.classList.contains('active');
+      new MutationObserver(function () {
+        var on = rv.classList.contains('active');
+        if (on && !was) { var n = qn()[1]; if (n && Object.keys(got).length >= n) { finish(); got = {}; wrong = {}; } }
+        was = on;
+      }).observe(rv, { attributes: true, attributeFilter: ['class'] });
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', ready); else ready();
+  }
+
+  try {
+    if (CFG.mode === 'state') watchStorage(onFramework);
+    else if (CFG.mode === 'claims') watchStorage(onClaims);
+    else if (CFG.mode === 'vitaminc') startVitaminC();
+    else if (CFG.mode === 'splinter') startSplinter();
+  } catch (e) { /* the lesson must always load */ }
+})({"id":"vitamin-c","mode":"vitaminc"});
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>坏血病之谜 / The Scurvy Mystery — Vitamin C</title>
@@ -1004,7 +1216,53 @@
   var h; try { h = decodeURIComponent(m[1]); } catch (e) { return; }
   if (!/^[A-Za-z0-9._%~/-]+$/.test(h) || h.indexOf('//') >= 0) return;
   var a = document.createElement('a'); a.href = h; a.textContent = '← 总览 Home';
-  a.setAttribute('style', 'position:fixed;left:10px;bottom:10px;z-index:2147483647;background:#1f5f99;color:#fff;font:600 14px system-ui,sans-serif;padding:10px 14px;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.35);opacity:.92');
+  a.setAttribute('style', 'position:fixed;z-index:2147483647;box-sizing:border-box;display:inline-flex;align-items:center;min-height:44px;min-width:44px;padding:0 16px;background:#1f5f99;color:#fff;font:600 14px system-ui,sans-serif;border-radius:999px;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,.35);opacity:.92');
   document.body.appendChild(a);
+  /* The lessons keep their own buttons along the screen edges (Previous / Next in a footer, controls in a header), so a pill nailed to
+     one corner always sat on top of something. Keep the pill 44px tall (easy to tap) and, whenever the page layout changes, put it in
+     whichever of six edge spots does not cover a button, link or field (spots tried in this order: bottom-centre, bottom-left,
+     bottom-right, top-centre, top-left, top-right). Buttons that are always on screen (fixed or sticky) count much more than ones
+     that scroll away. It never moves while the child is just scrolling, and stays where it is as long as its spot is free. */
+  var SPOTS = ['bc', 'bl', 'br', 'tc', 'tl', 'tr'], cur = '', timer = 0;
+  var SEL = 'button,a[href],input,select,textarea,summary,label,[role=button],[role=tab],[tabindex]:not([tabindex="-1"])';
+  function put(s) {
+    var st = a.style, v = s.charAt(0) === 'b' ? 'bottom' : 'top', side = s.charAt(1);
+    st.top = st.bottom = st.left = st.right = 'auto'; st.transform = 'none';
+    st[v] = '10px'; st[v] = 'calc(10px + env(safe-area-inset-' + v + ', 0px))';
+    if (side === 'c') { st.left = '50%'; st.transform = 'translateX(-50%)'; }
+    else { var d = side === 'l' ? 'left' : 'right'; st[d] = '10px'; st[d] = 'calc(10px + env(safe-area-inset-' + d + ', 0px))'; }
+  }
+  function fixedish(e) {
+    for (var n = e; n && n.nodeType === 1; n = n.parentElement) { var p = getComputedStyle(n).position; if (p === 'fixed' || p === 'sticky') return true; }
+    return false;
+  }
+  function place() {
+    try {
+      var W = document.documentElement.clientWidth, H = window.innerHeight, items = [], all, i, j;
+      a.style.pointerEvents = 'none'; all = document.querySelectorAll(SEL);   /* (while measuring, the pill itself must not count as covering anything) */
+      for (i = 0; i < all.length; i++) {
+        var e = all[i]; if (e === a || a.contains(e) || e.querySelector(SEL)) continue;
+        var cs = getComputedStyle(e); if (cs.display === 'none' || cs.visibility === 'hidden' || cs.pointerEvents === 'none') continue;
+        var r = e.getBoundingClientRect(); if (r.width < 2 || r.height < 2 || r.bottom <= 0 || r.top >= H || r.right <= 0 || r.left >= W) continue;
+        var t = document.elementFromPoint(Math.min(Math.max(r.left + r.width / 2, 0), W - 1), Math.min(Math.max(r.top + r.height / 2, 0), H - 1));
+        if (t && !e.contains(t)) continue;   /* hidden behind something else right now (for example scrolled under the footer): not a button the pill can cover */
+        items.push({ r: r, hard: fixedish(e) });
+      }
+      var res = {};
+      SPOTS.forEach(function (s) {
+        put(s); var b = a.getBoundingClientRect(), hard = 0, soft = 0;
+        items.forEach(function (it) { var q = it.r; if (q.left < b.right - 1 && q.right > b.left + 1 && q.top < b.bottom - 1 && q.bottom > b.top + 1) { if (it.hard) hard++; else soft++; } });
+        res[s] = { hard: hard, soft: soft };
+      });
+      var best = '', c = res[cur];
+      for (j = 0; j < SPOTS.length; j++) { var x = res[SPOTS[j]]; if (!best || x.hard < res[best].hard || (x.hard === res[best].hard && x.soft < res[best].soft)) best = SPOTS[j]; }
+      if (!(c && c.hard === 0 && (c.soft === 0 || res[best].hard > 0 || res[best].soft > 0))) cur = best;
+      put(cur); a.style.pointerEvents = '';
+    } catch (e) { put(cur || 'bl'); a.style.pointerEvents = ''; }
+  }
+  function later() { clearTimeout(timer); timer = setTimeout(function () { place(); timer = setTimeout(place, 500); }, 120); }
+  put('bc'); cur = 'bc'; place();
+  window.addEventListener('resize', later); window.addEventListener('orientationchange', later); window.addEventListener('load', later);
+  try { new MutationObserver(function (ms) { for (var i = 0; i < ms.length; i++) if (!a.contains(ms[i].target)) { later(); return; } }).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style', 'hidden', 'disabled', 'aria-hidden', 'open'] }); } catch (e) { /* no observer: the spot is only worked out at load and on resize */ }
 })()</script></body>
 </html>

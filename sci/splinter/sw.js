@@ -11,7 +11,7 @@
  *   再按 206（部分内容）这个规格回给它。少了这一步，离线视频在 iPad 上就是黑屏。
  */
 
-const SHELL_CACHE = 'splinter-shell-v1';
+const SHELL_CACHE = 'splinter-shell-v2';
 const MEDIA_CACHE = 'splinter-media-v1';
 
 const QUIZ_KEYS = ['q1', 'q2', 'q3', 'right1', 'right2', 'right3', 'wrong', 'done'];
