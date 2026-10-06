@@ -350,6 +350,34 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
 .fmp-panel-head .fmp-panel-title{margin:0;flex:1 1 auto}
 .fmp-listen{white-space:nowrap}
 
+/* landscape (tablet / laptop): the Start row stays at the bottom of the screen even when the start page is taller than the window
+   (1280x720: Start used to sit under the fold). A short window also gets a tighter start page, so usually nothing needs scrolling at all. */
+@media (min-width:900px) and (orientation:landscape){
+  .fmp-start-act{position:sticky;bottom:0;z-index:10;background:var(--p-bg);padding:6px 0 10px;box-shadow:0 -10px 8px -6px var(--p-bg)}
+}
+@media (min-width:900px) and (orientation:landscape) and (max-height:820px){
+  .fmp-start{padding-top:6px;padding-bottom:6px}
+  .fmp-start svg{width:clamp(64px,11vmin,96px)}
+  .fmp-start h1{margin:2px 0}
+  .fmp-start p{margin:2px 0 8px}
+  .fmp-levels{margin:8px 0;gap:8px}
+  .fmp-level{padding:10px 14px}
+  .fmp-who{margin:6px 0 4px}
+  .fmp-whobtn{min-height:72px}
+  .fmp-start .fmp-who-hint{margin:0 0 6px}
+  .fmp-start-act .fmp-row{margin:4px 0}
+  /* a little less air in the right column on a short window, so more of the question + answers + newest feedback fit without scrolling the column */
+  .fmp-right{padding:10px 14px}
+  .fmp-narr{margin:0 0 6px}
+  .fmp-narr svg{width:44px;height:44px}
+  .fmp-bubble{padding:8px 12px}
+  .fmp-q{margin:4px 0 6px}
+  .fmp-choices{gap:6px}
+  .fmp-choice,.fmp-btn{min-height:48px;padding:8px 16px}
+  .fmp-fb{margin:6px 0;padding:8px 12px}
+  .fmp-row{margin:6px 0}
+}
+
 </style>
 </head>
 <body class="fmp">
@@ -2159,6 +2187,17 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
       var lastEl = box.querySelector('.fmp-choices') || last, b = lastEl.getBoundingClientRect();
       if (a.top < col.top || b.bottom > col.bottom) ql.scrollIntoView({ block: 'start' });
     }
+    /* landscape: after an answer / hint / "Show me", the NEWEST feedback and the button row under it ("Need a hint? / Show me / Try a new one",
+       "Next question") must be inside the column's visible part - on a short screen (1280x720) they otherwise sit below the column's bottom edge
+       and the child has to know to scroll the column. Scroll only as far as needed, and never push the newest feedback itself off the top. */
+    if (!isStepChange && keyName && landscape()) {
+      var tail = box.lastElementChild, allFb = box.querySelectorAll('.fmp-fb'), newFb = allFb[allFb.length - 1];
+      if (tail) {
+        var cr = box.getBoundingClientRect(), over = tail.getBoundingClientRect().bottom - (cr.bottom - 14);
+        if (newFb) over = Math.min(over, newFb.getBoundingClientRect().top - cr.top - 8);
+        if (over > 0) box.scrollTop += Math.ceil(over);
+      }
+    }
     /* portrait: the PAGE scrolls, and the fixed footer can cover newly revealed content (review F-02).
        Scroll the last feedback/status line (or the question, if there is no feedback yet) above the footer. */
     if (keyName === 'worked' && !landscape()) {
@@ -2310,7 +2349,8 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     var row = h('div', { class: 'fmp-row', style: 'justify-content:center' });
     var go0 = h('button', { type: 'button', class: 'fmp-btn primary', id: 'fmp-go', style: 'min-width:180px', disabled: pending() ? true : null, onclick: function () { if (pending()) return; S.started = true; save(); steps = stepsFor(level); si = LV().si; t0 = Date.now(); renderAll(true); } }, started ? UI.cont : UI.start);
     row.appendChild(go0);
-    if (pending()) st.appendChild(h('p', { class: 'fmp-who-hint' }, 'Tap your animal first.'));
+    var act = h('div', { class: 'fmp-start-act' });   /* the Start row (+ its hint) sits in one box that stays inside the screen on a short landscape screen (see player.css) */
+    if (pending()) act.appendChild(h('p', { class: 'fmp-who-hint' }, 'Tap your animal first.'));
     if (started) {
       var confirming = false, rb = h('button', { type: 'button', class: 'fmp-btn', onclick: function () {
         if (!confirming) { confirming = true; rb.textContent = UI.reallyRestart; return; }
@@ -2318,7 +2358,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
       } }, UI.restart);
       row.appendChild(rb);
     }
-    st.appendChild(row);
+    act.appendChild(row); st.appendChild(act);
     steps = stepsFor(level);
   }
 
@@ -2832,7 +2872,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
 <script>
 /* Course source: math.g1.fraction-intro — "Cou-Cou's Fair Shares".
    Built into ./preview.html by _math-track/player/build-course.mjs (preview.html is the review artifact; this file is its source).
-   English only (Owner decision 2026-09-26). First non-four-operations course (the owner 2026-09-26's plan: four-operations
+   English only (Owner decision 2026-09-26). First non-four-operations course (Owner 2026-09-26's plan: four-operations
    ladder + item 9, then fractions/decimals/measurement/geometry/data). Level A teaches equal-share vocabulary
    (halves/thirds/quarters, CCSS 1.G.3); Level B teaches formal a/b notation, equivalence-by-scaling, and
    same-numerator comparison (CCSS 3.NF). New widget FMMath.FractionBar; new FMMath.math.simplifyFraction /
