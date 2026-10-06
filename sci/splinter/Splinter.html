@@ -30,10 +30,10 @@
       --white: #ffffff;
     }
 
-    /* 2026-08-31：Dan 要看真实的整屏 App 效果，不要套在一个"手机/iPad 模型"里——
+    /* 2026-08-31：the owner 要看真实的整屏 App 效果，不要套在一个"手机/iPad 模型"里——
        打开这个文件直接就是 App 本身，铺满整个浏览器窗口（以后真机上就是铺满整个屏幕）。
        之前那圈深色机身、假的 9:41 状态栏都是我自己加的演示装饰，现在去掉了。
-       2026-08-31 再改：Dan 要求手机/iPad/任何屏幕尺寸打开都要能自动适配——
+       2026-08-31 再改：the owner 要求手机/iPad/任何屏幕尺寸打开都要能自动适配——
        这里不再强制卡死 100vh + overflow:hidden（那样小屏幕内容装不下就会被硬裁掉看不见），
        改成"背景至少铺满一屏高，内容多了就让整个页面自然往下滚"，保证任何屏幕、任何方向都不会丢内容。 */
     html, body {
@@ -440,7 +440,7 @@
       outline-offset: 3px;
     }
       /* 2026-09-19：练习时右边的提示栏。默认收着——三道题的原话基本就是答案，
-       直接摊开就等于把答案给了孩子（Dan 2026-09-19 定：点了才展开）。 */
+       直接摊开就等于把答案给了孩子（the owner 2026-09-19 定：点了才展开）。 */
     .quiz-main {
       display: grid;
       grid-template-columns: 1fr;
@@ -651,7 +651,7 @@
     const startPracticeBtn = document.getElementById("startPractice");
     const replayLessonBtn = document.getElementById("replayLesson");
 
-    // ── 2026-09-14 改版（Dan 的四条要求）──────────────────────────────
+    // ── 2026-09-14 改版（the owner 的四条要求）──────────────────────────────
     // 1) 中文档只出中文，英文档只出英文，两边完全分开，但随时可切。
     // 2) 静音改成独立开关，跟语言无关。原来「静音」和语言挤在同一组里，
     //    切语言时界面看不出变化，声音还会两条叠着响。
@@ -828,7 +828,7 @@
       stageLabel.textContent = t().stageQuiz;
       videoDot.classList.remove("active");
       quizDot.classList.add("active");
-      // 从视频退回来再进来时保留进度（Dan 2026-09-19 定：留着，回来接着答）
+      // 从视频退回来再进来时保留进度（the owner 2026-09-19 定：留着，回来接着答）
       if (!opts || !opts.resume) { currentQuestion = 0; answered.length = 0; }
       quizVisited = true;
       renderQuestion();
