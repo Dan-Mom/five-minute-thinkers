@@ -2201,15 +2201,30 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     /* portrait: the PAGE scrolls, and the fixed footer can cover newly revealed content (review F-02).
        Scroll the last feedback/status line (or the question, if there is no feedback yet) above the footer. */
     if (keyName === 'worked' && !landscape()) {
-      var lf = shell.left || D.querySelector('.fmp-left'); if (lf) lf.scrollIntoView({ block: 'start' });
+      var lf = shell.left || D.querySelector('.fmp-left');
+      if (lf) {
+        /* "Show me": bring the picture into view (the tray moved). If the picture's top AND the button row under the newest feedback fit on one screen
+           (tablet portrait), move only as far as needed so both stay visible; otherwise (phone) the picture comes first, as before. */
+        var wl = lf.getBoundingClientRect(), wt = box.lastElementChild, wv = global.innerHeight - (shell.footer.hidden ? 0 : shell.footer.getBoundingClientRect().height);
+        var wb = wt ? wt.getBoundingClientRect().bottom : 0;
+        if (wt && wb - wl.top + 20 <= wv) { global.scrollBy({ top: Math.max(wb - wv + 12, Math.min(0, wl.top - 8)), left: 0, behavior: 'auto' }); }
+        else lf.scrollIntoView({ block: 'start' });
+      }
     } else if (!isStepChange && !landscape() && !(D.activeElement && shell.left && shell.left.contains(D.activeElement))) {   /* a tap on the picture's own controls (a stepper) must not move the page under the child's finger */
       var fbs = box.querySelectorAll('.fmp-fb'), sts = box.querySelectorAll('.fmp-status');   /* NOT :last-of-type - a hint button div after the feedback made that selector match nothing (F-02 root cause) */
       var reveal = fbs[fbs.length - 1] || sts[sts.length - 1] || ql;
       if (reveal) {
         var fh = shell.footer.hidden ? 0 : shell.footer.getBoundingClientRect().height;
         var rr = reveal.getBoundingClientRect(), visBottom = global.innerHeight - fh;
-        if (rr.bottom > visBottom || rr.top < 0) {
-          global.scrollBy({ top: (rr.bottom > visBottom ? rr.bottom - visBottom : rr.top) + 12 * (rr.top < 0 ? -1 : 1), left: 0, behavior: 'auto' });
+        /* the button row UNDER the newest feedback ("Need a hint? / Show me / Try a new one", "Next question") must clear the footer too
+           (portrait/phone: it used to sit under the fixed footer, the child had to scroll the page first). Scroll a little further for it,
+           but never so far that the newest feedback itself leaves the top of the screen. */
+        var tl = reveal === fbs[fbs.length - 1] ? box.lastElementChild : null, endB = rr.bottom;
+        if (tl && tl !== reveal) endB = Math.max(endB, tl.getBoundingClientRect().bottom);
+        if (rr.bottom > visBottom || endB > visBottom || rr.top < 0) {
+          var dy = (rr.bottom > visBottom || rr.top < 0) ? (rr.bottom > visBottom ? rr.bottom - visBottom : rr.top) + 12 * (rr.top < 0 ? -1 : 1) : 0;   /* the old rule, unchanged */
+          if (rr.top >= 0 && endB > visBottom) dy = Math.max(dy, Math.min(endB - visBottom + 12, rr.top - 8));
+          global.scrollBy({ top: dy, left: 0, behavior: 'auto' });
         }
       }
     }
