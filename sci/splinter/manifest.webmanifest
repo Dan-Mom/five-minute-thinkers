@@ -1,0 +1,32 @@
+{
+  "name": "5 分钟科学课 · 手指上的倒刺去哪儿了？",
+  "short_name": "5分钟科学",
+  "description": "一节 5 分钟的儿童科学课：先看一段短片，再答三道题。",
+  "lang": "zh-CN",
+  "start_url": "Splinter.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#fff9ec",
+  "theme_color": "#24344a",
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

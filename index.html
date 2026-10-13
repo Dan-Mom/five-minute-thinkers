@@ -1,0 +1,736 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Five-Minute Thinkers: one idea, five minutes, your child does the thinking</title>
+<meta name="description" content="One idea in five minutes, explained so it clicks and your child does the thinking. Interactive math, science and everyday-smarts lessons, free to try, no sign-up, nothing collected.">
+<meta name="theme-color" content="#7ccbff">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20viewBox%3D%220%200%2064%2064%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20role%3D%22img%22%20aria-label%3D%22Five-Minute%20Thinkers%22%3E%3Crect%20x%3D%2228%22%20y%3D%221.5%22%20width%3D%228%22%20height%3D%226%22%20rx%3D%222%22%20fill%3D%22%231d2b4f%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2236%22%20r%3D%2224%22%20fill%3D%22%23ffffff%22%20stroke%3D%22%231d2b4f%22%20stroke-width%3D%226%22%2F%3E%3Cpath%20d%3D%22M32%2036%20L32%2015%20A21%2021%200%200%201%2050.2%2025.5%20Z%22%20fill%3D%22%23e8650a%22%2F%3E%3Ccircle%20cx%3D%2232%22%20cy%3D%2236%22%20r%3D%224%22%20fill%3D%22%231d2b4f%22%2F%3E%3Cpath%20d%3D%22M54%203%20L55.8%207.6%20L60.4%209.4%20L55.8%2011.2%20L54%2015.8%20L52.2%2011.2%20L47.6%209.4%20L52.2%207.6%20Z%22%20fill%3D%22%23ffd23f%22%20stroke%3D%22%231d2b4f%22%20stroke-width%3D%221.4%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Five-Minute Thinkers">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --ink:#1d2b4f; --mute:#4a587a; --page:#fff6e3; --card:#fff;
+  --orange:#d95b00; --orange-s:#ffe2c4; --orange-m:#ff9a3d;
+  --pink:#d6246e;   --pink-s:#ffd8ea;   --pink-m:#ff6fa8;
+  --teal:#0b8a7c;   --teal-s:#c8f3ec;   --teal-m:#2fd0bd;
+  --green:#1f8f45;  --green-s:#d3f4dd;  --green-m:#4fd37c;
+  --purple:#6d3fd8; --purple-s:#e4dbff; --purple-m:#a07cff;
+  --blue:#1b6fd1;   --blue-s:#d5e9ff;   --blue-m:#4fa8ff;
+  --display:"Baloo 2","Nunito","Trebuchet MS","Segoe UI Rounded",ui-rounded,system-ui,sans-serif;
+  --body:"Nunito","Trebuchet MS",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:76px}
+body{margin:0;background:var(--page);color:var(--ink);font:700 18px/1.55 var(--body);overflow-x:hidden}
+button,a{font-family:inherit}
+h1,h2,h3{font-family:var(--display);margin:0;line-height:1.1}
+.c-orange{--c:var(--orange);--cs:var(--orange-s);--cm:var(--orange-m)}
+.c-pink{--c:var(--pink);--cs:var(--pink-s);--cm:var(--pink-m)}
+.c-teal{--c:var(--teal);--cs:var(--teal-s);--cm:var(--teal-m)}
+.c-green{--c:var(--green);--cs:var(--green-s);--cm:var(--green-m)}
+.c-purple{--c:var(--purple);--cs:var(--purple-s);--cm:var(--purple-m)}
+.c-blue{--c:var(--blue);--cs:var(--blue-s);--cm:var(--blue-m)}
+.wrap{max-width:1100px;margin:0 auto;padding:0 18px}
+
+/* ---------- top bar ---------- */
+.top{position:sticky;top:0;z-index:30;background:rgba(255,246,227,.94);backdrop-filter:blur(6px);border-bottom:2px solid #f1dfb8}
+.top .wrap{display:flex;align-items:center;gap:14px;min-height:62px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:800 22px var(--display);cursor:pointer;border:0;background:none;padding:0}
+.brand svg{width:44px;height:44px}
+.top nav{margin-left:auto;display:flex;gap:6px;flex-wrap:wrap}
+.top nav a{min-height:44px;display:inline-flex;align-items:center;padding:6px 14px;border-radius:999px;color:var(--ink);text-decoration:none;font:800 17px var(--display);cursor:pointer}
+.top nav a:hover{background:#ffe9bd}
+@media (max-width:560px){.brand #brandName{display:none}.top nav a{padding:6px 10px;font-size:16px}}
+
+/* ---------- hero ---------- */
+.hero{position:relative;background:linear-gradient(180deg,#7ccbff 0%,#b9e6ff 60%,#fff0c9 100%);padding:34px 0 84px;overflow:hidden}
+.hero .cloud{position:absolute;background:#fff;border-radius:999px;opacity:.85;animation:drift 60s linear infinite}
+.hero .cloud::before,.hero .cloud::after{content:"";position:absolute;background:#fff;border-radius:50%}
+.cloud.a{width:120px;height:34px;top:26px;left:-140px}.cloud.a::before{width:52px;height:52px;left:18px;top:-24px}.cloud.a::after{width:40px;height:40px;left:62px;top:-16px}
+.cloud.b{width:90px;height:26px;top:300px;left:-120px;animation-duration:80s;animation-delay:-30s}.cloud.b::before{width:40px;height:40px;left:12px;top:-18px}.cloud.b::after{width:30px;height:30px;left:46px;top:-12px}
+@keyframes drift{to{transform:translateX(calc(100vw + 360px))}}
+.hero-grid{position:relative;display:grid;grid-template-columns:1.25fr .75fr;gap:20px;align-items:center}
+.hero h1{font-size:clamp(34px,5.6vw,58px);font-weight:800;color:#fff;text-shadow:0 4px 0 #1b6fd1,0 8px 0 rgba(27,111,209,.3)}
+.hero .sub{margin:16px 0 0;font:700 clamp(18px,2.3vw,22px)/1.45 var(--body);color:#12306b;max-width:560px}
+.cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+.btn{min-height:56px;border:0;border-radius:18px;padding:10px 26px;font:800 22px var(--display);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .1s,box-shadow .1s}
+.btn.main{background:var(--orange);color:#fff;box-shadow:0 6px 0 #8f3c00}
+.btn.main:hover{transform:translateY(-2px);box-shadow:0 8px 0 #8f3c00}
+.btn.main:active{transform:translateY(3px);box-shadow:0 2px 0 #8f3c00}
+.btn.alt{background:#fff;color:var(--blue);box-shadow:0 6px 0 rgba(20,40,90,.22)}
+.btn.alt:hover{transform:translateY(-2px)}
+.btn.c{background:var(--c);color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.25)}
+.btn.c:hover{transform:translateY(-2px)}
+.btn.ghost{background:#fff;color:var(--c,var(--blue));border:3px solid var(--cs,#d5e9ff);min-height:48px;font-size:19px;padding:6px 16px;box-shadow:none}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
+.chip{background:rgba(255,255,255,.92);color:#12306b;border-radius:999px;padding:5px 14px;font:800 15px var(--display)}
+.demo-box{position:relative;display:flex;justify-content:center;padding:6px 0}
+.demo{position:relative;width:min(360px,100%);background:#fff;border-radius:28px;padding:18px 20px 20px;box-shadow:-12px 12px 0 #ffd23f,0 22px 34px rgba(20,40,90,.18);transform:rotate(2deg);animation:bob 4s ease-in-out infinite}
+
+.demo-top{display:flex;align-items:center;gap:10px}
+.demo-top .lg{width:38px;flex:0 0 auto}.demo-top b{font:800 18px var(--display);flex:1}
+.demo-time{background:var(--orange-s);color:var(--orange);border-radius:999px;padding:3px 12px;font:800 16px var(--display)}
+.demo-q{margin:14px 0 4px;font:800 14px var(--display);color:var(--mute);text-transform:uppercase;letter-spacing:.06em}
+.demo-big{margin:0;font:800 24px/1.2 var(--display)}
+.demo-opts{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.demo-opts span{border:3px solid var(--blue-s);border-radius:14px;padding:6px 14px;font:800 20px var(--display);color:var(--blue)}
+.demo-opts span.pick{background:var(--blue);border-color:var(--blue);color:#fff}
+.demo-steps{display:flex;gap:6px;margin-top:16px}
+.demo-steps span{flex:1;text-align:center;background:var(--cs,#fff0c9);color:var(--ink);border-radius:12px;padding:6px 2px;font:800 14px var(--display)}
+.demo-steps span:nth-child(1){background:#ffe2c4}.demo-steps span:nth-child(2){background:#d3f4dd}.demo-steps span:nth-child(3){background:#d5e9ff}
+@keyframes bob{50%{transform:translateY(-9px) rotate(-2deg)}}
+.wave{position:absolute;left:0;right:0;bottom:-1px;height:54px;width:100%;display:block}
+@media (max-width:760px){.cloud.b{display:none}.hero-grid{grid-template-columns:1fr}.demo-box{order:2}.demo{transform:none}.hero{padding-top:20px}}
+
+/* ---------- sections ---------- */
+section.block{padding:34px 0 8px}
+section.block h2{font-size:clamp(28px,4vw,38px);font-weight:800}
+.lead{margin:6px 0 20px;color:var(--mute);font-size:19px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px}
+.card{position:relative;display:flex;flex-direction:column;background:var(--card);border:3px solid var(--cs);border-radius:24px;overflow:hidden;box-shadow:0 6px 0 var(--cs),0 12px 22px rgba(20,30,60,.08);transition:transform .15s}
+.card:hover{transform:translateY(-4px)}
+.card .art{height:112px;display:flex;align-items:center;justify-content:center;background:linear-gradient(150deg,var(--cs),#fff 140%);font-size:60px;position:relative}
+.card .art span.e{filter:drop-shadow(0 5px 0 rgba(0,0,0,.12));display:inline-block}
+.tag{position:absolute;top:10px;left:10px;background:#fff;color:var(--c);border-radius:999px;padding:2px 10px;font:800 13px var(--display)}
+.tag.right{left:auto;right:10px;background:#ffd23f;color:#5a3d00}
+.card .body{padding:14px 16px 16px;display:flex;flex-direction:column;gap:8px;flex:1}
+.card h3{font-size:22px}
+.card p{margin:0;font-size:16px;font-weight:700;color:var(--mute);line-height:1.45;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;gap:6px;flex-wrap:wrap}
+.m{font:800 13.5px var(--display);background:var(--cs);color:var(--c);border-radius:999px;padding:2px 11px}
+.actions{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap;padding-top:6px}
+.actions .btn{flex:1;min-width:110px;font-size:20px;min-height:50px}
+.card.feature .art{height:132px;font-size:72px}
+
+/* video */
+.vrow{display:flex;gap:16px;overflow-x:auto;padding:4px 4px 16px;scroll-snap-type:x proximity}
+.vcard{flex:0 0 min(300px,80vw);scroll-snap-align:start;border:0;padding:0;text-align:left;background:var(--card);border-radius:20px;box-shadow:0 6px 0 var(--blue-s),0 12px 22px rgba(20,30,60,.08);overflow:hidden;cursor:pointer;font:inherit;color:inherit}
+.vcard .th{position:relative;aspect-ratio:16/9;background:#12306b center/cover}
+.vcard .th::after{content:"▶";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:44px;color:#fff;text-shadow:0 3px 10px rgba(0,0,0,.6)}
+.vcard b{display:block;padding:10px 14px 14px;font:800 18px/1.2 var(--display)}
+.soon{display:flex;align-items:center;gap:18px;background:#fff;border:3px dashed #9bc7f5;border-radius:24px;padding:18px 22px}
+.soon svg{width:84px;height:84px;flex:0 0 auto}
+.soon b{font:800 22px var(--display);display:block}
+.soon p{margin:2px 0 0;color:var(--mute)}
+
+/* subject tiles */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px}
+.tile{position:relative;display:flex;flex-direction:column;gap:6px;text-align:left;border:0;cursor:pointer;color:#fff;border-radius:26px;padding:18px;min-height:196px;background:linear-gradient(150deg,var(--cm),var(--c));box-shadow:0 7px 0 rgba(20,30,60,.22),0 16px 26px rgba(20,30,60,.1);overflow:hidden;font:inherit;transition:transform .15s}
+.tile:hover{transform:translateY(-4px) rotate(-.5deg)}
+.tile::before{content:"";position:absolute;right:-34px;top:-34px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.16)}
+.tile .e{font-size:58px;line-height:1;filter:drop-shadow(0 5px 0 rgba(0,0,0,.18));width:fit-content}
+.tile h3{font-size:24px;text-shadow:0 2px 0 rgba(0,0,0,.18)}
+.tile p{margin:0;font-size:15px;opacity:.97}
+.tile .n{margin-top:auto;background:#fff;color:var(--c);border-radius:999px;padding:4px 12px;font:800 15px var(--display);width:fit-content}
+
+/* how / promises / about */
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:16px}
+.step{background:#fff;border-radius:24px;padding:18px;box-shadow:0 6px 0 #f1dfb8;text-align:center}
+.step .e{font-size:46px}.step h3{font-size:24px;margin:4px 0}.step p{margin:0;color:var(--mute);font-size:16.5px}
+.promises{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px;margin-top:18px}
+.promise{display:flex;align-items:center;gap:10px;background:var(--green-s);color:#145d2d;border-radius:18px;padding:12px 16px;font:800 17px var(--display)}
+.about{display:grid;grid-template-columns:auto 1fr;gap:22px;align-items:center;background:#fff;border-radius:28px;padding:22px;box-shadow:0 6px 0 #f1dfb8;margin-top:6px}
+.about svg{width:140px}
+.about h2{font-size:30px}.about p{margin:8px 0 0;color:var(--mute)}
+@media (max-width:640px){.about{grid-template-columns:1fr;text-align:center}.about svg{margin:0 auto}}
+footer{margin-top:44px;padding:26px 0 40px;text-align:center;color:var(--mute);font-size:15px;border-top:2px solid #f1dfb8}
+
+/* roadmap */
+.goals{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:14px;margin-bottom:18px}
+.goal{background:#fff;border-radius:22px;padding:16px;box-shadow:0 5px 0 #f1dfb8;display:flex;gap:12px;align-items:flex-start}
+.goal .e{font-size:38px;line-height:1}.goal h3{font-size:22px}.goal p{margin:2px 0 0;color:var(--mute);font-size:16px}
+.road{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:12px}
+.ri{border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.ri h3{font-size:19px}.ri p{margin:0;font-size:15.5px;line-height:1.4}
+.ri.now{background:var(--green-s);color:#145d2d;border:3px solid #a8e6bd}
+.ri.now p{color:#245f3a}
+.ri.next,.ri.later{background:#eceff3;color:#6b7690;border:3px dashed #c3cad8}
+.ri.next h3,.ri.later h3{color:#68738e}.ri.next p,.ri.later p{color:#7b859d}
+.ri.later{opacity:.8}
+.when{align-self:flex-start;border-radius:999px;padding:1px 10px;font:800 12.5px var(--display);margin-bottom:4px}
+.now .when{background:#fff;color:var(--green)}.next .when,.later .when{background:#dde2ec;color:#6b7690}
+.fine{margin:14px 0 0;color:var(--mute);font-size:15.5px}
+/* the "All" page: every lesson and tool in one list */
+.alln{color:var(--mute);margin:2px 0 10px}
+.rows{display:flex;flex-direction:column;gap:8px}
+.rw{display:flex;align-items:center;gap:12px;background:#fff;border:3px solid var(--cs);border-radius:18px;padding:8px 12px}
+.rw .e{font-size:30px;width:40px;text-align:center}
+.rw .t{flex:1;min-width:0}.rw .t b{display:block;font:800 18px/1.15 var(--display)}.rw .t span{font-size:14px;color:var(--mute)}
+.rw .btn{min-height:44px;font-size:18px;padding:6px 16px;flex:0 0 auto}
+.rw .tg{font:800 12.5px var(--display);background:var(--cs);color:var(--c);border-radius:999px;padding:1px 9px;margin-left:6px}
+@media (max-width:560px){.rw{flex-wrap:wrap}.rw .t{flex-basis:calc(100% - 60px)}}
+/* ---------- inner pages ---------- */
+.crumb{padding:18px 0 4px}
+.back{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:6px 18px;border:0;border-radius:999px;background:#fff;color:var(--ink);font:800 18px var(--display);cursor:pointer;box-shadow:0 4px 0 rgba(20,30,60,.16)}
+.page-head{display:flex;align-items:center;gap:16px;margin:10px 0 4px}
+.page-head .e{font-size:62px;line-height:1}
+.page-head h1{font-size:clamp(30px,5vw,46px);color:var(--c)}
+.topic{display:inline-flex;margin:26px 0 12px;background:var(--cs);color:var(--c);border-radius:999px;padding:6px 18px;font:800 21px var(--display)}
+.proj{display:grid;grid-template-columns:1.3fr .7fr;gap:22px;margin-top:14px;align-items:start}
+.proj .box{background:#fff;border-radius:26px;padding:20px;box-shadow:0 6px 0 var(--cs);border:3px solid var(--cs)}
+.proj h2{font-size:24px;margin-bottom:8px}
+.embed{position:relative;aspect-ratio:16/9;background:#12306b;border-radius:20px;overflow:hidden}
+.embed iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+.vlist{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.vlist button{min-height:46px;text-align:left;border:3px solid var(--cs);background:#fff;border-radius:14px;padding:8px 14px;font:800 17px var(--display);cursor:pointer;color:var(--ink)}
+.vlist button[aria-current=true]{background:var(--cs)}
+.tip{margin-top:12px;background:var(--cs);border-radius:18px;padding:12px 16px;font-size:16.5px}
+@media (max-width:820px){.proj{grid-template-columns:1fr}}
+
+/* ---------- subject tabs on the courses-only home ---------- */
+.tabs{position:sticky;top:62px;z-index:20;display:flex;gap:8px;overflow-x:auto;padding:12px 2px 10px;margin:0 -2px;background:var(--page);scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:0 0 auto;min-height:48px;display:inline-flex;align-items:center;gap:7px;padding:6px 16px 6px 12px;border-radius:999px;background:#fff;border:3px solid var(--cs);color:var(--ink);text-decoration:none;font:800 18px var(--display);white-space:nowrap}
+.tab:hover{background:var(--cs)}
+.tab .e{font-size:24px;line-height:1}
+.tab .ct{font:800 13px var(--display);background:var(--cs);color:var(--c);border-radius:999px;padding:0 8px}
+.tab.on{background:var(--c);border-color:var(--c);color:#fff}
+.tab.on .ct{background:rgba(255,255,255,.28);color:#fff}
+/* ---------- My Passport ---------- */
+.mechip{display:inline-flex;align-items:center;gap:6px;min-height:44px;padding:4px 14px 4px 8px;border-radius:999px;background:#fff;border:3px solid var(--orange-s);color:var(--ink);text-decoration:none;font:800 17px var(--display);cursor:pointer;white-space:nowrap}
+.mechip:hover{background:#fff0dc}
+.mechip .mav{font-size:26px;line-height:1}
+@media (max-width:560px){.top nav a.hm{display:none}.mechip{padding:4px 10px 4px 6px}}
+.pp-page{padding-bottom:24px}
+.pp-page h1{font-size:clamp(30px,5vw,44px);color:var(--c,var(--orange))}
+.pp-h{font-size:clamp(24px,3.4vw,30px);margin:30px 0 8px}
+.pp-head{display:flex;gap:18px;align-items:center;margin:20px 0 14px;background:#fff;border:3px solid var(--orange-s);border-radius:28px;padding:18px;box-shadow:0 6px 0 var(--orange-s)}
+.pp-me{font-size:76px;line-height:1;flex:0 0 auto;background:var(--orange-s);border-radius:50%;width:112px;height:112px;display:flex;align-items:center;justify-content:center}
+.pp-me.sm{font-size:40px;width:64px;height:64px}
+.pp-ht{flex:1;min-width:0}.pp-ht h1{margin-bottom:2px}
+.pp-lv{font:800 24px var(--display);color:var(--ink)}
+.pp-s{color:var(--mute);font-size:16px;margin:6px 0 0}
+.pp-gift{margin-top:10px;background:#fff3c4;color:#6b4a00;border-radius:14px;padding:8px 14px;font:800 17px var(--display)}
+.pp-bar{height:18px;border-radius:999px;background:#f3e6c9;overflow:hidden;margin-top:8px}
+.pp-bar i{display:block;height:100%;background:linear-gradient(90deg,#ffb52e,#ff7a1a);border-radius:999px;transition:width .6s}
+@media (max-width:560px){.pp-head{flex-direction:column;text-align:center}.pp-me{width:96px;height:96px;font-size:62px}}
+.pp-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pp-stat{background:#fff;border-radius:22px;padding:12px 8px;text-align:center;box-shadow:0 5px 0 #f1dfb8}
+.pp-stat .e{font-size:28px}.pp-stat b{display:block;font:800 34px/1.1 var(--display)}.pp-stat span{font-size:14.5px;color:var(--mute)}
+.pp-link{display:inline-block;margin-top:12px;border:0;background:none;color:var(--blue);font:800 16px var(--display);text-decoration:underline;cursor:pointer;padding:8px 4px;min-height:44px}
+.pp-badges{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,170px),1fr));gap:12px}
+.pp-badge{background:#ececec;color:#7b8294;border-radius:20px;padding:12px;text-align:center;display:flex;flex-direction:column;gap:3px}
+.pp-badge .e{font-size:38px;filter:grayscale(1);opacity:.7}.pp-badge b{font:800 17px/1.15 var(--display)}.pp-badge span{font-size:13.5px;line-height:1.3}
+.pp-badge.on{background:#fff2c2;color:#5a3d00;box-shadow:0 5px 0 #ffd23f}.pp-badge.on .e{filter:none;opacity:1}
+.pp-stamps{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,150px),1fr));gap:12px}
+.pp-stamp{border:3px dashed var(--cs);background:#fff;border-radius:20px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;cursor:pointer;font:inherit;color:var(--mute)}
+.pp-stamp .e{font-size:34px}.pp-stamp b{font:800 15.5px/1.15 var(--display);color:var(--ink)}.pp-stamp span{font-size:13px}
+.pp-stamp.on{border:3px solid var(--c);background:var(--cs);transform:rotate(-1.2deg)}
+.pp-stamp.on span{color:var(--c);font-weight:800}
+.pp-pop{position:fixed;inset:0;z-index:80;background:rgba(18,30,70,.6);display:flex;padding:16px;overflow:auto}
+.pp-box{margin:auto;background:#fff;border-radius:30px;padding:24px 22px;max-width:520px;width:100%;text-align:center;box-shadow:0 12px 0 rgba(0,0,0,.18);animation:ppin .35s}
+@keyframes ppin{from{transform:scale(.85);opacity:0}}
+.pp-box h2{font-size:30px}.pp-big{font-size:84px;line-height:1.1}
+.pp-avs{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.pp-av{border:3px solid var(--orange-s);background:#fff;border-radius:20px;padding:10px 4px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font:inherit;color:var(--ink);min-height:112px}
+.pp-av:hover{background:#fff0dc;transform:translateY(-2px)}
+.pp-av .e{font-size:48px;line-height:1.1}.pp-av b{font:800 18px var(--display)}.pp-av .s{font-size:12.5px;color:var(--mute)}
+@media (max-width:420px){.pp-avs{grid-template-columns:repeat(2,1fr)}}
+.pp-win{display:flex;gap:12px;align-items:center;text-align:left;background:#fff3c4;border-radius:18px;padding:10px 14px;margin:10px 0}
+.pp-win .e{font-size:38px}.pp-win b{font:800 19px var(--display)}.pp-win .rw{font-size:16px;color:#6b4a00}
+.pp-box .btn{margin-top:10px;width:100%}
+.pp-in{min-height:48px;border:3px solid var(--blue-s);border-radius:14px;padding:6px 14px;font:700 18px var(--body);color:var(--ink);background:#fff;width:120px}
+.pp-in.wide{width:100%}
+.pp-row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0;align-items:center}
+.pp-row .btn{min-height:50px;font-size:19px}
+.pp-ta{width:100%;border:3px solid var(--blue-s);border-radius:16px;padding:10px 12px;font:600 13px/1.35 ui-monospace,Menlo,Consolas,monospace;color:var(--ink);background:#fff;word-break:break-all}
+.pp-kid{display:flex;gap:14px;align-items:flex-start;background:#fff;border-radius:22px;padding:14px;box-shadow:0 5px 0 var(--blue-s);margin-bottom:12px;flex-wrap:wrap}
+.pp-kt{flex:1;min-width:200px}.pp-kt b{font:800 20px var(--display);display:block}.pp-kt span{color:var(--mute);font-size:15px;display:block}
+.pp-kt summary{cursor:pointer;font:800 15px var(--display);color:var(--blue);padding:6px 0}.pp-kt ul{margin:4px 0 0;padding-left:20px;font-size:14.5px;color:var(--mute)}
+.pp-rw{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.pp-rwr{display:flex;flex-direction:column;gap:4px;font:800 15px var(--display);color:var(--mute)}
+
+/* ---------- play window ---------- */
+#viewer{position:fixed;inset:0;background:rgba(18,30,70,.62);display:none;z-index:60;flex-direction:column;padding:10px}
+#viewer.on{display:flex}
+#viewer .bar{display:flex;gap:10px;align-items:center;background:var(--c,#1b6fd1);color:#fff;border-radius:20px 20px 0 0;padding:8px 10px}
+#viewer .bar b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:800 20px var(--display)}
+#viewer .vb{min-height:48px;border:0;border-radius:14px;padding:6px 18px;font:800 18px var(--display);cursor:pointer;background:#fff;color:var(--c,#1b6fd1);text-decoration:none;display:inline-flex;align-items:center}
+#viewer iframe{flex:1;border:0;background:#fff;width:100%;border-radius:0 0 20px 20px}
+:focus-visible{outline:4px solid #ffd23f;outline-offset:2px;box-shadow:0 0 0 2px #1d2b4f}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <button class="brand" id="logo" type="button" aria-label="Five-Minute Thinkers, home"><span id="logoSvg" aria-hidden="true"></span><span id="brandName"></span></button>
+  <nav aria-label="Main">
+    <a data-go="subjects">Lessons</a><a data-go="all">All</a><a data-go="watch">Videos</a><a data-go="roadmap" class="hm">Roadmap</a><a data-go="about" class="hm">About</a><a id="meBtn" class="mechip" href="#/me" aria-label="My Passport"></a>
+  </nav>
+</div></header>
+<div id="app"></div>
+<footer><div class="wrap" id="foot"></div></footer>
+<div id="viewer" role="dialog" aria-modal="true" aria-label="Lesson window">
+  <div class="bar"><button class="vb" id="vx" type="button">← Back</button><b id="vt"></b><a class="vb" id="vnew" target="_blank" rel="noopener">New tab ↗</a></div>
+  <iframe id="vf" title="Lesson" allow="autoplay; fullscreen; encrypted-media"></iframe>
+</div>
+<script>
+var DATA={"v":1791729625376,"generated":"2026-10-11","site":{"homeMode":"courses","title":"Five-Minute Thinkers","tagline":"One idea. Five minutes. Your child does the thinking.","sub":"Interactive math, science and everyday-smarts lessons that explain one idea at a time, so it clicks. Five to ten minutes a day. Free to try, no sign-up.","subjects":[{"id":"math","name":"Math","emoji":"🧮","color":"orange","blurb":"Numbers, fractions, time and money, built with pictures and hands-on tools."},{"id":"play","name":"Play & Practice","emoji":"🎯","color":"blue","blurb":"Games and tools that train what a lesson just taught. Learn the idea first, then play to make it stick."},{"id":"science","name":"Science and the World","emoji":"🔬","color":"green","blurb":"The human body, history mysteries and our planet."},{"id":"food","name":"Food and Health Detectives","emoji":"🕵️","color":"pink","blurb":"Reading labels and spotting what packages really say."},{"id":"games","name":"Little STEAM Lab","emoji":"🧊","color":"purple","blurb":"Hands-on STEAM projects: cubes, puzzles and kingdoms to build and explore."},{"id":"money","name":"Money Smarts","emoji":"🐷","color":"teal","blurb":"Saving, interest and how money grows."}],"how":[{"emoji":"🤔","title":"Predict","text":"Your child makes a guess first."},{"emoji":"🖐️","title":"Try it","text":"They explore with pictures and tools they can move."},{"emoji":"💬","title":"Explain","text":"They say why in their own words. The thinking stays theirs."}],"promises":["No accounts and no ads","Nothing about your child is collected","Progress stays on your own device","About five minutes a lesson"],"about":{"title":"Built for two kids first, then shared with yours","text":"We made these lessons at home for our own two curious kids, building them with AI and testing every one with them. Now we are sharing them with yours."},"channel":{"name":"","url":""},"disclaimer":"Educational use. Lessons are a work in progress and we welcome feedback.","agesNote":"Ages 6 to 10 so far","roadmap":{"title":"Where we are going","lead":"We are starting with elementary math, Kindergarten to Grade 5, and building toward every grade. Colored things you can use today. Gray things are planned.","goals":[{"emoji":"🧱","title":"Know it","text":"Every elementary math idea, with no gaps."},{"emoji":"🎯","title":"Use it alone","text":"Solve new problems without help, and explain why."},{"emoji":"🧩","title":"Think beyond it","text":"Patterns, analogies, sorting and spatial reasoning."}],"promise":"Original lessons only. We study how great teachers explain things, then build our own pictures, tools and problems. We never copy other products or tests.","items":[{"status":"now","title":"Math lessons, Kindergarten to Grade 5","text":"24 lessons you can play today, growing every week."},{"status":"now","title":"Food, science and money lessons","text":"Label detectives, history mysteries and saving."},{"status":"now","title":"Play & Practice tools","text":"Games that train what a lesson just taught. More are coming."},{"status":"next","when":"Next year","title":"A complete map of elementary math","text":"Every skill from K to Grade 5, with what is ready and what is next."},{"status":"next","when":"Next year","title":"Check-ups that find hidden gaps","text":"Short, no-hint questions that show what really stuck."},{"status":"next","when":"Next year","title":"A daily path for each child","text":"Five to ten minutes picked for your child: a review, then something new."},{"status":"next","when":"Next year","title":"Come-back reviews","text":"New numbers a few days later, to see what is truly remembered."},{"status":"next","when":"Next year","title":"Reasoning puzzles","text":"Number patterns, analogies, sorting and shape puzzles, built into every topic."},{"status":"next","when":"Next year","title":"A parent report","text":"What your child did alone, where a hint helped, and one question to ask."},{"status":"next","when":"Next year","title":"Real-life math projects","text":"Money, data and measuring, with simple things from home."},{"status":"later","when":"Later","title":"Grades 6 to 12","text":"Middle and high school, starting with the children who finish early."},{"status":"later","when":"Later","title":"More subjects","text":"Reading, writing, science and more, five minutes at a time."}]}},"projects":[{"id":"ten-composition","emoji":"🔟","title":"Cou-Cou Packs Ten","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Help Cou-Cou pack ten apples on a tray and discover the partner of every number.","href":"lessons/ten-composition.html","status":"beta","featured":false,"kind":"lesson","pp":"ten-composition","after":[],"access":"free","note":"","videos":[]},{"id":"tens-and-ones","emoji":"🧱","title":"Cou-Cou Bundles Tens","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Stick ten cubes together and discover how every two-digit number is built from tens and ones.","href":"lessons/tens-and-ones.html","status":"beta","featured":false,"kind":"lesson","pp":"tens-and-ones","after":[],"access":"free","note":"","videos":[]},{"id":"make-ten-addition","emoji":"➕","title":"Cou-Cou’s Make-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Fill a ten frame first and add across ten — the fastest way to add 8 + 5.","href":"lessons/make-ten-addition.html","status":"beta","featured":false,"kind":"lesson","pp":"make-ten-addition","after":[],"access":"free","note":"","videos":[]},{"id":"subtract-through-ten","emoji":"🎈","title":"Cou-Cou’s Break-the-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Give away the loose apples first, then break open the ten — the fastest way to subtract across ten.","href":"lessons/subtract-through-ten.html","status":"live","featured":false,"kind":"lesson","pp":"subtract-through-ten","after":[],"access":"free","note":"","videos":[]},{"id":"add-regroup","emoji":"🎒","title":"Cou-Cou Trades Up","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"When the ones (or tens) add up to ten or more, trade ten ones for one ten (or ten tens for one hundred) to carry it into the next place.","href":"lessons/add-regroup.html","status":"live","featured":false,"kind":"lesson","pp":"add-regroup","after":[],"access":"free","note":"","videos":[]},{"id":"subtract-regroup","emoji":"🪙","title":"Cou-Cou Trades Back","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"When a place is too small to subtract from, trade one of the next place for ten of this place (a ten for ten ones, or a hundred for ten tens) before you subtract.","href":"lessons/subtract-regroup.html","status":"live","featured":false,"kind":"lesson","pp":"subtract-regroup","after":[],"access":"free","note":"","videos":[]},{"id":"multiplication-arrays","emoji":"🟧","title":"Cou-Cou’s Cookie Trays","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"Line cookies up in rows and discover what multiplication really means.","href":"lessons/multiplication-arrays.html","status":"beta","featured":false,"kind":"lesson","pp":"multiplication-arrays","after":[],"access":"free","note":"","videos":[]},{"id":"division-sharing","emoji":"🍕","title":"Cou-Cou’s Fair Share","subject":"math","topic":"Numbers and operations","ages":"7-8","minutes":5,"blurb":"Share cookies out equally and discover what division really means.","href":"lessons/division-sharing.html","status":"live","featured":true,"kind":"lesson","pp":"division-sharing","after":[],"access":"free","note":"","videos":[]},{"id":"area-model-multiply","emoji":"📐","title":"Cou-Cou’s Split-the-Tray Trick","subject":"math","topic":"Numbers and operations","ages":"8-9","minutes":5,"blurb":"Split a big tray into a tens part and a ones part to multiply two-digit numbers fast.","href":"lessons/area-model-multiply.html","status":"live","featured":false,"kind":"lesson","pp":"area-model-multiply","after":[],"access":"free","note":"","videos":[]},{"id":"multiply-regroup","emoji":"✖️","title":"Cou-Cou’s Carry-the-Ten Trick","subject":"math","topic":"Numbers and operations","ages":"9-10","minutes":5,"blurb":"When a part adds up to ten or more, trade ten ones for one ten (or ten tens for one hundred) to carry it into the next place.","href":"lessons/multiply-regroup.html","status":"live","featured":false,"kind":"lesson","pp":"multiply-regroup","after":[],"access":"free","note":"","videos":[]},{"id":"mult-div-inverse","emoji":"🔄","title":"Cou-Cou’s Fact Family","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Discover that one tray tells four number stories — and that division undoes multiplication.","href":"lessons/mult-div-inverse.html","status":"live","featured":false,"kind":"lesson","pp":"mult-div-inverse","after":[],"access":"free","note":"","videos":[]},{"id":"add-sub-inverse","emoji":"↔️","title":"Cou-Cou’s Undo Trick","subject":"math","topic":"Numbers and operations","ages":"6-8","minutes":5,"blurb":"Add, then undo it — and discover that subtraction can check addition.","href":"lessons/add-sub-inverse.html","status":"live","featured":false,"kind":"lesson","pp":"add-sub-inverse","after":[],"access":"free","note":"","videos":[]},{"id":"times-strategies","emoji":"🧩","title":"Cou-Cou’s Fact Tricks","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Split a hard times fact into easy ones you already know — and add them back together.","href":"lessons/times-strategies.html","status":"live","featured":false,"kind":"lesson","pp":"times-strategies","after":[],"access":"free","note":"","videos":[]},{"id":"division-remainders","emoji":"🍪","title":"Cou-Cou’s Leftovers","subject":"math","topic":"Numbers and operations","ages":"7-9","minutes":5,"blurb":"Share things out equally and find out what to do with the ones left over.","href":"lessons/division-remainders.html","status":"live","featured":false,"kind":"lesson","pp":"division-remainders","after":[],"access":"free","note":"","videos":[]},{"id":"odd-numbers-squares","emoji":"🟩","title":"Cou-Cou’s Growing Squares","subject":"math","topic":"Numbers and operations","ages":"8-10","minutes":5,"blurb":"Wrap a square in layers of 1, 3, 5, 7... and discover why the total is always a perfect square.","href":"lessons/odd-numbers-squares.html","status":"live","featured":false,"kind":"lesson","pp":"odd-numbers-squares","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-intro","emoji":"🍰","title":"Cou-Cou’s Fair Shares","subject":"math","topic":"Fractions and decimals","ages":"7-8","minutes":5,"blurb":"Cutting a whole into equal-size parts names a fraction: more equal parts always means smaller pieces.","href":"lessons/fraction-intro.html","status":"live","featured":true,"kind":"lesson","pp":"fraction-intro","after":[],"access":"free","note":"","videos":[]},{"id":"decimals-intro","emoji":"💧","title":"Cou-Cou’s Decimal Squares","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"A decimal is a number written with a point, like 0.3 (3 tenths of one whole): tenths and hundredths on a square, and why a longer decimal is not always a bigger one.","href":"lessons/decimals-intro.html","status":"live","featured":false,"kind":"lesson","pp":"decimals-intro","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-decimal-link","emoji":"🔗","title":"Cou-Cou’s Two Names","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"One amount can have two names: a fraction and a decimal. Tenths and hundredths on a bar and a square show why 3/10 and 0.3, or 63/100 and 0.63, are the same.","href":"lessons/fraction-decimal-link.html","status":"live","featured":false,"kind":"lesson","pp":"fraction-decimal-link","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-add","emoji":"🍫","title":"Cou-Cou’s Fraction Add-Ups","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"When pieces are the same size you can just count them together: 1/5 + 2/5 = 3/5, and the bottom number stays the same.","href":"lessons/fraction-add.html","status":"live","featured":false,"kind":"lesson","pp":"fraction-add","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-compare","emoji":"⚖️","title":"Cou-Cou’s Fraction Showdown","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"Which fraction is bigger? With pieces of the same size, count them; with different pieces, cut both into the same size first (or compare with 1/2).","href":"lessons/fraction-compare.html","status":"live","featured":false,"kind":"lesson","pp":"fraction-compare","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-subtract","emoji":"","title":"Taking Pieces Away","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"What happens when you take pieces away? Pieces of the same size can be counted, and you will find out what stays the same.","href":"lessons/fraction-subtract.html","status":"beta","featured":false,"kind":"lesson","pp":"fraction-subtract","after":[],"access":"free","note":"","videos":[]},{"id":"fraction-add-unlike","emoji":"","title":"Different Sizes, Same Pieces","subject":"math","topic":"Fractions and decimals","ages":"7-9","minutes":5,"blurb":"What if the pieces are different sizes? Find a way to add them anyway.","href":"lessons/fraction-add-unlike.html","status":"beta","featured":false,"kind":"lesson","pp":"fraction-add-unlike","after":[],"access":"free","note":"","videos":[]},{"id":"telling-time","emoji":"🕒","title":"Cou-Cou’s Clock Time","subject":"math","topic":"Time and money","ages":"6-9","minutes":5,"blurb":"Read the short hand and the long hand, and tell the time on an analog clock.","href":"lessons/telling-time.html","status":"live","featured":true,"kind":"lesson","pp":"telling-time","after":[],"access":"free","note":"","videos":[]},{"id":"elapsed-time","emoji":"⏳","title":"Cou-Cou’s Time Hops","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"Find out how long things take, and what time they will end, by hopping through the time.","href":"lessons/elapsed-time.html","status":"live","featured":false,"kind":"lesson","pp":"elapsed-time","after":[],"access":"free","note":"","videos":[]},{"id":"calendar-weeks","emoji":"📅","title":"Cou-Cou’s Calendar Weeks","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"A week is 7 days: find the same day of the week again, and work out days far ahead.","href":"lessons/calendar-weeks.html","status":"live","featured":false,"kind":"lesson","pp":"calendar-weeks","after":[],"access":"free","note":"","videos":[]},{"id":"counting-coins","emoji":"💰","title":"Cou-Cou’s Coin Jar","subject":"math","topic":"Time and money","ages":"7-9","minutes":5,"blurb":"Know your US coins, count a mixed tray, use the fewest coins and work out change.","href":"lessons/counting-coins.html","status":"live","featured":false,"kind":"lesson","pp":"counting-coins","after":[],"access":"free","note":"","videos":[]},{"id":"count-by-tables","emoji":"","title":"Count-By Patterns","subject":"math","topic":"Multiplication and division","ages":"7-9","minutes":5,"blurb":"Hop along in equal jumps and discover that a times table is just counting by a number: 8 hops of 5 land on 40, and one more hop adds 5.","href":"lessons/count-by-tables.html","status":"beta","featured":false,"kind":"lesson","pp":"count-by-tables","after":[],"access":"free","note":"","videos":[]},{"id":"every-rectangle","emoji":"","title":"Every Rectangle","subject":"math","topic":"Multiplication and division","ages":"8-10","minutes":5,"blurb":"Find every rectangle that a pile of counters can make in equal rows with none left over, and discover that each one is a pair of numbers that multiply to the total.","href":"lessons/every-rectangle.html","status":"beta","featured":false,"kind":"lesson","pp":"every-rectangle","after":[],"access":"free","note":"","videos":[]},{"id":"ten-times-bigger","emoji":"","title":"Ten Times Bigger","subject":"math","topic":"Multiplication and division","ages":"9-10","minutes":5,"blurb":"Swap every block for the next bigger one and watch every digit slide one place to the left: times 10 and times 100 are place-value jumps, not a trick of adding zeros.","href":"lessons/ten-times-bigger.html","status":"beta","featured":false,"kind":"lesson","pp":"ten-times-bigger","after":[],"access":"free","note":"","videos":[]},{"id":"sugar-label-detective","emoji":"🍬","title":"The Sugar Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Is the sweetest food the one with the most sugar? Kids learn to read the nutrition label instead of trusting taste or words like \"natural\".","href":"sci/sugar-label-detective.html","status":"beta","featured":false,"kind":"lesson","pp":"sugar-label-detective","after":[],"access":"free","note":"","videos":[]},{"id":"fat-label-detective","emoji":"🥑","title":"The Fat Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Not all fat is the same. Kids sort \"friendlier\" fats from \"go-easy\" fats and learn what the fat lines on a label really tell you.","href":"sci/fat-label-detective.html","status":"beta","featured":false,"kind":"lesson","pp":"fat-label-detective","after":[],"access":"free","note":"","videos":[]},{"id":"color-label-detective","emoji":"🫐","title":"The Color Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"Why is a \"blue raspberry\" popsicle blue? Kids find the colour on the ingredient list and learn what the dye names mean.","href":"sci/color-label-detective.html","status":"beta","featured":false,"kind":"lesson","pp":"color-label-detective","after":[],"access":"free","note":"","videos":[]},{"id":"warning-label-detective","emoji":"⚠️","title":"The Warning Label Detective","subject":"food","topic":"Reading food labels","ages":"6-9","minutes":5,"blurb":"What does a California \"cancer warning\" sticker really mean? A calm look at why the label exists: it is a required notice about tiny trace amounts, not a sign the food is poison.","href":"sci/warning-label-detective.html","status":"beta","featured":false,"kind":"lesson","pp":"warning-label-detective","after":[],"access":"free","note":"","videos":[]},{"id":"package-claims-detective","emoji":"📦","title":"The Package Claims Detective","subject":"food","topic":"Reading food labels","ages":"6-12","minutes":5,"blurb":"\"Tree ripened\", \"sun-dried\", \"natural\": what does a package claim actually promise? Kids practice telling a claim from a fact. Includes a narrated video and two levels (ages 6-8 and 9-12).","href":"sci/package-claims-detective.html","status":"beta","featured":false,"kind":"lesson","pp":"","after":[],"access":"free","note":"","videos":[]},{"id":"vitamin-c","emoji":"🍊","title":"The Scurvy Mystery","subject":"science","topic":"Health and history","ages":"6-9","minutes":5,"blurb":"Why did sailors get sick on long voyages, and why did fruit make them better? A true story that teaches fair testing.","href":"sci/vitamin-c.html","status":"beta","featured":false,"kind":"lesson","pp":"vitamin-c","after":[],"access":"free","note":"","videos":[]},{"id":"tooth-timeline","emoji":"🦷","title":"The Tooth Timeline","subject":"science","topic":"The human body","ages":"6-9","minutes":5,"blurb":"Why did her first tooth fall out at 8 when friends lost theirs at 5? Kids learn the order of baby teeth and the wide range of normal.","href":"sci/tooth-timeline.html","status":"beta","featured":false,"kind":"lesson","pp":"tooth-timeline","after":[],"access":"free","note":"","videos":[]},{"id":"continents-and-oceans","emoji":"🌍","title":"The Invisible Borders of Continents and Oceans","subject":"science","topic":"Earth and geography","ages":"6-9","minutes":5,"blurb":"Where does one continent end and an ocean begin? Kids test the rules behind the 7 continents and 4 oceans.","href":"sci/continents-and-oceans.html","status":"beta","featured":false,"kind":"lesson","pp":"continents-and-oceans","after":[],"access":"free","note":"","videos":[]},{"id":"travel-piggy-bank","emoji":"🐷","title":"The Travel Piggy Bank","subject":"money","topic":"Saving and interest","ages":"6-9","minutes":5,"blurb":"How does interest earn interest? Kids watch a travel piggy bank grow and discover compounding, with no percentages needed at first.","href":"sci/travel-piggy-bank.html","status":"beta","featured":false,"kind":"lesson","pp":"travel-piggy-bank","after":[],"access":"free","note":"","videos":[]},{"id":"splinter","emoji":"🪵","title":"Where Did the Splinter Go?","subject":"science","topic":"The human body","ages":"6-9","minutes":5,"blurb":"A tiny splinter vanishes from a fingertip. A short tour of how skin renews itself and how the body's guards help. Includes narrated video.","href":"sci/splinter/Splinter.html","status":"beta","featured":false,"kind":"lesson","pp":"splinter","after":[],"access":"free","note":"","videos":[]},{"id":"cube","emoji":"🧊","title":"Little Cube Quest","subject":"games","topic":"Puzzles and STEAM","ages":"7-10","minutes":5,"blurb":"Twenty guided lessons to solve a 2x2 cube with a real cube in hand: watch a slow demo, try it, answer a small question.","href":"games/cube.html","status":"beta","featured":false,"kind":"lesson","pp":"","after":[],"access":"free","note":"Large file: the first load takes a few seconds.","videos":[]},{"id":"roman-numerals","emoji":"🏰","title":"Roman Numeral Kingdom","subject":"play","topic":"Numbers and place value","ages":"7-10","minutes":5,"blurb":"A kingdom-building game that trains Roman numerals after your child has met tens and ones. Explore, build and unlock, with short gentle checkpoints.","href":"games/roman/index.html","status":"live","featured":false,"kind":"tool","pp":"roman-numeral-kingdom","after":["tens-and-ones"],"access":"free","note":"","videos":[]},{"id":"times-tables","emoji":"✖️","title":"Times Tables Challenge","subject":"play","topic":"Multiplication facts","ages":"7-10","minutes":5,"blurb":"Practice the multiplication facts a lesson just taught: 20 levels from the easy tables to the tricky ones. Your child chases their own best time and points, never anyone else’s. Progress stays on this device.","href":"games/multiplication/Multiplication.html","status":"beta","featured":false,"kind":"tool","pp":"times-tables","after":["multiplication-arrays","times-strategies","mult-div-inverse"],"access":"free","note":"","videos":[]}]};
+var LOGO='<svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Five-Minute Thinkers"><rect x="28" y="1.5" width="8" height="6" rx="2" fill="#1d2b4f"/><circle cx="32" cy="36" r="24" fill="#ffffff" stroke="#1d2b4f" stroke-width="6"/><path d="M32 36 L32 15 A21 21 0 0 1 50.2 25.5 Z" fill="#e8650a"/><circle cx="32" cy="36" r="4" fill="#1d2b4f"/><path d="M54 3 L55.8 7.6 L60.4 9.4 L55.8 11.2 L54 15.8 L52.2 11.2 L47.6 9.4 L52.2 7.6 Z" fill="#ffd23f" stroke="#1d2b4f" stroke-width="1.4" stroke-linejoin="round"/></svg>';
+/* a home-screen copy can keep an old page for a while: ask the server which version is current and reload once if this one is behind */
+(function(){try{fetch('version.json?'+Date.now(),{cache:'no-store'}).then(function(r){return r.json()}).then(function(j){if(j&&j.v&&j.v!==DATA.v){var k='fmt-reloaded-for',v=String(j.v);if(sessionStorage.getItem(k)!==v){sessionStorage.setItem(k,v);location.reload()}}}).catch(function(){})}catch(e){}})();
+var S=DATA.site,P=DATA.projects,app=document.getElementById('app'),V=document.getElementById('viewer'),VF=document.getElementById('vf');
+var EMO_SUBJ={};S.subjects.forEach(function(s){EMO_SUBJ[s.id]=s});
+function E(t,c,h){var e=document.createElement(t);if(c)e.className=c;if(h!=null)e.textContent=h;return e}
+function logo(cls){var d=E('span',cls);d.innerHTML=LOGO;return d}
+function seenGet(){try{return JSON.parse(localStorage.getItem('wmn-seen')||'{}')}catch(e){return{}}}
+function seenSet(k){try{var s=seenGet();s[k]=1;localStorage.setItem('wmn-seen',JSON.stringify(s))}catch(e){}}
+function proj(id){for(var i=0;i<P.length;i++)if(P[i].id===id)return P[i];return null}
+function ageText(a){return a?('Ages '+a.replace('-','–')):''}
+function withHome(h,p){if(/^https?:/.test(h))return h;var d=h.split('/').length-1,up='';for(var i=0;i<d;i++)up+='../';return h+'?home='+encodeURIComponent(up+'index.html').replace(/%2F/g,'/')+'&v='+DATA.v+(p&&PP.counts(p)?'&'+PP.ctx():'')}
+function allVideos(){var a=[];P.forEach(function(p){p.videos.forEach(function(v){a.push({p:p,v:v})})});a.sort(function(x,y){return (y.v.date||'').localeCompare(x.v.date||'')});return a}
+document.getElementById('logoSvg').innerHTML=LOGO;document.getElementById('brandName').textContent=S.title;
+if(S.homeMode==='courses'){[].forEach.call(document.querySelectorAll('[data-go]'),function(a){a.remove()});document.getElementById('foot').parentNode.style.display='none'}else document.getElementById('foot').textContent=(S.disclaimer||'')+'  ·  '+S.title;
+
+/* ---------- player / video windows ---------- */
+var guestOK=false,snap=null;
+function openLesson(p){
+  if(!p.href)return;
+  if(PP.counts(p)&&!PP.who()&&!guestOK){PP.pick(function(id){guestOK=!id;openLesson(p)});return}
+  if(PP.who())guestOK=false;
+  seenSet(p.id);snap=PP.snapshot();
+  V.style.setProperty('--c',({orange:'#d95b00',pink:'#d6246e',teal:'#0b8a7c',green:'#1f8f45',purple:'#6d3fd8',blue:'#1b6fd1'})[(EMO_SUBJ[p.subject]||{}).color]||'#1b6fd1');
+  document.getElementById('vt').textContent=p.title;document.getElementById('vnew').style.display='';document.getElementById('vnew').href=withHome(p.href,p);
+  VF.src=/^https?:/.test(p.href)?p.href:p.href+'?v='+DATA.v+(PP.counts(p)?'&'+PP.ctx():'');V.classList.add('on');document.getElementById('vx').focus()}
+function closeV(){V.classList.remove('on');VF.src='about:blank';PP.ingest();PP.chip();var s=snap;snap=null;route();if(s)PP.recap(s)}
+document.getElementById('vx').onclick=closeV;
+document.addEventListener('keydown',function(e){if(e.key==='Escape'&&V.classList.contains('on'))closeV()});
+window.addEventListener('message',function(e){if(e.data&&e.data.fmpHome&&V.classList.contains('on'))closeV()});
+function ytSrc(id,auto){return 'https://www.youtube-nocookie.com/embed/'+encodeURIComponent(id)+'?rel=0'+(auto?'&autoplay=1':'')}
+function openVideo(item){
+  V.style.setProperty('--c','#1b6fd1');document.getElementById('vt').textContent=item.v.title;document.getElementById('vnew').style.display='none';
+  VF.src=ytSrc(item.v.youtube,true);V.classList.add('on');document.getElementById('vx').focus()}
+
+/* ---------- pieces ---------- */
+function card(p,feature,plain){
+  var sub=EMO_SUBJ[p.subject]||{color:'blue'};var c=E('article','card c-'+sub.color+(feature?' feature':''));
+  var art=E('div','art');art.appendChild(E('span','e',p.emoji||sub.emoji||'⭐'));
+  if(p.status==='beta')art.appendChild(E('span','tag','Beta'));
+  var seen=seenGet()[p.id];if(seen)art.appendChild(E('span','tag right','✓ Tried'));
+  c.appendChild(art);
+  var b=E('div','body');b.appendChild(E('h3',null,p.title));if(!plain)b.appendChild(E('p',null,p.blurb));
+  var m=E('div','meta');if(p.ages)m.appendChild(E('span','m',ageText(p.ages)));m.appendChild(E('span','m',p.minutes+' min'));if(p.videos.length)m.appendChild(E('span','m','▶ Video'));b.appendChild(m);
+  var a=E('div','actions');
+  if(p.href){var pl=E('button','btn c','▶ Play');pl.type='button';pl.onclick=function(){openLesson(p)};a.appendChild(pl)}
+  else{var cs=E('span','btn ghost','Coming soon');cs.setAttribute('aria-disabled','true');a.appendChild(cs)}
+  if(!plain){var d=E('a','btn ghost','Details');d.href='#/p/'+p.id;a.appendChild(d)}
+  b.appendChild(a);c.appendChild(b);return c}
+function videoCards(list){
+  var row=E('div','vrow');
+  list.forEach(function(it){var b=E('button','vcard');b.type='button';b.setAttribute('aria-label','Play video: '+it.v.title);
+    var th=E('div','th');th.style.backgroundImage='url(https://i.ytimg.com/vi/'+encodeURIComponent(it.v.youtube)+'/hqdefault.jpg)';b.appendChild(th);b.appendChild(E('b',null,it.v.title));b.onclick=function(){openVideo(it)};row.appendChild(b)});
+  return row}
+function soon(text,sub){var d=E('div','soon');d.appendChild(logo(''));var t=E('div');t.appendChild(E('b',null,text));t.appendChild(E('p',null,sub));d.appendChild(t);return d}
+
+/* ---------- views ---------- */
+var SHORT={math:'Math',play:'Play & Practice',science:'Science',food:'Food & Health',games:'STEAM Lab',money:'Money'};
+function lastTab(){try{return localStorage.getItem('fmt-tab')||''}catch(e){return ''}}
+function coursesHome(active){
+  app.innerHTML='';var w=E('div','wrap');
+  var subs=S.subjects.filter(function(s){return P.some(function(p){return p.subject===s.id&&p.href})});if(!subs.length){app.appendChild(w);return}
+  var cur=subs.filter(function(s){return s.id===active})[0]||subs.filter(function(s){return s.id===lastTab()})[0]||subs[0];
+  try{localStorage.setItem('fmt-tab',cur.id)}catch(e){}
+  var bar=E('nav','tabs');bar.setAttribute('aria-label','Subjects');var on=null;
+  subs.forEach(function(s){var n=P.filter(function(p){return p.subject===s.id&&p.href}).length;var t=E('a','tab c-'+s.color+(s===cur?' on':''));t.href='#/t/'+s.id;if(s===cur){t.setAttribute('aria-current','page');on=t}
+    t.appendChild(E('span','e',s.emoji));t.appendChild(E('span',null,SHORT[s.id]||s.name));t.appendChild(E('span','ct',String(n)));bar.appendChild(t)});
+  w.appendChild(bar);
+  var sec=E('section','c-'+cur.color);var h=E('div','page-head');h.appendChild(E('span','e',cur.emoji));h.appendChild(E('h1',null,cur.name));sec.appendChild(h);
+  var list=P.filter(function(p){return p.subject===cur.id&&p.href});var topics=[];list.forEach(function(p){if(topics.indexOf(p.topic)<0)topics.push(p.topic)});
+  topics.forEach(function(tp){if(tp&&topics.length>1){var t=E('div','topic',tp);sec.appendChild(t)}var g=E('div','grid');list.filter(function(p){return p.topic===tp}).forEach(function(p){g.appendChild(card(p,false,true))});sec.appendChild(g)});
+  w.appendChild(sec);app.appendChild(w);
+  if(on)bar.scrollLeft=Math.max(0,on.offsetLeft-16)}
+
+function home(){
+  if(S.homeMode==='courses'){coursesHome();return}
+  app.innerHTML='';
+  var hero=E('section','hero');['cloud a','cloud b'].forEach(function(c){var x=E('div',c);x.setAttribute('aria-hidden','true');hero.appendChild(x)});
+  var w=E('div','wrap hero-grid');var left=E('div');
+  left.appendChild(E('h1',null,S.tagline));left.appendChild(E('p','sub',S.sub));
+  var cta=E('div','cta');
+  var feat=P.filter(function(p){return p.featured&&p.href});var first=feat[0]||P.filter(function(p){return p.href})[0];
+  var b1=E('button','btn main','▶ Try a free lesson');b1.type='button';b1.onclick=function(){if(first)openLesson(first)};cta.appendChild(b1);
+  var b2=E('a','btn alt','Watch videos');b2.href='#/watch';cta.appendChild(b2);left.appendChild(cta);
+  var ch=E('div','chips');ch.appendChild(E('span','chip',S.agesNote||'Ages 6 to 10'));(S.promises||[]).slice(0,3).forEach(function(t){ch.appendChild(E('span','chip',t))});left.appendChild(ch);
+  var right=E('div','demo-box');var dm=E('div','demo');dm.setAttribute('aria-hidden','true');
+  var tp=E('div','demo-top');tp.appendChild(logo('lg'));tp.appendChild(E('b',null,'One idea'));tp.appendChild(E('span','demo-time','5:00'));dm.appendChild(tp);
+  dm.appendChild(E('p','demo-q','Predict first'));dm.appendChild(E('p','demo-big','Which is bigger: 3/4 or 5/8?'));
+  var op=E('div','demo-opts');op.appendChild(E('span',null,'3/4'));op.appendChild(E('span','pick','5/8'));op.appendChild(E('span',null,'Same'));dm.appendChild(op);
+  var st=E('div','demo-steps');['1 Predict','2 Try it','3 Explain'].forEach(function(t){st.appendChild(E('span',null,t))});dm.appendChild(st);right.appendChild(dm);
+  w.appendChild(left);w.appendChild(right);hero.appendChild(w);
+  hero.insertAdjacentHTML('beforeend','<svg class="wave" viewBox="0 0 1200 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 30 C150 60 300 0 450 24 C600 48 750 4 900 26 C1050 48 1130 12 1200 28 L1200 60 L0 60Z" fill="#fff6e3"/></svg>');
+  app.appendChild(hero);
+  // try one now
+  var s1=E('section','block wrap');s1.id='try';s1.appendChild(E('h2',null,'Try one now'));s1.appendChild(E('p','lead','Each lesson takes about five minutes. Sit beside your child for the first one.'));
+  var g=E('div','grid');feat.forEach(function(p){g.appendChild(card(p,true))});s1.appendChild(g);if(feat.length)app.appendChild(s1);
+  // watch
+  var s2=E('section','block wrap');s2.id='watch';s2.appendChild(E('h2',null,'Watch'));
+  var vids=allVideos();
+  if(vids.length){s2.appendChild(E('p','lead','Short talks and lesson walk-throughs.'));s2.appendChild(videoCards(vids.slice(0,8)));var all=E('a','btn ghost c-blue','All videos →');all.href='#/watch';s2.appendChild(all)}
+  else s2.appendChild(soon('Our first videos are on the way','Short English talks and screen-recorded lesson walk-throughs will appear here.'));
+  app.appendChild(s2);
+  // subjects
+  var s3=E('section','block wrap');s3.id='subjects';s3.appendChild(E('h2',null,'Browse by subject'));s3.appendChild(E('p','lead','Pick a subject, then pick a lesson.'));
+  var t=E('div','tiles');
+  S.subjects.forEach(function(s){var n=P.filter(function(p){return p.subject===s.id}).length;if(!n)return;
+    var b=E('button','tile c-'+s.color);b.type='button';b.appendChild(E('span','e',s.emoji));b.appendChild(E('h3',null,s.name));b.appendChild(E('p',null,s.blurb));b.appendChild(E('span','n',n+(s.id==='play'||s.id==='games'?(n===1?' tool':' tools'):(n===1?' lesson':' lessons'))));b.onclick=function(){location.hash='#/s/'+s.id};t.appendChild(b)});
+  s3.appendChild(t);app.appendChild(s3);
+  // how it works
+  var s4=E('section','block wrap');s4.appendChild(E('h2',null,'How a lesson works'));s4.appendChild(E('p','lead','Not a video to watch. A short activity to think through.'));
+  var st=E('div','steps');(S.how||[]).forEach(function(x){var d=E('div','step');d.appendChild(E('div','e',x.emoji));d.appendChild(E('h3',null,x.title));d.appendChild(E('p',null,x.text));st.appendChild(d)});s4.appendChild(st);
+  var pr=E('div','promises');(S.promises||[]).forEach(function(t){pr.appendChild(E('div','promise','✓ '+t))});s4.appendChild(pr);app.appendChild(s4);
+  // roadmap
+  var rm=S.roadmap;
+  if(rm){var s6=E('section','block wrap');s6.id='roadmap';s6.appendChild(E('h2',null,rm.title));s6.appendChild(E('p','lead',rm.lead));
+    var gl=E('div','goals');rm.goals.forEach(function(x){var d=E('div','goal');d.appendChild(E('div','e',x.emoji));var t=E('div');t.appendChild(E('h3',null,x.title));t.appendChild(E('p',null,x.text));d.appendChild(t);gl.appendChild(d)});s6.appendChild(gl);
+    var rd=E('div','road');rm.items.forEach(function(x){var d=E('div','ri '+x.status);d.appendChild(E('span','when',x.status==='now'?'Available now':x.when));d.appendChild(E('h3',null,x.title));d.appendChild(E('p',null,x.text));rd.appendChild(d)});s6.appendChild(rd);
+    s6.appendChild(E('p','fine',rm.promise));app.appendChild(s6)}
+  // about
+  var s5=E('section','block wrap');s5.id='about';var ab=E('div','about');ab.appendChild(logo(''));var tx=E('div');tx.appendChild(E('h2',null,S.about.title));tx.appendChild(E('p',null,S.about.text));
+  if(S.channel&&S.channel.url){var cl=E('a','btn ghost c-blue',S.channel.name||'Our channel');cl.href=S.channel.url;cl.target='_blank';cl.rel='noopener';cl.style.marginTop='12px';tx.appendChild(cl)}
+  ab.appendChild(tx);s5.appendChild(ab);app.appendChild(s5)}
+
+function subject(id){
+  var s=EMO_SUBJ[id];app.innerHTML='';if(!s){home();return}
+  var w=E('div','wrap c-'+s.color);var cr=E('div','crumb');var bk=E('button','back','← All subjects');bk.type='button';bk.onclick=function(){location.hash='#/subjects'};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e',s.emoji));h.appendChild(E('h1',null,s.name));w.appendChild(h);w.appendChild(E('p','lead',s.blurb));
+  var list=P.filter(function(p){return p.subject===id});var topics=[];list.forEach(function(p){if(topics.indexOf(p.topic)<0)topics.push(p.topic)});
+  topics.forEach(function(tp){if(tp&&topics.length>1)w.appendChild(E('div','topic',tp));var g=E('div','grid');list.filter(function(p){return p.topic===tp}).forEach(function(p){g.appendChild(card(p))});w.appendChild(g)});
+  app.appendChild(w)}
+
+function project(id){
+  var p=proj(id);app.innerHTML='';if(!p){home();return}
+  var s=EMO_SUBJ[p.subject]||{color:'blue',name:''};var w=E('div','wrap c-'+s.color);
+  var cr=E('div','crumb');var bk=E('button','back','← '+(s.name||'Back'));bk.type='button';bk.onclick=function(){location.hash='#/s/'+p.subject};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e',p.emoji||s.emoji));h.appendChild(E('h1',null,p.title));w.appendChild(h);
+  var m=E('div','meta');if(p.ages)m.appendChild(E('span','m',ageText(p.ages)));m.appendChild(E('span','m',p.minutes+' min'));if(p.status==='beta')m.appendChild(E('span','m','Beta'));w.appendChild(m);
+  var g=E('div','proj');var L=E('div');var R=E('div');
+  // video
+  var vb=E('div','box');vb.appendChild(E('h2',null,'Watch'));
+  if(p.videos.length){var em=E('div','embed');var fr=E('iframe');fr.title=p.videos[0].title;fr.allow='accelerometer; encrypted-media; picture-in-picture; fullscreen';fr.allowFullscreen=true;fr.src=ytSrc(p.videos[0].youtube,false);em.appendChild(fr);vb.appendChild(em);
+    if(p.videos.length>1){var vl=E('div','vlist');p.videos.forEach(function(v,i){var b=E('button',null,v.title);b.type='button';b.setAttribute('aria-current',String(i===0));b.onclick=function(){fr.src=ytSrc(v.youtube,true);[].forEach.call(vl.children,function(x,j){x.setAttribute('aria-current',String(j===i))})};vl.appendChild(b)});vb.appendChild(vl)}}
+  else vb.appendChild(soon('Video coming soon','A short talk and a screen walk-through of this lesson.'));
+  L.appendChild(vb);
+  var about=E('div','box');about.style.marginTop='18px';about.appendChild(E('h2',null,'What your child does'));about.appendChild(E('p',null,p.blurb));if(p.note)about.appendChild(E('p','tip',p.note));
+  about.appendChild(E('div','tip','Tip: after the lesson, ask "How did you know?" The explaining is where the learning sticks.'));L.appendChild(about);
+  // play
+  var pb=E('div','box');pb.appendChild(E('h2',null,'Play the lesson'));
+  if(p.href){var b=E('button','btn c','▶ Start ('+p.minutes+' min)');b.type='button';b.style.width='100%';b.onclick=function(){openLesson(p)};pb.appendChild(b);
+    var nt=E('a','btn ghost','Open in a new tab ↗');nt.href=withHome(p.href,p);nt.onclick=function(){nt.href=withHome(p.href,p)};nt.target='_blank';nt.rel='noopener';nt.style.cssText='width:100%;margin-top:10px';pb.appendChild(nt)}
+  else pb.appendChild(E('p',null,'This lesson is still being built.'));
+  R.appendChild(pb);
+  function linkBox(title,list){var bx=E('div','box');bx.style.marginTop='18px';bx.appendChild(E('h2',null,title));list.forEach(function(x){var a=E('a','btn ghost',x.title);a.href='#/p/'+x.id;a.style.cssText='width:100%;margin-top:8px;justify-content:flex-start;text-align:left;font-size:17px';bx.appendChild(a)});R.appendChild(bx)}
+  var firstL=(p.after||[]).map(proj).filter(Boolean);if(firstL.length)linkBox('Learn the idea first',firstL);
+  var toolL=P.filter(function(x){return (x.after||[]).indexOf(p.id)>=0});if(toolL.length)linkBox('Practice it by playing',toolL);
+  var rel=P.filter(function(x){return x.subject===p.subject&&x.id!==p.id&&x.topic===p.topic}).slice(0,3);
+  if(rel.length){var rb=E('div','box');rb.style.marginTop='18px';rb.appendChild(E('h2',null,'More like this'));rel.forEach(function(x){var a=E('a','btn ghost',x.title);a.href='#/p/'+x.id;a.style.cssText='width:100%;margin-top:8px;justify-content:flex-start;text-align:left;font-size:17px';rb.appendChild(a)});R.appendChild(rb)}
+  g.appendChild(L);g.appendChild(R);w.appendChild(g);app.appendChild(w)}
+
+function watch(){
+  app.innerHTML='';var w=E('div','wrap c-blue');var cr=E('div','crumb');var bk=E('button','back','← Home');bk.type='button';bk.onclick=function(){location.hash=''};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e','🎬'));h.appendChild(E('h1',null,'Videos'));w.appendChild(h);
+  var v=allVideos();
+  if(v.length){w.appendChild(E('p','lead','Short English talks and lesson walk-throughs.'));var g=E('div','grid');v.forEach(function(it){var c=E('article','card c-blue');var th=E('button','vcard');th.type='button';th.style.cssText='flex:none;width:100%;border-radius:0;box-shadow:none;background:none';var im=E('div','th');im.style.backgroundImage='url(https://i.ytimg.com/vi/'+encodeURIComponent(it.v.youtube)+'/hqdefault.jpg)';th.appendChild(im);th.onclick=function(){openVideo(it)};c.appendChild(th);var b=E('div','body');b.appendChild(E('h3',null,it.v.title));var a=E('a','btn ghost','Lesson: '+it.p.title);a.href='#/p/'+it.p.id;b.appendChild(a);c.appendChild(b);g.appendChild(c)});w.appendChild(g)}
+  else{w.appendChild(E('p','lead','Short English talks and screen-recorded lesson walk-throughs.'));w.appendChild(soon('Our first videos are on the way','Check back soon. In the meantime, try a lesson!'));var t=E('button','btn main','▶ Try a free lesson');t.type='button';t.style.marginTop='18px';var first=P.filter(function(p){return p.featured&&p.href})[0]||P.filter(function(p){return p.href})[0];t.onclick=function(){if(first)openLesson(first)};w.appendChild(t)}
+  app.appendChild(w)}
+
+function allPage(){
+  app.innerHTML='';var w=E('div','wrap c-blue');var cr=E('div','crumb');var bk=E('button','back','← Home');bk.type='button';bk.onclick=function(){location.hash=''};cr.appendChild(bk);w.appendChild(cr);
+  var h=E('div','page-head');h.appendChild(E('span','e','📚'));h.appendChild(E('h1',null,'Everything'));w.appendChild(h);
+  w.appendChild(E('p','alln',P.length+' lessons and tools in one list. Tap Play to try any of them.'));
+  S.subjects.forEach(function(s){var list=P.filter(function(p){return p.subject===s.id});if(!list.length)return;
+    var sec=E('div','c-'+s.color);sec.appendChild(E('div','topic',s.emoji+' '+s.name+' · '+list.length));var rows=E('div','rows');
+    list.forEach(function(p){var r=E('div','rw');r.appendChild(E('div','e',p.emoji||s.emoji));var t=E('div','t');var b=E('b',null,p.title);if(p.status==='beta')b.appendChild(E('span','tg','Beta'));t.appendChild(b);t.appendChild(E('span',null,[p.ages?ageText(p.ages):'',p.minutes+' min'].filter(Boolean).join(' · ')));r.appendChild(t);
+      if(p.href){var pl=E('button','btn c','▶ Play');pl.type='button';pl.onclick=function(){openLesson(p)};r.appendChild(pl)}else r.appendChild(E('span','btn ghost','Soon'));
+      var d=E('a','btn ghost','Details');d.href='#/p/'+p.id;r.appendChild(d);rows.appendChild(r)});
+    sec.appendChild(rows);w.appendChild(sec)});
+  app.appendChild(w)}
+
+function route(){
+  var h=(location.hash||'').replace(/^#\/?/,'').split('/');var k=h[0];
+  if(k==='s')subject(h[1]);else if(k==='p')project(h[1]);else if(k==='watch')watch();else if(k==='all')allPage();else if(k==='me')PP.view(h[1]);else if(k==='t'&&S.homeMode==='courses')coursesHome(h[1]);
+  else{home();if(k==='subjects'||k==='about'||k==='roadmap'){var el=document.getElementById(k);if(el)el.scrollIntoView();return}}
+  window.scrollTo(0,0);var hh=app.querySelector('h1');if(hh){hh.setAttribute('tabindex','-1');hh.focus({preventScroll:true})}}
+/* ---------- My Passport (included into the page by build-hub.cjs) ----------
+   Records what a child does in the lessons, as a ledger: every earned spark is one line with a fixed key, so the same event
+   can arrive twice and still counts once, and two devices can be merged by simply joining their ledgers.
+   Stored on the device (localStorage). Nothing leaves the device except a save code the grown-up makes on purpose. */
+var PP=(function(){
+var KEY='fmt_passport_v1';
+var AV=[{id:'lion',e:'🦁',n:'Lion'},{id:'fox',e:'🦊',n:'Fox'},{id:'panda',e:'🐼',n:'Panda'},{id:'owl',e:'🦉',n:'Owl'},{id:'frog',e:'🐸',n:'Frog'},{id:'penguin',e:'🐧',n:'Penguin'}];
+var LEVELS=[{n:1,at:0,name:'Spark'},{n:2,at:1,name:'Wonderer'},{n:3,at:3,name:'Explorer'},{n:4,at:6,name:'Puzzler'},{n:5,at:10,name:'Builder'},{n:6,at:15,name:'Inventor'},{n:7,at:21,name:'Detective'},{n:8,at:28,name:'Scientist'},{n:9,at:36,name:'Master Thinker'},{n:10,at:45,name:'Grand Thinker'}];
+var BADGES=[
+ {id:'first',e:'🌱',name:'First Idea',how:'Finish your first lesson',ok:function(d){return d.nIdeas>=1}},
+ {id:'guess',e:'🎯',name:'Brave Guesser',how:'Make 10 predictions',ok:function(d){return d.cnt.pred>=10}},
+ {id:'retry',e:'💪',name:'Try-Again Champion',how:'Miss, try again, and get it 5 times',ok:function(d){return d.cnt.retry>=5}},
+ {id:'ask',e:'🙋',name:'Smart Asker',how:'Ask for a hint 5 times. Asking is smart!',ok:function(d){return d.cnt.help>=5}},
+ {id:'warm',e:'🔥',name:'Warm-Up Pro',how:'Pass 3 warm-ups',ok:function(d){return d.cnt.gate>=3}},
+ {id:'d3',e:'📅',name:'Three-Day Thinker',how:'Think on 3 different days',ok:function(d){return d.nDays>=3}},
+ {id:'d7',e:'🗓️',name:'Seven-Day Thinker',how:'Think on 7 different days',ok:function(d){return d.nDays>=7}},
+ {id:'topics',e:'🧭',name:'Topic Hopper',how:'Learn ideas in 3 different topics',ok:function(d){return d.nTopics>=3}},
+ {id:'s100',e:'✨',name:'100 Sparks',how:'Collect 100 sparks',ok:function(d){return d.sparks>=100}},
+ {id:'s500',e:'🌟',name:'500 Sparks',how:'Collect 500 sparks',ok:function(d){return d.sparks>=500}}
+];
+function ls(k,v){try{if(v===undefined)return localStorage.getItem(k);if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v)}catch(e){return null}}
+function blank(){return{v:1,who:null,kids:{},rewards:{},backedUp:0}}
+function load(){try{var s=JSON.parse(ls(KEY));if(s&&typeof s==='object'&&s.kids)return s}catch(e){}return blank()}
+var st=load();
+function save(){ls(KEY,JSON.stringify(st))}
+function avOf(id){for(var i=0;i<AV.length;i++)if(AV[i].id===id)return AV[i];return null}
+function kid(id){var k=st.kids[id];if(!k)k=st.kids[id]={ledger:{},done:{}};if(!k.ledger)k.ledger={};if(!k.done)k.done={};return k}
+function slug(l){return String(l||'').split('.').pop()}
+function byPP(s){for(var i=0;i<P.length;i++)if(P[i].pp===s)return P[i];return null}
+function dayOf(ts){var d=new Date(ts*1000);return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2)}
+
+/* what an event is worth. Effort and good habits earn sparks; speed never does, and nothing is ever taken away. */
+function worth(k,evt){
+  var d=evt.data||{},l=slug(evt.lesson_id),lv=d.level==='B'?'B':'A',ts=Math.round(Date.parse(evt.ts)/1000)||Math.round(Date.now()/1000),it=String(d.item||d.activity||'').slice(0,40),u=String(d.unit||'').slice(0,14),id=l+'|'+lv+'|'+u;
+  switch(evt.event){
+    case 'prediction_made':return['pred|'+id+'|'+it,1,'pred',ts];
+    case 'activity_completed':return d.repeat?['rep|'+id+'|'+it+'|'+dayOf(ts),1,'rep',ts]:['act|'+id+'|'+it,2,'act',ts];
+    case 'hint_used':return['help|'+id+'|'+it,1,'help',ts];
+    case 'answer_checked':return(d.correct&&d.attempt>1)?['retry|'+id+'|'+it,2,'retry',ts]:null;
+    case 'gate_passed':return['gate|'+id,5,'gate',ts];
+    case 'unit_completed':{var u=k.ledger['unit|'+id];if(!u)return['unit|'+id,10,'unit',ts];if(u[1]===ts)return null;return['rep|'+id+'|'+dayOf(ts),3,'rep',ts]}
+    case 'session_end':{var sec=Math.max(0,Math.min(1800,+d.seconds||0));return sec?['time|'+String(evt.session).slice(0,12)+'|'+ts,0,'time',ts,sec]:null}
+  }
+  return null}
+var dirty=false;
+function award(profile,evt){
+  if(!avOf(profile)||!evt||evt.schema!==1||typeof evt.event!=='string')return 0;
+  var k=kid(profile),w=worth(k,evt);if(!w||k.ledger[w[0]])return 0;
+  k.ledger[w[0]]=[w[1],w[3],w[2],slug(evt.lesson_id),w[4]||0];dirty=true;if(connected())sy.unsent[profile+'|'+w[0]]=1;return w[1]}
+
+function derive(id){
+  var k=st.kids[id]||{ledger:{}},o={sparks:0,ideas:{},days:{},cnt:{pred:0,act:0,help:0,retry:0,gate:0,unit:0,rep:0},secs:0,last:0,topics:{}},key,e,p;
+  for(key in k.ledger){e=k.ledger[key];o.sparks+=e[0];o.cnt[e[2]]=(o.cnt[e[2]]||0)+1;o.days[dayOf(e[1])]=1;if(e[1]>o.last)o.last=e[1];if(e[2]==='time')o.secs+=e[4]||0;
+    if(e[2]==='unit'){if(!o.ideas[e[3]]||o.ideas[e[3]]>e[1])o.ideas[e[3]]=e[1];p=byPP(e[3]);if(p&&p.topic)o.topics[p.topic]=1}}
+  o.nIdeas=Object.keys(o.ideas).length;o.nDays=Object.keys(o.days).length;o.nTopics=Object.keys(o.topics).length;
+  o.level=LEVELS[0];for(var i=0;i<LEVELS.length;i++)if(o.nIdeas>=LEVELS[i].at)o.level=LEVELS[i];
+  o.next=LEVELS[o.level.n]||null;o.badges=BADGES.filter(function(b){return b.ok(o)});return o}
+
+/* ---------- family sync: the grown-up's own private Google Sheet ----------
+   Off unless a grown-up pastes the sheet's web address and secret on the Grown-ups page of THIS device. They are kept in a separate
+   key (never in a save code, never in the site's code). Rows only ever get added, so merging two devices is just adding what is missing. */
+var SK='fmt_sync_v1',sy=(function(){try{var s=JSON.parse(ls(SK));if(s&&typeof s==='object')return s}catch(e){}return{}})();
+if(!sy.unsent||typeof sy.unsent!=='object')sy.unsent={};
+function ssave(){ls(SK,JSON.stringify(sy))}
+function connected(){return !!(sy.url&&sy.token)}
+function dev(){if(!sy.dev){sy.dev='d'+Math.random().toString(36).slice(2,8);ssave()}return sy.dev}
+var LABEL={pred:'Made a prediction',act:'Finished an activity',help:'Asked for a hint',retry:'Tried again and got it',gate:'Passed the warm-up',unit:'Finished the lesson',rep:'Practised again',time:'Time spent (seconds)'};
+function okUrl(u){try{var x=new URL(u);return(x.protocol==='https:'&&/(^|\.)google\.com$/.test(x.hostname)&&x.pathname.indexOf('/macros/')===0)||(x.protocol==='http:'&&(x.hostname==='localhost'||x.hostname==='127.0.0.1'))}catch(e){return false}}
+var pushT=null,busy=null;
+function schedPush(){if(!connected())return;clearTimeout(pushT);pushT=setTimeout(function(){sync().catch(function(){})},2500)}
+function post(body){body.token=sy.token;
+  return fetch(sy.url,{method:'POST',body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(j){if(!j||!j.ok)throw new Error((j&&j.error)||'The sheet did not accept that');return j})}
+function titleOf(slugName){var p=byPP(slugName);return p?p.title:slugName}
+function sync(){
+  if(!connected())return Promise.resolve(0);if(busy)return busy;
+  var keys=Object.keys(sy.unsent).slice(0,400),rows=[];
+  keys.forEach(function(uk){var i=uk.indexOf('|'),kidId=uk.slice(0,i),key=uk.slice(i+1),e=((st.kids[kidId]||{}).ledger||{})[key];if(e)rows.push([key,kidId,e[0],new Date(e[1]*1000).toISOString(),e[2],LABEL[e[2]]||e[2],e[3],titleOf(e[3]),e[4]||0])});
+  busy=post({action:'sync',device:dev(),rows:rows,after:sy.cursor||1,meta:{rewards:st.rewards,at:st.rewardsAt||0}}).then(function(j){
+    keys.forEach(function(k){delete sy.unsent[k]});var add=0;
+    (j.rows||[]).forEach(function(r){var kidId=r[1];if(!avOf(kidId))return;var k=kid(kidId),ts=Math.round(Date.parse(r[3])/1000);if(!ts||k.ledger[r[0]]||String(r[0]).length>120)return;if(sy.tomb&&sy.tomb[kidId]&&ts<=sy.tomb[kidId])return;
+      k.ledger[r[0]]=[+r[2]||0,ts,String(r[4]).slice(0,8),String(r[5]).slice(0,60),+r[6]||0];add++});
+    if(j.next)sy.cursor=j.next;
+    if(j.meta&&j.meta.at>(st.rewardsAt||0)&&j.meta.rewards&&typeof j.meta.rewards==='object'){st.rewards={};Object.keys(j.meta.rewards).forEach(function(n){if(typeof j.meta.rewards[n]==='string')st.rewards[n]=j.meta.rewards[n].slice(0,80)});st.rewardsAt=j.meta.at}
+    sy.last=Date.now();sy.err='';ssave();if(add)save();chip();busy=null;
+    if(Object.keys(sy.unsent).length&&keys.length>=400)return sync().then(function(n){return add+n});return add
+  }).catch(function(e){busy=null;sy.err=(e&&e.message)||'Offline';ssave();throw e});
+  return busy}
+function connect(url,token){
+  url=String(url||'').trim();token=String(token||'').trim();
+  if(!okUrl(url))return Promise.reject(new Error('That does not look like your sheet\'s web address. It should start with https:// and end with /exec.'));
+  if(token.length<20)return Promise.reject(new Error('The secret looks too short. Copy the whole thing.'));
+  var old={url:sy.url,token:sy.token};sy.url=url;sy.token=token;
+  return post({action:'ping'}).then(function(){
+    Object.keys(st.kids).forEach(function(id){Object.keys(st.kids[id].ledger||{}).forEach(function(key){sy.unsent[id+'|'+key]=1})});sy.cursor=1;ssave();return sync().then(function(n){if(n)celebrated();return n})
+  }).catch(function(e){sy.url=old.url;sy.token=old.token;ssave();throw e})}
+function celebrated(){   /* progress that arrived from another device was already celebrated there */
+  Object.keys(st.kids).forEach(function(id){var d=derive(id),k=kid(id);LEVELS.forEach(function(L){if(d.level.n>=L.n)k.done['L'+L.n]=1});d.badges.forEach(function(x){k.done['B'+x.id]=1})});save()}
+function disconnect(){delete sy.url;delete sy.token;sy.unsent={};sy.cursor=1;sy.err='';ssave()}
+
+/* ---------- getting events in ---------- */
+function ingestQueue(){
+  var q;try{q=JSON.parse(ls('lp_events_v1')||'[]')}catch(e){q=[]}if(!Array.isArray(q))return 0;
+  var anon={};AV.forEach(function(a){var v=ls('lp_profile_v1:'+a.id);if(v)anon[v]=a.id});   /* tests made before the passport existed */
+  var n=0;q.forEach(function(ev){var who=ev&&ev.profile;if(avOf(who))n+=award(who,ev);else if(anon[who])n+=award(anon[who],ev)});
+  if(dirty){dirty=false;save();ssave();schedPush()}return n}
+function adoptOldSaves(){   /* a child's earlier lesson progress (saved under the old animal slot) moves to the passport profile */
+  try{var keys=[];for(var i=0;i<localStorage.length;i++)keys.push(localStorage.key(i));
+    keys.forEach(function(k){var m=/^(fmlos\.sample\..+)\.(lion|fox|panda|owl)\.v1$/.exec(k);if(m&&ls(m[1]+'.h_'+m[2]+'.v1')===null)ls(m[1]+'.h_'+m[2]+'.v1',ls(k))})}catch(e){}}
+window.addEventListener('message',function(e){
+  if(e.origin!==location.origin||!e.data||e.data.type!=='learning-event')return;
+  award(e.data.event&&e.data.event.profile,e.data.event);if(dirty){dirty=false;save();ssave();schedPush();chip()}});
+
+/* ---------- small helpers for the page ---------- */
+function who(){return st.who&&avOf(st.who)?st.who:null}
+function chip(){var c=document.getElementById('meBtn');if(!c)return;var w=who(),a=w&&avOf(w);c.textContent='';
+  c.appendChild(E('span','mav',a?a.e:'🎒'));var t=E('span','mtx',a?String(derive(w).sparks)+' ✨':'My Passport');c.appendChild(t)}
+function snapshot(){var w=who();return w?{id:w,sparks:derive(w).sparks}:null}
+function ctx(){var w=who(),extra='&profile='+encodeURIComponent(w||'guest')+(location.origin&&location.origin!=='null'?'&host='+encodeURIComponent(location.origin):'');
+  return extra.slice(1)}   /* the lessons read ?profile= and ?host= */
+function counts(p){return !!(p&&p.pp)}   /* only the lessons and games that report learning events count so far */
+
+/* ---------- pop-ups ---------- */
+function modal(build,onClose){
+  var old=document.getElementById('pp-pop');if(old)old.remove();
+  var ov=E('div','pp-pop');ov.id='pp-pop';ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+  var box=E('div','pp-box');build(box,function(){ov.remove();if(onClose)onClose()});ov.appendChild(box);document.body.appendChild(ov);
+  var f=box.querySelector('button');if(f)f.focus();return ov}
+function pick(done){
+  modal(function(box,close){
+    box.appendChild(E('h2',null,"Who's playing?"));box.appendChild(E('p','pp-s','Pick your animal. Your lessons, sparks and badges will be yours.'));
+    var g=E('div','pp-avs');
+    AV.forEach(function(a){var d=derive(a.id),b=E('button','pp-av');b.type='button';b.appendChild(E('span','e',a.e));b.appendChild(E('b',null,a.n));b.appendChild(E('span','s',st.kids[a.id]?(d.nIdeas+(d.nIdeas===1?' idea · ':' ideas · ')+d.sparks+' ✨'):'New!'));
+      b.onclick=function(){st.who=a.id;kid(a.id);save();chip();close();if(done)done(a.id)};g.appendChild(b)});
+    box.appendChild(g);
+    var lk=E('button','pp-link','Just looking (nothing will be saved)');lk.type='button';lk.onclick=function(){st.who=null;save();chip();close();if(done)done(null)};box.appendChild(lk)})}
+function recap(before,after){   /* shown when a lesson window closes */
+  var w=who();if(!w)return;var d=derive(w),k=kid(w),gain=before&&before.id===w?d.sparks-before.sparks:0,items=[];
+  LEVELS.forEach(function(L){if(L.n>1&&d.level.n>=L.n&&!k.done['L'+L.n])items.push({t:'level',L:L})});
+  d.badges.forEach(function(b){if(!k.done['B'+b.id])items.push({t:'badge',b:b})});
+  if(gain<=0&&!items.length){if(after)after();return}
+  var a=avOf(w);
+  modal(function(box,close){
+    box.appendChild(E('div','pp-big',a.e));
+    if(gain>0)box.appendChild(E('h2',null,'+'+gain+' sparks! ✨'));
+    box.appendChild(E('p','pp-s',d.sparks+' sparks in all · '+d.nIdeas+(d.nIdeas===1?' idea':' ideas')+' learned'));
+    items.forEach(function(it){var c=E('div','pp-win');
+      if(it.t==='level'){c.appendChild(E('div','e','🎉'));var t=E('div');t.appendChild(E('b',null,'Level '+it.L.n+': '+it.L.name+'!'));var r=st.rewards[it.L.n];if(r)t.appendChild(E('div','rw','🎁 '+r));c.appendChild(t);k.done['L'+it.L.n]=1}
+      else{c.appendChild(E('div','e',it.b.e));var t2=E('div');t2.appendChild(E('b',null,'New badge: '+it.b.name));t2.appendChild(E('div','rw',it.b.how));c.appendChild(t2);k.done['B'+it.b.id]=1}
+      box.appendChild(c)});
+    save();var go=E('button','btn main','Awesome!');go.type='button';go.onclick=close;box.appendChild(go);
+    var pp=E('button','pp-link','See my passport');pp.type='button';pp.onclick=function(){close();location.hash='#/me'};box.appendChild(pp)},after)}
+
+/* ---------- the passport page ---------- */
+function bar(frac){var b=E('div','pp-bar'),i=E('i');i.style.width=Math.round(Math.max(0,Math.min(1,frac))*100)+'%';b.appendChild(i);return b}
+function view(sub){
+  if(sub==='grownups')return grownups();
+  var w=who();app.innerHTML='';
+  if(!w){var box=E('div','wrap pp-page');box.appendChild(E('h1',null,'My Passport'));box.appendChild(E('p','lead','Pick your animal to start collecting sparks, badges and stamps.'));var b=E('button','btn main','Choose my animal');b.type='button';b.onclick=function(){pick(function(id){if(id)view();else location.hash=''})};box.appendChild(b);app.appendChild(box);return}
+  var a=avOf(w),d=derive(w),wrapEl=E('div','wrap pp-page c-orange');
+  var head=E('div','pp-head');head.appendChild(E('div','pp-me',a.e));var ht=E('div','pp-ht');ht.appendChild(E('h1',null,'My Passport'));ht.appendChild(E('div','pp-lv','Level '+d.level.n+' · '+d.level.name));
+  var go=d.next;if(go){ht.appendChild(bar((d.nIdeas-d.level.at)/(go.at-d.level.at)));var need=go.at-d.nIdeas;ht.appendChild(E('div','pp-s','Learn '+need+(need===1?' more idea':' more ideas')+' to reach Level '+go.n+': '+go.name));var rw=st.rewards[go.n];if(rw)ht.appendChild(E('div','pp-gift','🎁 Next reward: '+rw))}else ht.appendChild(E('div','pp-s','You reached the top level!'));
+  head.appendChild(ht);wrapEl.appendChild(head);
+  var stats=E('div','pp-stats');[['✨',d.sparks,'sparks'],['💡',d.nIdeas,d.nIdeas===1?'idea learned':'ideas learned'],['📅',d.nDays,d.nDays===1?'day of thinking':'days of thinking']].forEach(function(x){var s=E('div','pp-stat');s.appendChild(E('div','e',x[0]));s.appendChild(E('b',null,String(x[1])));s.appendChild(E('span',null,x[2]));stats.appendChild(s)});wrapEl.appendChild(stats);
+  var sw=E('button','pp-link','Not '+a.n+'? Switch player');sw.type='button';sw.onclick=function(){pick(function(){view()})};wrapEl.appendChild(sw);
+  wrapEl.appendChild(E('h2','pp-h','My badges'));var bg=E('div','pp-badges');var have={};d.badges.forEach(function(b){have[b.id]=1});
+  BADGES.forEach(function(b){var c=E('div','pp-badge'+(have[b.id]?' on':''));c.appendChild(E('div','e',have[b.id]?b.e:'🔒'));c.appendChild(E('b',null,b.name));c.appendChild(E('span',null,b.how));bg.appendChild(c)});wrapEl.appendChild(bg);
+  wrapEl.appendChild(E('h2','pp-h','My stamps'));wrapEl.appendChild(E('p','lead','Finish a lesson to earn its stamp.'));
+  S.subjects.forEach(function(s){var list=P.filter(function(p){return p.subject===s.id&&counts(p)&&p.kind==='lesson'});if(!list.length)return;
+    var sec=E('div','c-'+s.color);sec.appendChild(E('div','topic',s.emoji+' '+s.name));var g=E('div','pp-stamps');
+    list.forEach(function(p){var got=d.ideas[p.pp],t=E('button','pp-stamp'+(got?' on':''));t.type='button';t.appendChild(E('div','e',got?'✅':(p.emoji||s.emoji)));t.appendChild(E('b',null,p.title));t.appendChild(E('span',null,got?dayOf(got):'Not yet'));t.onclick=function(){openLesson(p)};g.appendChild(t)});
+    sec.appendChild(g);wrapEl.appendChild(sec)});
+  var gu=E('a','btn ghost','👪 Grown-ups: rewards and save code');gu.href='#/me/grownups';gu.style.marginTop='26px';wrapEl.appendChild(gu);
+  app.appendChild(wrapEl)}
+
+/* ---------- grown-ups corner ---------- */
+var unlocked=false;
+function ago(ts){if(!ts)return 'never';var m=Math.round((Date.now()/1000-ts)/60);if(m<2)return 'just now';if(m<120)return m+' min ago';var h=Math.round(m/60);if(h<48)return h+' hours ago';return Math.round(h/24)+' days ago'}
+function grownups(){
+  app.innerHTML='';var w=E('div','wrap pp-page c-blue');var cr=E('div','crumb');var bk=E('button','back','← My Passport');bk.type='button';bk.onclick=function(){location.hash='#/me'};cr.appendChild(bk);w.appendChild(cr);
+  w.appendChild(E('h1',null,'Grown-ups'));
+  if(!unlocked){var A=11+Math.floor(Math.random()*9),B=4+Math.floor(Math.random()*5);
+    w.appendChild(E('p','lead','A quick check that a grown-up is here. What is '+A+' × '+B+'?'));var inp=E('input');inp.type='text';inp.inputMode='numeric';inp.className='pp-in';inp.setAttribute('aria-label','Answer');
+    var go=E('button','btn c','Open');go.type='button';var msg=E('p','pp-s');var tryIt=function(){if(String(inp.value).trim()===String(A*B)){unlocked=true;grownups()}else{msg.textContent='Not quite. Try again.'}};go.onclick=tryIt;inp.onkeydown=function(e){if(e.key==='Enter')tryIt()};
+    var row=E('div','pp-row');row.appendChild(inp);row.appendChild(go);w.appendChild(row);w.appendChild(msg);app.appendChild(w);return}
+  w.appendChild(E('p','lead','This page stays on this device. Nothing here is sent anywhere.'));
+  /* children */
+  w.appendChild(E('h2','pp-h','Progress'));var ids=Object.keys(st.kids).filter(avOf);
+  if(!ids.length)w.appendChild(E('p',null,'No child has played with a passport yet.'));
+  ids.forEach(function(id){var a=avOf(id),d=derive(id),c=E('div','pp-kid');c.appendChild(E('div','pp-me sm',a.e));var t=E('div','pp-kt');t.appendChild(E('b',null,a.n+' · Level '+d.level.n+' '+d.level.name));
+    t.appendChild(E('span',null,d.sparks+' sparks · '+d.nIdeas+(d.nIdeas===1?' idea · ':' ideas · ')+d.nDays+(d.nDays===1?' day · ':' days · ')+'about '+Math.round(d.secs/60)+' min of thinking · last played '+ago(d.last)));
+    var lg=E('details');lg.appendChild(E('summary',null,'Recent activity'));var ul=E('ul');var rows=[],k=st.kids[id];for(var key in k.ledger){if(k.ledger[key][2]!=='time')rows.push(k.ledger[key])}rows.sort(function(x,y){return y[1]-x[1]});
+    var names={pred:'Made a prediction',act:'Finished an activity',help:'Asked for a hint',retry:'Tried again and got it',gate:'Passed the warm-up',unit:'Finished the lesson',rep:'Practised the lesson again'};
+    rows.slice(0,15).forEach(function(r){var p=byPP(r[3]);ul.appendChild(E('li',null,dayOf(r[1])+' · '+(names[r[2]]||r[2])+' · '+(p?p.title:r[3])+(r[0]?' (+'+r[0]+')':'')))});if(!rows.length)ul.appendChild(E('li',null,'Nothing yet.'));lg.appendChild(ul);t.appendChild(lg);c.appendChild(t);
+    var rs=E('button','pp-link','Start '+a.n+' over');rs.type='button';rs.onclick=function(){if(confirm('Erase every spark, badge and stamp for '+a.n+' on this device? This cannot be undone.\n\nIf family sync is on, your Google Sheet keeps its old rows. Delete them there too if you want them gone.\n\nMake a save code first if you might want it back.')){delete st.kids[id];sy.tomb=sy.tomb||{};sy.tomb[id]=Math.round(Date.now()/1000);Object.keys(sy.unsent).forEach(function(u){if(u.indexOf(id+'|')===0)delete sy.unsent[u]});ssave();if(st.who===id)st.who=null;save();chip();grownups()}};c.appendChild(rs);w.appendChild(c)});
+  /* rewards */
+  w.appendChild(E('h2','pp-h','Real-life rewards'));w.appendChild(E('p','lead','Type a reward for each level, for example "Pick the Friday movie". The child sees it when they reach that level. Leave it empty for no reward.'));
+  var rl=E('div','pp-rw');LEVELS.slice(1).forEach(function(L){var r=E('label','pp-rwr');r.appendChild(E('span',null,'Level '+L.n+' · '+L.name+' ('+L.at+' ideas)'));var i=E('input');i.type='text';i.maxLength=80;i.className='pp-in wide';i.value=st.rewards[L.n]||'';i.onchange=function(){var v=i.value.trim();if(v)st.rewards[L.n]=v;else delete st.rewards[L.n];st.rewardsAt=Date.now();save();schedPush()};r.appendChild(i);rl.appendChild(r)});w.appendChild(rl);
+  /* family sync */
+  w.appendChild(E('h2','pp-h','Family sync (your private Google Sheet)'));
+  var sbox=E('div','pp-kid');var sc=E('div','pp-kt');sbox.appendChild(sc);w.appendChild(sbox);
+  function paintSync(){sc.innerHTML='';
+    if(connected()){var n=Object.keys(sy.unsent).length;
+      sc.appendChild(E('b',null,'Connected'));sc.appendChild(E('span',null,'Last synced: '+(sy.last?ago(sy.last/1000):'not yet')+' · waiting to send: '+n+(sy.err?' · last problem: '+sy.err:'')));
+      var r=E('div','pp-row');var go=E('button','btn c','Sync now');go.type='button';var ds=E('button','btn ghost','Disconnect');ds.type='button';
+      go.onclick=function(){go.disabled=true;sync().then(function(a){go.disabled=false;paintSync();sm.textContent='Synced. '+a+' new records came from other devices.'}).catch(function(e){go.disabled=false;paintSync();sm.textContent='Could not sync: '+e.message})};
+      ds.onclick=function(){if(confirm('Stop syncing on this device? Your sheet and your progress are kept.')){disconnect();paintSync()}};
+      r.appendChild(go);r.appendChild(ds);sc.appendChild(r)}
+    else{sc.appendChild(E('b',null,'Not connected'));sc.appendChild(E('span',null,'Optional. Every spark is added to a Google Sheet that only you can open, and every device you connect shows the same progress. Setup steps are in the Workbench note for the family sync.'));
+      var u=E('input');u.type='text';u.className='pp-in wide';u.placeholder='Sheet web address (ends with /exec)';u.setAttribute('aria-label','Sheet web address');u.autocomplete='off';
+      var t=E('input');t.type='password';t.className='pp-in wide';t.placeholder='Secret';t.setAttribute('aria-label','Secret');t.autocomplete='off';t.style.marginTop='8px';
+      var go2=E('button','btn c','Connect');go2.type='button';go2.style.marginTop='8px';
+      go2.onclick=function(){go2.disabled=true;sm.textContent='Connecting…';connect(u.value,t.value).then(function(a){sm.textContent='Connected. '+a+' records came from the sheet.';paintSync()}).catch(function(e){go2.disabled=false;sm.textContent=e.message})};
+      sc.appendChild(u);sc.appendChild(t);sc.appendChild(go2)}}
+  var sm=E('p','pp-s');sm.setAttribute('role','status');paintSync();w.appendChild(sm);
+  /* save code */
+  w.appendChild(E('h2','pp-h','Save and move progress'));
+  var days=st.backedUp?Math.round((Date.now()-st.backedUp)/864e5):null;
+  w.appendChild(E('p','lead','A save code holds every child\'s sparks, badges, stamps and lessons in progress. Paste it into the Grown-ups page on another iPad or computer to bring everything over. Do this now and then as a backup, too: Safari can clear a website\'s data if it is not opened for a week. Adding this site to the Home Screen avoids that.'));
+  w.appendChild(E('p','pp-s',st.backedUp?('Last save code made '+(days===0?'today':days+' days ago')+'.'):'You have not made a save code yet.'));
+  var ta=E('textarea','pp-ta');ta.rows=4;ta.placeholder='Your save code appears here. To load one, paste it here and press "Load this code".';ta.setAttribute('aria-label','Save code');
+  var r1=E('div','pp-row');
+  var mk=E('button','btn c','Make a save code');mk.type='button';mk.onclick=function(){encode(bundle()).then(function(code){ta.value=code;st.backedUp=Date.now();save();ta.select();var ok=function(){note.textContent='Save code made ('+Math.round(code.length/1024)+' KB). Copied. Keep it somewhere safe, like a note to yourself.'};
+    if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code).then(ok,function(){note.textContent='Save code made. Press and hold the text above, then Copy.'});else note.textContent='Save code made. Select the text above and copy it.'}).catch(function(e){note.textContent='Could not make a code: '+e.message})};
+  var fl=E('button','btn ghost','Save as a file');fl.type='button';fl.onclick=function(){encode(bundle()).then(function(code){st.backedUp=Date.now();save();var a=E('a');a.href=URL.createObjectURL(new Blob([code],{type:'text/plain'}));a.download='five-minute-thinkers-save.txt';document.body.appendChild(a);a.click();a.remove();note.textContent='Saved as a file.'})};
+  r1.appendChild(mk);r1.appendChild(fl);
+  var r2=E('div','pp-row');var ld=E('button','btn c','Load this code');ld.type='button';ld.onclick=function(){loadCode(ta.value,note)};
+  var ff=E('label','btn ghost','Load from a file');var fi=E('input');fi.type='file';fi.accept='.txt,text/plain';fi.style.display='none';fi.onchange=function(){var f=fi.files&&fi.files[0];if(!f)return;var rd=new FileReader();rd.onload=function(){loadCode(String(rd.result),note)};rd.readAsText(f)};ff.appendChild(fi);r2.appendChild(ld);r2.appendChild(ff);
+  var note=E('p','pp-s');note.setAttribute('role','status');
+  w.appendChild(ta);w.appendChild(r1);w.appendChild(r2);w.appendChild(note);
+  app.appendChild(w)}
+
+/* ---------- save codes ---------- */
+function bundle(){var saves={};try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(/^fmlos\.sample\..+\.h_[a-z]+\.v1$/.test(k)||/^rnk_state:[a-z]+$/.test(k)||k==='mathfacts_progress_v1')saves[k]=localStorage.getItem(k)}}catch(e){}
+  return{fmt:'FMT-SAVE',v:1,at:Date.now(),passport:{kids:st.kids,rewards:st.rewards},saves:saves}}
+function b64u(buf){var s='',b=new Uint8Array(buf);for(var i=0;i<b.length;i+=0x8000)s+=String.fromCharCode.apply(null,b.subarray(i,i+0x8000));return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'')}
+function unb64u(t){t=t.replace(/-/g,'+').replace(/_/g,'/');while(t.length%4)t+='=';var s=atob(t),b=new Uint8Array(s.length);for(var i=0;i<s.length;i++)b[i]=s.charCodeAt(i);return b}
+function pipe(bytes,Ctor){return new Response(new Blob([bytes]).stream().pipeThrough(new Ctor('deflate'))).arrayBuffer()}
+function encode(o){var json=new TextEncoder().encode(JSON.stringify(o));
+  if(window.CompressionStream)return pipe(json,CompressionStream).then(function(b){return 'FMT1.'+b64u(b)});
+  return Promise.resolve('FMT0.'+b64u(json))}
+function decode(code){var m=/^FMT([01])\.([A-Za-z0-9_-]+)$/.exec(String(code).replace(/\s+/g,''));
+  if(!m)return Promise.reject(new Error('That does not look like a save code.'));
+  var b=unb64u(m[2]);if(m[1]==='1'&&!window.DecompressionStream)return Promise.reject(new Error('This browser is too old to read this code. Update it, or open the code on a newer device.'));
+  return(m[1]==='1'?pipe(b,DecompressionStream):Promise.resolve(b.buffer)).then(function(buf){return JSON.parse(new TextDecoder().decode(buf))})}
+function loadCode(text,note){
+  decode(text).then(function(o){
+    if(!o||o.fmt!=='FMT-SAVE'||!o.passport||typeof o.passport.kids!=='object')throw new Error('That code is not a Five-Minute Thinkers save.');
+    var added=0,kids=0;
+    Object.keys(o.passport.kids).forEach(function(id){if(!avOf(id))return;var src=o.passport.kids[id],k=kid(id);kids++;
+      Object.keys(src.ledger||{}).forEach(function(key){var e=src.ledger[key];if(!Array.isArray(e)||e.length<4||typeof e[0]!=='number'||typeof e[1]!=='number'||typeof key!=='string'||key.length>120)return;if(!k.ledger[key]){k.ledger[key]=[e[0],e[1],String(e[2]).slice(0,8),String(e[3]).slice(0,60),+e[4]||0];added++}});
+      Object.keys(src.done||{}).forEach(function(f){if(f.length<16)k.done[f]=1})});
+    var rw=o.passport.rewards||{};Object.keys(rw).forEach(function(n){if(!st.rewards[n]&&typeof rw[n]==='string')st.rewards[n]=rw[n].slice(0,80)});
+    var fresh=0;Object.keys(o.saves||{}).forEach(function(k){if(/^fmlos\.sample\..+\.h_[a-z]+\.v1$/.test(k)||/^rnk_state:[a-z]+$/.test(k)||k==='mathfacts_progress_v1'){if(ls(k)===null&&typeof o.saves[k]==='string'){ls(k,o.saves[k]);fresh++}}});
+    save();chip();note.textContent='Loaded: '+kids+(kids===1?' child':' children')+', '+added+' new records, '+fresh+' lessons in progress. Everything already on this device was kept.';
+    var d0=who();if(!d0){var ids=Object.keys(st.kids).filter(avOf);if(ids.length===1){st.who=ids[0];save();chip()}}
+  }).catch(function(e){note.textContent='Could not load that: '+e.message})}
+
+/* ---------- start ---------- */
+adoptOldSaves();ingestQueue();
+if(connected())sync().then(chip).catch(function(){});
+document.addEventListener('visibilitychange',function(){if(document.hidden)return;ingestQueue();chip();if(connected())sync().then(chip).catch(function(){})});
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist()}catch(e){}
+return{view:view,pick:pick,who:who,chip:chip,ctx:ctx,counts:counts,snapshot:snapshot,recap:recap,ingest:ingestQueue,save:save}
+})();
+
+document.getElementById('logo').onclick=function(){if(location.hash)location.hash='';else{route()}};
+[].forEach.call(document.querySelectorAll('[data-go]'),function(a){a.onclick=function(){var t=a.getAttribute('data-go');if(t==='watch'||t==='all'){location.hash='#/'+t;return}
+  if(!location.hash||location.hash==='#'){var el=document.getElementById(t);if(el)el.scrollIntoView()}else{location.hash='#/'+t}}});
+window.addEventListener('hashchange',route);
+PP.chip();
+route();
+</script>
+</body>
+</html>
