@@ -477,10 +477,10 @@ const UI = {
 /* P10 — plain-language descriptions of every visual for a screen reader. They report
    what is currently on screen and never state the answer the child still owes. */
 const VISUAL = {
-  hookClosed:{zh:"两包零食的图片并排放着：薯片和坚果，营养标签还没有对比出来。",
-    en:"Two snack packages side by side: chips and nuts. Their nutrition labels have not been compared yet."},
-  hookOpen:{zh:"两张营养标签并排放着。薯片这一张上有一个“无反式脂肪”的小牌子。两张都写着每份总脂肪 14 克。",
-    en:"Two nutrition labels side by side. The chips' label carries a “0g trans fat” badge. Both list Total Fat 14g per serving."},
+  hookClosed:{zh:"两包零食的图片并排放着：黄油饼干和坚果，营养标签还没有对比出来。",
+    en:"Two snack packages side by side: butter cookies and nuts. Their nutrition labels have not been compared yet."},
+  hookOpen:{zh:"两张营养标签并排放着。黄油饼干这一张上有一个“无反式脂肪”的小牌子。两张都写着每份总脂肪 14 克。",
+    en:"Two nutrition labels side by side. The butter cookies' label carries a “0g trans fat” badge. Both list Total Fat 14g per serving."},
   obsCard:{zh:"第 {n} 张卡片，一共 {total} 张，上面写着：{text}",en:"Card {n} of {total}. It reads: {text}"},
   modelIdle:{zh:"观察台上放着{food}，还没有开始观察，看不出它是硬块还是液体。",
     en:"{food} is on the observation table. The observation has not run yet, so you cannot tell yet whether it is solid or liquid."},
@@ -507,22 +507,23 @@ const SCENE_TIME = { hook:"0:00–0:30", observation:"0:30–1:15", model:"1:15�
 const SCENE_ORDER = ["hook","observation","model","compare","fairtest","transfer"];
 
 const HOOK = {
-  chipsName:{zh:"薯片",en:"Chips"}, nutsName:{zh:"坚果",en:"Nuts"},
+  chipsName:{zh:"黄油饼干",en:"Butter cookies"}, nutsName:{zh:"坚果",en:"Nuts"},
   totalFatLabel:{zh:"总脂肪",en:"Total Fat"}, grams:"14g",
-  servingNote:{zh:"每份（两包份量一样）",en:"per serving (same serving size)"},
+  servingNote:{zh:"每份（各按自己标签上的一份）",en:"per serving (each as printed on its own label)"},
   badge:{zh:"无反式脂肪！",en:"0g Trans Fat!"},
   intro:{ A:{zh:"这两包零食摆在一起，还没对比过。按“对比两张标签”，看看会发现什么。",en:"These two snacks are sitting side by side, not compared yet. Press “Compare the two labels” to see what turns up."},
-          B:{zh:"薯片的包装上印着一句很响亮的话。按“对比两张标签”，把两包的“总脂肪”一起亮出来看看。",en:"The chips' package has a loud claim printed on it. Press “Compare the two labels” to light up both “Total Fat” numbers at once."} },
+          B:{zh:"黄油饼干的包装上印着一句很响亮的话。按“对比两张标签”，把两包的“总脂肪”一起亮出来看看。",en:"The butter cookies' package has a loud claim printed on it. Press “Compare the two labels” to light up both “Total Fat” numbers at once."} },
+  exampleNote:{zh:"示例数字：为了讲清楚道理编出来的，真实的饼干和坚果因品牌而不同。",en:"Example numbers: made up to teach the idea. Real cookies and nuts differ by brand."},
   compareBtn:{zh:"对比两张标签",en:"Compare the two labels"}, againBtn:{zh:"再看一次",en:"Compare again"},
-  narrator:{ A:{zh:"两包零食每份写的总脂肪都是14克，一模一样！薯片上还写着“无反式脂肪”。它们对身体的影响也一样吗？",en:"Both snacks list the exact same Total Fat per serving: 14g! The chips also say “0g trans fat.” Do they affect your body the same way?"},
-             B:{zh:"薯片和坚果每份的总脂肪数字完全相同（份量也一样），薯片的包装上还多了一句“无反式脂肪”的广告语。这两包零食，对身体的影响真的一样吗？先猜一猜。",en:"The chips and the nuts list the exact same Total Fat per serving (and the serving sizes match), and the chips' package adds a “0g trans fat” claim on top. Do these two snacks really affect your body the same way? Predict first."} },
+  narrator:{ A:{zh:"两包零食每份写的总脂肪都是14克，一模一样！黄油饼干上还写着“无反式脂肪”。它们对身体的影响也一样吗？",en:"Both snacks list the exact same Total Fat per serving: 14g! The butter cookies also say “0g trans fat.” Do they affect your body the same way?"},
+             B:{zh:"黄油饼干和坚果每份的总脂肪数字完全相同（各按自己标签上的一份），黄油饼干的包装上还多了一句“无反式脂肪”的广告语。这两包零食，对身体的影响真的一样吗？先猜一猜。",en:"The butter cookies and the nuts list the exact same Total Fat per serving (each as printed on its own label), and the butter cookies' package adds a “0g trans fat” claim on top. Do these two snacks really affect your body the same way? Predict first."} },
   caption:{zh:"牛油果侦探也很好奇：同样的数字，是不是就代表同样健康？",en:"Avo the detective is curious too: does the same number mean the same healthiness?"},
   question:{zh:"你的第一个想法是：",en:"My first idea is:"},
   choices:[
     {id:"same-because-number", zh:"一样健康，因为总脂肪的数字相同", en:"Equally healthy — the total fat number is the same"},
     {id:"nuts-because-natural", zh:"坚果更健康，因为它是“天然”食物", en:"Nuts are healthier because they're a “natural” food"},
-    {id:"nuts-because-type", zh:"坚果更健康，因为它的脂肪大多是对身体更友好的“不饱和脂肪”，薯片的脂肪大多是要悠着点的“饱和脂肪”", en:"Nuts are healthier because most of their fat is the body-friendlier “unsaturated fat,” while most of the chips' fat is the go-easy “saturated fat”"},
-    {id:"chips-because-badge", zh:"薯片更健康，因为它写着“无反式脂肪”", en:"The chips are healthier because the package says “0g trans fat”"},
+    {id:"nuts-because-type", zh:"坚果更健康，因为它的脂肪大多是对身体更友好的“不饱和脂肪”，黄油饼干的脂肪大多是要悠着点的“饱和脂肪”", en:"Nuts are healthier because most of their fat is the body-friendlier “unsaturated fat,” while most of the butter cookies' fat is the go-easy “saturated fat”"},
+    {id:"chips-because-badge", zh:"黄油饼干更健康，因为它写着“无反式脂肪”", en:"The butter cookies are healthier because the package says “0g trans fat”"},
   ]
 };
 
@@ -531,15 +532,15 @@ const OBSERVATION = {
              B:{zh:"分类四张卡片。观察是标签上直接写着的；猜测是我们想的原因；有一张是“可能的解释”，还没有被证明。",en:"Sort four cards. An observation is directly on the label; a guess is a reason we imagine; one card is a possible explanation that isn't proven yet."} },
   buckets:{ observation:{zh:"观察",en:"Observation"}, guess:{zh:"猜测",en:"Guess"}, explanation:{zh:"可能的解释（还没证明）",en:"Possible explanation (not proven)"} },
   cards:[
-    {id:"chips-14g", kind:"observation", zh:"薯片的营养标签上写着每份总脂肪14克。", en:"The chips' label says Total Fat 14g per serving.",
+    {id:"chips-14g", kind:"observation", zh:"黄油饼干的营养标签上写着每份总脂肪14克。", en:"The butter cookies' label says Total Fat 14g per serving.",
       fbzh:"这是标签上直接写着的数字。这是观察。", fben:"That's a number the label directly states. That is an observation."},
     {id:"nuts-14g", kind:"observation", zh:"坚果的营养标签上也写着每份总脂肪14克。", en:"The nuts' label also says Total Fat 14g per serving.",
       fbzh:"这也是标签上直接写着的数字。这是观察。", fben:"This is also a number the label directly states. That is an observation."},
     {id:"nuts-guess", kind:"guess", zh:"我猜坚果里的脂肪对身体更好。", en:"I guess the fat in the nuts is better for the body.",
       fbzh:"这是我们心里的一个猜测，标签上还没证实。这是猜测。", fben:"That's a guess in our head — the label hasn't confirmed it yet. That is a guess."},
     {id:"type-explanation", kind:"explanation", levelBOnly:true,
-      zh:"因为坚果里的脂肪大多是不饱和脂肪，薯片里的脂肪大多是饱和脂肪，所以坚果的脂肪对身体更友好。",
-      en:"Because the nuts' fat is mostly unsaturated and the chips' fat is mostly saturated, the nuts' fat is friendlier to the body.",
+      zh:"因为坚果里的脂肪大多是不饱和脂肪，黄油饼干里的脂肪大多是饱和脂肪，所以坚果的脂肪对身体更友好。",
+      en:"Because the nuts' fat is mostly unsaturated and the butter cookies' fat is mostly saturated, the nuts' fat is friendlier to the body.",
       fbzh:"这句话用“种类不同”把猜测和证据连了起来，是一个可能的解释，但还需要看饱和脂肪那一行才能确认。",
       fben:"This links the guess to evidence with “the type differs” — it's a possible explanation, but it still needs the saturated-fat row to be confirmed."},
   ],
@@ -617,14 +618,14 @@ const FAIRTEST = {
         servingzh:"两份份量一样", serviceen:"Same serving size", checkedzh:"总脂肪和饱和脂肪都看了", checkeden:"Checked both Total Fat and Saturated Fat",
         whyzh:"份量一样，而且看了饱和脂肪那一行，比较才有意义。", whyen:"Same serving size, and the saturated-fat row was actually checked — the comparison means something."},
       {id:"diff-serving", fair:false, servingOk:false, checkedOk:false,
-        claimzh:"薯片一份的总脂肪，比坚果一大把的总脂肪少，所以薯片更健康。",
-        claimen:"The chips' one serving has less total fat than a big handful of nuts, so the chips are healthier.",
+        claimzh:"黄油饼干一份的总脂肪，比坚果一大把的总脂肪少，所以黄油饼干更健康。",
+        claimen:"The butter cookies' one serving has less total fat than a big handful of nuts, so the butter cookies are healthier.",
         servingNeutralzh:"一份 对 一大把", servingNeutralen:"One serving vs. a big handful",
         servingzh:"一份 vs 一大把，份量不一样", serviceen:"One serving vs. a big handful — different sizes", checkedzh:"只看了总脂肪", checkeden:"Only Total Fat was checked",
         whyzh:"份量不一样，数字大不一定是脂肪多，可能只是那份更大。", whyen:"The serving sizes differ — a bigger number might just mean a bigger portion, not more fat per bite."},
       {id:"badge-only", fair:false, servingOk:true, checkedOk:false,
-        claimzh:"薯片包装上写着“无反式脂肪”，所以薯片比坚果更健康。",
-        claimen:"The chips' package says “0g trans fat,” so the chips are healthier than the nuts.",
+        claimzh:"黄油饼干包装上写着“无反式脂肪”，所以黄油饼干比坚果更健康。",
+        claimen:"The butter cookies' package says “0g trans fat,” so the butter cookies are healthier than the nuts.",
         servingNeutralzh:"一份 对 一份", servingNeutralen:"One serving vs. one serving",
         servingzh:"两份份量一样", serviceen:"Same serving size", checkedzh:"只看了包装广告语，没看饱和脂肪那行", checkeden:"Only the front-of-package claim was checked — not the saturated-fat row",
         whyzh:"包装上的广告语只讲了一件事，饱和脂肪那一行还没看呢。", whyen:"The front-of-package claim only tells you one thing — the saturated-fat row still hasn't been checked."},
@@ -633,6 +634,7 @@ const FAIRTEST = {
   levelB:{
     colA:{zh:"候选表 A",en:"Candidate A"}, colB:{zh:"候选表 B",en:"Candidate B"},
     rowServing:{zh:"份量",en:"Serving size"}, rowTotal:{zh:"总脂肪（每份）",en:"Total Fat (per serving)"}, rowSat:{zh:"饱和脂肪（每份）",en:"Saturated Fat (per serving)"}, rowClaim:{zh:"包装广告语",en:"Front-of-package claim"},
+    exampleNote:{zh:"示例数字：这些候选表是编出来练习用的，不是真实产品。",en:"Example numbers: these candidate tables are made up for practice, not real products."},
     candidateLabel:{zh:"候选表 {n} / {total}",en:"Candidate table {n} of {total}"},
     seeAllFirst:{zh:"先把 {total} 张候选表都看一遍，还差 {left} 张。",en:"Look at all {total} candidate tables first — {left} still to go."},
     hint1:{zh:"先看看两份的份量是不是一样。",en:"First check whether the two serving sizes match."},
@@ -641,15 +643,15 @@ const FAIRTEST = {
     pickThis:{zh:"选这个作为公平比较",en:"Choose this as the fair comparison"}, picked:{zh:"已选这个",en:"Chosen"},
     options:[
       {id:"messy", correct:false,
-        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        a:{serving:"30g", total:"6g", sat:"3.5g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
         b:{serving:"100g", total:"40g", sat:"5g", claimzh:"“无添加糖”", claimen:"“no added sugar”"},
         whyzh:"份量不一样（30克 vs 100克），数字没法直接比。", whyen:"The serving sizes differ (30g vs. 100g) — the numbers can't be compared directly."},
       {id:"fair", correct:true,
-        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        a:{serving:"30g", total:"6g", sat:"3.5g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
         b:{serving:"30g", total:"14g", sat:"2g", claimzh:"（无广告语）", claimen:"(no claim printed)"},
         whyzh:"份量一样，而且饱和脂肪那一行都写清楚了，可以直接比较种类。", whyen:"Same serving size, and the Saturated Fat row is filled in for both — you can directly compare type."},
       {id:"badge-blind", correct:false,
-        a:{serving:"30g", total:"14g", sat:"9g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
+        a:{serving:"30g", total:"6g", sat:"3.5g", claimzh:"“无反式脂肪”", claimen:"“0g trans fat”"},
         b:{serving:"30g", total:"14g", sat:"未标注", claimzh:"“天然食品”", claimen:"“natural food”", satEn:"Not listed"},
         whyzh:"坚果这一份的“饱和脂肪”没有标出来，没法真的比较种类，只看广告语“天然”不够。", whyen:"This side's Saturated Fat isn't listed on the label, so you can't actually compare type — the “natural” claim on its own isn't enough."},
     ]
@@ -660,7 +662,8 @@ const TRANSFER = {
   narrator:{ A:{zh:"新情况：全脂牛奶和三文鱼的示例标签上，每份总脂肪都写着8克（各按自己标签上的一份）。选对的词卡，拼出一句解释。",en:"New situation: on the example labels for whole milk and salmon, Total Fat is 8g per serving (each by its own label’s serving). Pick the right chips and build one sentence explaining why."},
              B:{zh:"新情况：牛奶和三文鱼的示例标签上，每份总脂肪一样多，都是8克（各按自己标签上的一份）。先选出最好的证据，再用“因为……所以……”完成解释。",en:"New situation: on their example labels, milk and salmon have the same Total Fat per serving, 8g (each by its own label’s serving). First choose the best evidence, then finish the explanation with “because … so …”."} },
   milkName:{zh:"牛奶",en:"Milk"}, salmonName:{zh:"三文鱼",en:"Salmon"},
-  milkGoEasy:65, salmonGoEasy:14,
+  /* Saturated share of total fat, rounded from USDA FoodData Central (SR Legacy): whole milk 3.25% ~57%; salmon ~15-30% by species (farmed Atlantic ~19-23%). */
+  milkGoEasy:58, salmonGoEasy:20,
   /* P11 — display order only. `slot` still decides what is right, so the word chips
      are no longer sitting on screen in the order that answers the question. */
   aChips:[
@@ -862,9 +865,9 @@ function renderHook(){
   const chosen = r.hookPrediction;
   let left = visual(t(revealed? VISUAL.hookOpen : VISUAL.hookClosed),
     '<div class="label-pair">'+
-    labelCard(true, "🍟", t(HOOK.chipsName), revealed, t(HOOK.badge))+
+    labelCard(true, "🍪", t(HOOK.chipsName), revealed, t(HOOK.badge))+
     labelCard(false, "🥜", t(HOOK.nutsName), revealed, null)+
-    '</div>');
+    '</div><p class="caption">'+esc(t(HOOK.exampleNote))+'</p>');
   let right = narrator(esc(revealed? tl(HOOK.narrator) : tl(HOOK.intro)),
     revealed? '<p style="margin-top:8px;font-size:14px;font-weight:600;color:#1e5c93;">'+esc(t(HOOK.caption))+'</p>' : "");
   right += '<div>';
@@ -1196,7 +1199,7 @@ function renderFairB(){
     fairBRow(t(B.rowTotal), shown.a.total, shown.b.total)+
     fairBRow(t(B.rowSat), shown.a.sat, shown.b.satEn && STATE.lang==="en" ? shown.b.satEn : shown.b.sat)+
     fairBRow(t(B.rowClaim), t({zh:shown.a.claimzh,en:shown.a.claimen}), t({zh:shown.b.claimzh,en:shown.b.claimen}))+
-    '</tbody></table></div>'+
+    '</tbody></table></div><p class="caption">'+esc(t(B.exampleNote))+'</p>'+
     '<div class="choice-row" style="justify-content:center;margin-top:10px;">'+
     '<button type="button" class="ghost-btn" onclick="fairBStep(-1)">'+esc(t(UI.prevItem))+'</button>'+
     '<button type="button" class="ghost-btn" onclick="fairBStep(1)">'+esc(t(UI.nextItem))+'</button></div>';
