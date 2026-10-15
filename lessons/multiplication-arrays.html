@@ -378,6 +378,138 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   .fmp-row{margin:6px 0}
 }
 
+/* ======================================================================================================================
+   PHONE / TABLET LAYOUT (A81, 2026-10-12)
+   player.js sets  html[data-fmp-layout]  to one of
+     wide    >= 900 px landscape: the two-column stage defined above (nothing below changes it, except short windows, see the end)
+     split-v portrait (phones, iPad upright): the picture is pinned on top (scaled to fit), the question / feedback / buttons panel
+             scrolls on its own underneath and keeps the newest feedback and its button row in view
+     split-h landscape phone / small window (640-899 px): the same two columns as wide, picture left, panel right
+     stack   fallback for very small windows or a picture that cannot be fitted: the one-column page of before
+   ====================================================================================================================== */
+html[data-fmp-layout="split-v"] main.fmp-main,html[data-fmp-layout="split-h"] main.fmp-main{padding:6px 8px 8px}
+html[data-fmp-layout="split-v"] .fmp-grid{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);gap:8px;height:var(--stage-h,calc(100vh - 260px))}
+html[data-fmp-layout="split-h"] .fmp-grid{grid-template-columns:minmax(0,56fr) minmax(0,44fr);gap:10px;height:var(--stage-h,calc(100vh - 200px))}
+@supports (height:100dvh){
+  html[data-fmp-layout="split-v"] .fmp-grid{height:var(--stage-h,calc(100dvh - 260px))}
+  html[data-fmp-layout="split-h"] .fmp-grid{height:var(--stage-h,calc(100dvh - 200px))}
+}
+html[data-fmp-layout="split-v"] .fmp-left,html[data-fmp-layout="split-h"] .fmp-left,
+html[data-fmp-layout="split-v"] .fmp-right,html[data-fmp-layout="split-h"] .fmp-right{min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+html[data-fmp-layout="split-v"] .fmp-left{max-height:var(--pic-max,45%);padding:8px 8px;gap:6px}
+html[data-fmp-layout="split-h"] .fmp-left{max-height:100%;padding:8px 8px;gap:6px}
+html[data-fmp-layout="split-v"] .fmp-right,html[data-fmp-layout="split-h"] .fmp-right{max-height:100%;scroll-padding:8px;padding:10px 12px 12px}
+/* the step caption that "Show me" also writes under the picture is repeated in the panel's newest feedback: not needed while the panel is right there */
+html[data-fmp-layout="split-v"] .fmp-wkcap,html[data-fmp-layout="split-h"] .fmp-wkcap{display:none}
+html[data-fmp-layout="split-v"] .fmp-left > *,html[data-fmp-layout="split-h"] .fmp-left > *{flex-shrink:0}
+/* only the GRAPHIC parts of a picture are scaled to fit (player.js sets --fmp-fit); steppers, sliders, buttons and labels keep their real size,
+   so every tap target stays >= 44 px */
+html[data-fmp-layout="split-v"] .fmp-left .fm-pv-mat,html[data-fmp-layout="split-h"] .fmp-left .fm-pv-mat,
+html[data-fmp-layout="split-v"] .fmp-left .fm-ar-grid,html[data-fmp-layout="split-h"] .fmp-left .fm-ar-grid,
+html[data-fmp-layout="split-v"] .fmp-left .fm-ck-face,html[data-fmp-layout="split-h"] .fmp-left .fm-ck-face,
+html[data-fmp-layout="split-v"] .fmp-left .fm-dg-grid,html[data-fmp-layout="split-h"] .fmp-left .fm-dg-grid,
+html[data-fmp-layout="split-v"] .fmp-left .fm-cal-grid,html[data-fmp-layout="split-h"] .fmp-left .fm-cal-grid,
+html[data-fmp-layout="split-v"] .fmp-left .fm-coin-row,html[data-fmp-layout="split-h"] .fmp-left .fm-coin-row,
+html[data-fmp-layout="split-v"] .fmp-left .fmp-boxes,html[data-fmp-layout="split-h"] .fmp-left .fmp-boxes,
+html[data-fmp-layout="split-v"] .fmp-left > svg,html[data-fmp-layout="split-h"] .fmp-left > svg{zoom:var(--fmp-fit,1)}
+/* place-value blocks: the three columns sit side by side whenever they can (the old two-row wrap made them 2x as tall) */
+html[data-fmp-layout="split-v"] .fmp-left .fm-pv,html[data-fmp-layout="split-h"] .fmp-left .fm-pv{gap:6px}
+html[data-fmp-layout="split-v"] .fmp-left .fm-pv-col,html[data-fmp-layout="split-h"] .fmp-left .fm-pv-col{min-width:100px;padding:4px;gap:4px}
+html[data-fmp-layout="split-v"] .fmp-left .fm-pv-row,html[data-fmp-layout="split-h"] .fmp-left .fm-pv-row{gap:4px}
+/* fraction pair: the two bars (the thing being compared) come right under their name, the +/- rows after them, so a short pane cuts the controls, not the second bar */
+html[data-fmp-layout="split-v"] .fmp-left .fm-fp,html[data-fmp-layout="split-h"] .fmp-left .fm-fp{gap:8px}
+html[data-fmp-layout="split-v"] .fmp-left .fm-fp-sec,html[data-fmp-layout="split-h"] .fmp-left .fm-fp-sec{gap:4px}
+html[data-fmp-layout="split-v"] .fmp-left .fm-fp-bar,html[data-fmp-layout="split-h"] .fmp-left .fm-fp-bar{order:1}
+html[data-fmp-layout="split-v"] .fmp-left .fm-fp-steps,html[data-fmp-layout="split-h"] .fmp-left .fm-fp-steps{order:2;gap:4px 12px}
+/* a hint that a panel scrolls: soft shadows at the edge that still has more behind it */
+html[data-fmp-layout="split-v"] .fmp-right,html[data-fmp-layout="split-h"] .fmp-right,
+html[data-fmp-layout="split-v"] .fmp-left,html[data-fmp-layout="split-h"] .fmp-left{
+  background:
+    linear-gradient(var(--p-card) 30%,rgba(255,255,255,0)) 0 0/100% 28px no-repeat local,
+    linear-gradient(rgba(255,255,255,0),var(--p-card) 70%) 0 100%/100% 28px no-repeat local,
+    radial-gradient(farthest-side at 50% 0,rgba(31,42,68,.22),rgba(31,42,68,0)) 0 0/100% 10px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%,rgba(31,42,68,.22),rgba(31,42,68,0)) 0 100%/100% 10px no-repeat scroll;
+  background-color:var(--p-card)}
+/* answers sit two per row when they are short (halves the height of the answer list); a long answer still gets a full row */
+html[data-fmp-layout="split-v"] .fmp-choices,html[data-fmp-layout="split-h"] .fmp-choices{grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+/* stacked fallback: keyboard focus must not land under the fixed footer */
+html[data-fmp-layout="stack"]{scroll-padding-bottom:96px}
+
+/* Start page: the Start row stays on screen on every screen that is not the big landscape one (it sat 100-400 px below the fold on phones) */
+@media (min-width:320px) and (max-width:899px),(min-width:320px) and (orientation:portrait){
+  .fmp-start-act{position:sticky;bottom:0;z-index:10;background:var(--p-bg);padding:6px 0 10px;box-shadow:0 -10px 8px -6px var(--p-bg)}
+  html{scroll-padding-bottom:96px}
+}
+
+/* ---- compact tiers: phones upright (narrow) and any short window. Wide windows >= 600 px high are NOT touched. ---- */
+.fmp-lv{display:inline}
+@media (max-width:379px){ .fmp-lv{display:none} }
+@media (max-width:520px),(max-height:599px){
+  .fmp-header{min-height:0;flex-wrap:nowrap;gap:6px;padding:4px 8px}
+  .fmp-title{flex:1 1 0;min-width:0;margin:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .fmp-seg button,.fmp-tool{padding:4px 10px}
+  .fmp-stepline{padding:2px 10px;font-size:.9em;flex-wrap:nowrap;white-space:nowrap}
+  .fmp-stepline > span:nth-child(2){min-width:0;overflow:hidden;text-overflow:ellipsis}
+  .fmp-dots{flex:0 0 auto;gap:4px}
+  .fmp-dots i{width:9px;height:9px}
+  .fmp-stars{flex:0 0 auto}
+  .fmp-footer{padding:4px 10px}
+  .fmp-footer .fmp-btn{min-height:48px;min-width:104px}
+  .fmp-right{padding:10px 12px}
+  .fmp-panel-title{font-size:1.12em}
+  .fmp-panel-head{margin:0 0 4px}
+  .fmp-narr{margin:0 0 6px;gap:8px}
+  .fmp-narr svg{width:40px;height:40px}
+  .fmp-bubble{padding:8px 12px}
+  .fmp-q{margin:4px 0 6px}
+  .fmp-choices{gap:6px}
+  .fmp-choice,.fmp-btn{min-height:48px;padding:6px 14px}
+  .fmp-fb{margin:6px 0;padding:8px 12px}
+  .fmp-row{margin:6px 0}
+  .fmp-sentence{margin:4px 0;line-height:1.5}
+  .fmp-derived{margin:6px 0;padding:8px 12px}
+  .fmp-start{padding-top:6px;padding-bottom:6px}
+  .fmp-start svg{width:clamp(56px,11vmin,96px)}
+  .fmp-start h1{margin:2px 0}
+  .fmp-start p{margin:2px 0 8px}
+  .fmp-levels{margin:8px 0;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,150px),1fr))}
+  .fmp-level{padding:8px 12px}
+  .fmp-who{margin:6px 0 4px}
+  .fmp-whobtn{min-height:64px;min-width:80px}
+  .fmp-start .fmp-who-hint{margin:0 0 6px}
+  .fmp-start-act .fmp-row{margin:4px 0}
+}
+@media (max-width:480px){
+  .fmp-title{position:absolute;width:1px;height:1px;margin:-1px;padding:0;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+  .fmp-header{justify-content:space-between}
+}
+/* landscape phones: every pixel of height counts (tap targets stay >= 44 px) */
+@media (max-height:430px){
+  .fmp-header{padding-top:2px;padding-bottom:2px}
+  .fmp-stepline{padding-top:0;padding-bottom:0}
+  .fmp-footer{padding-top:3px;padding-bottom:3px}
+  .fmp-footer .fmp-btn{min-height:46px}
+}
+@media (min-width:760px){
+  html[data-fmp-layout="split-h"] .fmp-grid{grid-template-columns:minmax(0,52fr) minmax(0,48fr)}
+}
+/* sideways phones: the answer list gets two columns even in a narrow panel */
+html[data-fmp-layout="split-h"] .fmp-choices{grid-template-columns:repeat(auto-fit,minmax(min(100%,112px),1fr))}
+
+/* Enlarged text / very narrow window (A82, 2026-10-14): player.js sets html[data-fmp-wrap] when the text is larger than the player's own size or the one-line
+   top bar / the page no longer fits the screen. The top bar and step line then wrap like the old page did, the Start page's level cards go one under the other
+   and a long word breaks inside its box (overflow-wrap). Never set for normal text, so nothing above changes there. */
+@media (max-width:520px),(max-height:599px){
+  html[data-fmp-wrap] .fmp-header{flex-wrap:wrap}
+  html[data-fmp-wrap] .fmp-stepline{flex-wrap:wrap;white-space:normal}
+  html[data-fmp-wrap] .fmp-stepline > span:nth-child(2){overflow:visible;text-overflow:clip;white-space:normal;flex:1 1 auto}
+  html[data-fmp-wrap] .fmp-levels{grid-template-columns:minmax(0,1fr)}
+}
+@media (min-width:481px) and (max-width:520px),(min-width:481px) and (max-height:599px){
+  html[data-fmp-wrap] .fmp-title{flex:0 1 auto;min-width:0;margin:0 auto 0 0;overflow:visible;text-overflow:clip;white-space:normal}
+}
+html[data-fmp-wrap] body.fmp{overflow-wrap:break-word}
+
 </style>
 </head>
 <body class="fmp">
@@ -607,6 +739,53 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     return den > 0 && 100 % den === 0 && num >= 0 && num <= den ? num * 100 / den : NaN;
   };
 
+  /* ---- added 2026-10-11 (Owner-approved shared change, TODO A79): factor pairs, skip counting, times 10 / 100, same-bottom subtraction.
+     Purely additive. Each returns NaN for input outside its stated range (a list function returns NaN too, never a half-answer). ---- */
+  /* every rectangle that n counters can make: the list of [a, b] with a <= b and a * b = n, smaller number first, a square counted once
+     (6 -> [[1,6],[2,3]]; 1 -> [[1,1]]; 9 -> [[1,9],[3,3]]). Valid for whole numbers 1..10000. */
+  M.factorPairs = function (n) {
+    if (typeof n !== 'number' || !Number.isInteger(n) || n < 1 || n > 10000) return NaN;
+    var out = [], a;
+    for (a = 1; a * a <= n; a++) if (n % a === 0) out.push([a, n / a]);
+    return out;
+  };
+  /* the numbers you SAY when you count by `step` for `hops` hops, starting from `start` (the start itself is not said):
+     skipCount(5, 3) -> [5,10,15]; skipCount(5, 3, 10) -> [15,20,25]; 0 hops -> []; hops of 0 stay put: skipCount(0, 3) -> [0,0,0].
+     With start 0 the i-th number is arrayTotal(i, step). step and start are whole numbers >= 0, hops a whole number 0..1000. */
+  M.skipCount = function (step, hops, start) {
+    if (start === undefined) start = 0;
+    function whole(x) { return typeof x === 'number' && Number.isInteger(x) && x >= 0; }
+    if (!whole(step) || !whole(hops) || !whole(start) || hops > 1000) return NaN;
+    var out = [], i, v = start;
+    for (i = 0; i < hops; i++) { v += step; out.push(v); }
+    return Number.isSafeInteger(v) ? out : NaN;
+  };
+  /* n times 10 or times 100 (k must be 10 or 100; n a whole number >= 0); NaN otherwise */
+  M.timesTen = function (n, k) {
+    if (typeof n !== 'number' || !Number.isInteger(n) || n < 0 || (k !== 10 && k !== 100)) return NaN;
+    var r = n * k;
+    return Number.isSafeInteger(r) ? r : NaN;
+  };
+  /* the place-value picture of times 10 / times 100: every digit of n moves `jumps` places to the left (1 for x10, 2 for x100) and
+     `jumps` zeros hold the empty places on the right. Places are counted from the right (0 = ones, 1 = tens, 2 = hundreds ...).
+     38 x 100 -> { product: 3800, jumps: 2, zeros: 2, digits: [{ digit: 3, from: 1, to: 3 }, { digit: 8, from: 0, to: 2 }] }
+     (digits are listed left to right). 0 x 10 = 0 keeps one digit. NaN when timesTen is NaN. */
+  M.timesTenShift = function (n, k) {
+    var product = M.timesTen(n, k);
+    if (product !== product) return NaN;
+    var jumps = k === 10 ? 1 : 2, ds = String(n).split(''), digits = ds.map(function (c, i) { var from = ds.length - 1 - i; return { digit: +c, from: from, to: from + jumps }; });
+    return { product: product, jumps: jumps, zeros: jumps, digits: digits };
+  };
+  /* aNum/denom - bNum/denom = (aNum - bNum)/denom: the bottom number (the size of the piece) does NOT change, and the answer is never
+     reduced (reducing is a separate thing a course teaches). 7/8 - 3/8 -> { num: 4, denom: 8, den: 8 } (`den` repeats `denom` so the result
+     has the same {num, den} shape as simplifyFraction). Valid for whole numbers with denom >= 1 and 0 <= bNum <= aNum (this project never
+     shows a child a negative amount); NaN otherwise. 3/4 - 3/4 -> { num: 0, denom: 4, den: 4 } (zero pieces left). */
+  M.subtractSameBottom = function (aNum, bNum, denom) {
+    function whole(x) { return typeof x === 'number' && Number.isInteger(x) && Number.isSafeInteger(x); }
+    if (!whole(aNum) || !whole(bNum) || !whole(denom) || denom < 1 || bNum < 0 || bNum > aNum) return NaN;
+    return { num: aNum - bNum, denom: denom, den: denom };
+  };
+
   M.selfTest = function () {
     var fails = [], n = 0;
     function ok(c, msg) { n++; if (!c) fails.push(msg); }
@@ -782,6 +961,57 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     ok(M.rescaleFraction(2, 3, 12) === 8 && M.rescaleFraction(3, 4, 12) === 9 && Number.isNaN(M.rescaleFraction(1, 3, 10)) && Number.isNaN(M.rescaleFraction(1, 0, 4)) && Number.isNaN(M.rescaleFraction(-1, 2, 4)) && Number.isNaN(M.rescaleFraction(1.5, 2, 4)) && Number.isNaN(M.rescaleFraction('1', 2, 4)), 'rescaleFraction spot checks and bad input');
     ok(Number.isNaN(M.lcm(Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER - 1)) && Number.isNaN(M.rescaleFraction(Number.MAX_SAFE_INTEGER, 1, 2)) && Object.is(M.rescaleFraction(-0, 3, 12), 0), 'lcm / rescaleFraction: unsafe sizes give NaN, -0 becomes 0');
     ok(M.fractionToHundredths(3, 10) === 30 && M.fractionToHundredths(1, 4) === 25 && M.fractionToHundredths(3, 4) === 75 && M.fractionToHundredths(1, 2) === 50 && M.fractionToHundredths(7, 100) === 7 && isNaN(M.fractionToHundredths(1, 3)) && isNaN(M.fractionToHundredths(5, 4)) && isNaN(M.fractionToHundredths(-1, 4)) && isNaN(M.fractionToHundredths(1, 0)) && isNaN(M.fractionToHundredths(0.5, 2)), 'fraction to hundredths spot checks');
+    /* factorPairs (added 2026-10-11): for every n 1..144 compared with a plain double loop over all ordered pairs */
+    for (var fpn = 1; fpn <= 144; fpn++) {
+      var fpl = M.factorPairs(fpn), fpb = [], fpx, fpy, fpOrdered = 0, fpSq = false;
+      for (fpx = 1; fpx <= fpn; fpx++) for (fpy = 1; fpy <= fpn; fpy++) if (fpx * fpy === fpn) { fpOrdered++; if (fpx <= fpy) fpb.push([fpx, fpy]); if (fpx === fpy) fpSq = true; }
+      ok(Array.isArray(fpl) && fpl.join('|') === fpb.join('|'), 'factorPairs ' + fpn + ' matches brute force');
+      ok(fpl.every(function (p) { return p.length === 2 && p[0] <= p[1] && p[0] * p[1] === fpn; }), 'factorPairs ' + fpn + ' pairs multiply to n, smaller first');
+      ok(fpl.every(function (p, pi) { return pi === 0 || fpl[pi - 1][0] < p[0]; }), 'factorPairs ' + fpn + ' sorted, no repeats');
+      ok(2 * fpl.length - (fpSq ? 1 : 0) === fpOrdered, 'factorPairs ' + fpn + ' count: turned = 2 x pairs (minus 1 for a square)');
+      ok(fpl[0][0] === 1 && fpl[0][1] === fpn, 'factorPairs ' + fpn + ' always starts with 1 x n');
+      ok((fpl.length === 1 && fpn > 1) === ([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139].indexOf(fpn) >= 0), 'factorPairs ' + fpn + ' one pair only for a prime');
+    }
+    ok(M.factorPairs(1).join('|') === '1,1' && M.factorPairs(12).join('|') === '1,12|2,6|3,4' && M.factorPairs(36).join('|') === '1,36|2,18|3,12|4,9|6,6' && M.factorPairs(7).join('|') === '1,7' && M.factorPairs(144).length === 8 && M.factorPairs(100).length === 5, 'factorPairs spot checks (1, 12, 36, prime 7, 144, 100)');
+    ok(Number.isNaN(M.factorPairs(0)) && Number.isNaN(M.factorPairs(-6)) && Number.isNaN(M.factorPairs(2.5)) && Number.isNaN(M.factorPairs('12')) && Number.isNaN(M.factorPairs(null)) && Number.isNaN(M.factorPairs(undefined)) && Number.isNaN(M.factorPairs(NaN)) && Number.isNaN(M.factorPairs(Infinity)) && Number.isNaN(M.factorPairs(10001)), 'factorPairs rejects bad input with NaN');
+    /* skipCount (added 2026-10-11): compared with plain repeated addition; start offsets, 0 hops, hops of 0 */
+    for (var skStep = 0; skStep <= 12; skStep++) for (var skHops = 0; skHops <= 12; skHops++) for (var skStart = 0; skStart <= 30; skStart += 5) {
+      var skL = M.skipCount(skStep, skHops, skStart), skRun = skStart, skWant = [], skI;
+      for (skI = 0; skI < skHops; skI++) { skRun += skStep; skWant.push(skRun); }
+      ok(Array.isArray(skL) && skL.join() === skWant.join() && skL.length === skHops, 'skipCount ' + skStep + ' x ' + skHops + ' from ' + skStart + ' matches repeated addition');
+      ok(skL.every(function (v, vi) { return v - (vi === 0 ? skStart : skL[vi - 1]) === skStep; }), 'skipCount ' + skStep + ' x ' + skHops + ' from ' + skStart + ' every hop adds the step');
+      if (skStart === 0) {
+        ok(skL.every(function (v, vi) { return v === M.arrayTotal(vi + 1, skStep); }), 'skipCount ' + skStep + ' x ' + skHops + ' from 0: the i-th number is arrayTotal(i, step)');
+        ok(M.skipCount(skStep, skHops).join() === skL.join(), 'skipCount ' + skStep + ' x ' + skHops + ': start defaults to 0');
+        if (skHops > 0) ok(skL[skHops - 1] === skStep * skHops, 'skipCount ' + skStep + ' x ' + skHops + ': the last number is step x hops');
+      }
+    }
+    ok(M.skipCount(5, 3).join() === '5,10,15' && M.skipCount(2, 4).join() === '2,4,6,8' && M.skipCount(10, 3).join() === '10,20,30' && M.skipCount(5, 3, 10).join() === '15,20,25' && M.skipCount(7, 0).length === 0 && M.skipCount(7, 0, 9).length === 0 && M.skipCount(0, 3).join() === '0,0,0' && M.skipCount(0, 3, 4).join() === '4,4,4', 'skipCount spot checks (count by 5s, 2s, 10s; start offset; 0 hops is empty; hops of 0 stay put)');
+    ok(Number.isNaN(M.skipCount(-1, 3)) && Number.isNaN(M.skipCount(2.5, 3)) && Number.isNaN(M.skipCount(2, 1.5)) && Number.isNaN(M.skipCount(2, -1)) && Number.isNaN(M.skipCount(2, 3, -1)) && Number.isNaN(M.skipCount('2', 3)) && Number.isNaN(M.skipCount(2, '3')) && Number.isNaN(M.skipCount(2, 3, null)) && Number.isNaN(M.skipCount(2, 1001)) && Number.isNaN(M.skipCount(NaN, 3)) && Number.isNaN(M.skipCount(2, Infinity)), 'skipCount rejects bad input with NaN');
+    /* timesTen / timesTenShift (added 2026-10-11): product against plain multiplication AND against string arithmetic (append zeros) */
+    for (var ttn = 0; ttn <= 1000; ttn++) [10, 100].forEach(function (ttk) {
+      var ttp = M.timesTen(ttn, ttk), ttz = ttk === 10 ? '0' : '00', tts = M.timesTenShift(ttn, ttk), ttsum = 0;
+      ok(ttp === ttn * ttk, 'timesTen ' + ttn + ' x ' + ttk + ' is the product');
+      ok(ttp === (ttn === 0 ? 0 : Number(String(ttn) + ttz)), 'timesTen ' + ttn + ' x ' + ttk + ' equals the digits with zeros on the end');
+      ok(tts.product === ttp && tts.jumps === (ttk === 10 ? 1 : 2) && tts.zeros === tts.jumps, 'timesTenShift ' + ttn + ' x ' + ttk + ' product and jumps');
+      ok(tts.digits.map(function (d) { return d.digit; }).join('') === String(ttn) && tts.digits.every(function (d, di) { return d.from === tts.digits.length - 1 - di && d.to === d.from + tts.jumps; }), 'timesTenShift ' + ttn + ' x ' + ttk + ' every digit moves left by the jumps');
+      tts.digits.forEach(function (d) { ttsum += d.digit * Math.pow(10, d.to); });
+      ok(ttsum === ttp, 'timesTenShift ' + ttn + ' x ' + ttk + ': the digits in their new places rebuild the product');
+    });
+    ok(M.timesTen(23, 10) === 230 && M.timesTen(4, 100) === 400 && M.timesTen(38, 100) === 3800 && M.timesTen(0, 10) === 0 && M.timesTen(0, 100) === 0 && M.timesTen(1, 100) === 100 && M.timesTen(90, 10) === 900, 'timesTen spot checks (23 x 10, 4 x 100, 38 x 100, zero, 1 x 100, a number ending in 0)');
+    ok(M.timesTenShift(38, 100).digits[0].from === 1 && M.timesTenShift(38, 100).digits[0].to === 3 && M.timesTenShift(38, 100).digits[1].to === 2 && M.timesTenShift(5, 10).digits.length === 1 && M.timesTenShift(0, 100).digits.length === 1, 'timesTenShift spot checks (38 x 100: the 3 goes tens -> thousands, the 8 ones -> hundreds)');
+    ok(Number.isNaN(M.timesTen(5, 1)) && Number.isNaN(M.timesTen(5, 1000)) && Number.isNaN(M.timesTen(5, 0)) && Number.isNaN(M.timesTen(-5, 10)) && Number.isNaN(M.timesTen(2.5, 10)) && Number.isNaN(M.timesTen('5', 10)) && Number.isNaN(M.timesTen(5, '10')) && Number.isNaN(M.timesTen(null, 10)) && Number.isNaN(M.timesTen(5)) && Number.isNaN(M.timesTen(Number.MAX_SAFE_INTEGER, 100)) && Number.isNaN(M.timesTenShift(5, 7)) && Number.isNaN(M.timesTenShift(-1, 10)), 'timesTen / timesTenShift reject bad input with NaN');
+    /* subtractSameBottom (added 2026-10-11): every a, b, d up to 12 (and a above one whole): the result plus b gives a back, the bottom number never changes, nothing is reduced */
+    for (var ssd = 1; ssd <= 12; ssd++) for (var ssa = 0; ssa <= 14; ssa++) for (var ssb = 0; ssb <= ssa; ssb++) {
+      var ssr = M.subtractSameBottom(ssa, ssb, ssd);
+      ok(ssr.num + ssb === ssa && ssr.num >= 0, 'subtractSameBottom ' + ssa + '/' + ssd + ' - ' + ssb + '/' + ssd + ': answer + taken away = start');
+      ok(ssr.denom === ssd && ssr.den === ssd, 'subtractSameBottom ' + ssa + '/' + ssd + ' - ' + ssb + '/' + ssd + ': the bottom number does not change');
+      ok(M.fractionsEqual(ssr.num, ssd, ssa - ssb, ssd) && Math.abs(ssr.num / ssd - (ssa / ssd - ssb / ssd)) < 1e-9, 'subtractSameBottom ' + ssa + '/' + ssd + ' - ' + ssb + '/' + ssd + ': equals the decimal difference');
+      ok(ssr.num === ssa - ssb, 'subtractSameBottom ' + ssa + '/' + ssd + ' - ' + ssb + '/' + ssd + ': never reduced (the top is exactly a - b)');
+      if (ssa === ssb) ok(ssr.num === 0 && M.simplifyFraction(ssr.num, ssr.denom).num === 0, 'subtractSameBottom ' + ssa + '/' + ssd + ' - itself is zero pieces left, still over ' + ssd);
+    }
+    ok(M.subtractSameBottom(7, 3, 8).num === 4 && M.subtractSameBottom(7, 3, 8).denom === 8 && M.subtractSameBottom(5, 2, 8).num === 3 && M.subtractSameBottom(4, 4, 4).num === 0 && M.subtractSameBottom(4, 4, 4).denom === 4 && M.subtractSameBottom(8, 3, 8).num === 5 && M.subtractSameBottom(6, 2, 8).num === 4 && M.subtractSameBottom(6, 2, 8).denom === 8 && M.subtractSameBottom(3, 0, 5).num === 3, 'subtractSameBottom spot checks (7/8 - 3/8 = 4/8 not 4/5; a whole minus pieces; 4/4 - 4/4 = 0/4; 6/8 - 2/8 stays 4/8 unreduced; taking nothing away)');
+    ok(Number.isNaN(M.subtractSameBottom(2, 3, 4)) && Number.isNaN(M.subtractSameBottom(3, -1, 4)) && Number.isNaN(M.subtractSameBottom(3, 1, 0)) && Number.isNaN(M.subtractSameBottom(3, 1, -4)) && Number.isNaN(M.subtractSameBottom(3.5, 1, 4)) && Number.isNaN(M.subtractSameBottom(3, 1, 4.5)) && Number.isNaN(M.subtractSameBottom('3', 1, 4)) && Number.isNaN(M.subtractSameBottom(3, null, 4)) && Number.isNaN(M.subtractSameBottom(3, 1)) && Number.isNaN(M.subtractSameBottom(NaN, 1, 4)) && Number.isNaN(M.subtractSameBottom(Infinity, 1, 4)), 'subtractSameBottom rejects bad input with NaN (a < b, negative, zero bottom, non-integers, non-numbers)');
     return { pass: fails.length === 0, checks: n, failures: fails.slice(0, 10) };
   };
 
@@ -2101,7 +2331,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     shell.levels.innerHTML = '';
     ['A', 'B'].forEach(function (L) {
       var lv = course.levels[L]; if (!lv) return;
-      shell.levels.appendChild(h('button', { type: 'button', 'aria-pressed': String(level === L), 'aria-label': UI.level + ' ' + L + ': ' + T(lv.label), onclick: function () { setLevel(L); } }, UI.level + ' ' + L));
+      shell.levels.appendChild(h('button', { type: 'button', 'aria-pressed': String(level === L), 'aria-label': UI.level + ' ' + L + ': ' + T(lv.label), onclick: function () { setLevel(L); } }, h('span', { class: 'fmp-lv' }, UI.level + ' '), L));
     });
     var langs = course.langs || ['en'];
     shell.langSeg.hidden = langs.length < 2; shell.langSeg.innerHTML = '';
@@ -2114,17 +2344,125 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   }
   function setLang(l) { lang = l; S.lang = l; save(); if (global.FMMath) FMMath.setLang(l); D.documentElement.lang = l === 'zh' ? 'zh-Hans' : 'en'; syncHeader(); renderAll(false); }
 
-  /* ---------------- stage sizing (fixed-height landscape shell) ---------------- */
-  function landscape() { return global.matchMedia('(min-width:900px) and (orientation:landscape)').matches; }
-  function syncStage() {
-    var root = D.documentElement;
-    if (!shell.main || shell.main.hidden || !landscape()) { root.style.removeProperty('--stage-h'); return; }
-    if (global.scrollY) global.scrollTo(0, 0);
-    var top = shell.grid.getBoundingClientRect().top, fh = shell.footer.offsetHeight;
-    var hgt = global.innerHeight - top - fh - 14;
-    root.style.setProperty('--stage-h', Math.max(220, Math.round(hgt)) + 'px');
+  /* ---------------- stage sizing + layout modes (A81, 2026-10-12) ----------------
+     wide    >= 900 px landscape: the original fixed-height two-column stage (unchanged).
+     split-h landscape phone / small window (640-899 px): the same two columns.
+     split-v portrait (phones, iPad upright): the picture is pinned on top and fits itself into its pane, the panel scrolls on its own below.
+     stack   fallback (tiny window, or a picture that cannot be fitted): the old one-column page; the page itself scrolls. */
+  var layout = 'wide', fitBusy = false, lastKey = null, lastStep = false, stackLatch = '';
+  var GFX = '.fm-pv-mat,.fm-ar-grid,.fm-ck-face,.fm-dg-grid,.fm-cal-grid,.fm-coin-row,.fmp-boxes,.fmp-left > svg';
+  var FIT_MIN = 0.4;        /* the graphic parts of a picture are never scaled below this */
+  function mqm(q) { try { return !!(global.matchMedia && global.matchMedia(q).matches); } catch (e) { return false; } }
+  function baseLayout() {
+    if (mqm('(min-width:900px) and (orientation:landscape) and (min-height:600px)')) return 'wide';   /* a landscape screen shorter than 600 px (a big phone sideways) gets the picture-left / panel-right layout with the fitted picture */
+    var w = global.innerWidth || 0, hh = global.innerHeight || 0, fs = 16;
+    try { fs = parseFloat(global.getComputedStyle(D.body).fontSize) || 16; } catch (e) { /* keep 16 */ }
+    if (fs > 24) return 'stack';   /* very large text (system text size about 150% or more; the lesson's own text is 16-21 px): the panel could not hold the feedback and its buttons, use the old stacked page */
+    if (mqm('(orientation:landscape)')) return (w >= 640 && hh >= 300) ? 'split-h' : 'stack';
+    return hh >= 380 ? 'split-v' : 'stack';
   }
-  global.addEventListener('resize', syncStage); global.addEventListener('orientationchange', syncStage);
+  function setLayout(m) { layout = m; var r = D.documentElement; if (r.getAttribute('data-fmp-layout') !== m) r.setAttribute('data-fmp-layout', m); }
+  function landscape() { return layout === 'wide'; }          /* "the original two-column stage" */
+  function stacked() { return layout === 'stack'; }           /* "the page scrolls" */
+  function clearFit() { var l = shell.left; if (l) { l.style.removeProperty('--fmp-fit'); l.style.removeProperty('--pic-max'); l.removeAttribute('data-fit'); } }
+  /* Fit the picture into its pane. Only the graphic parts (GFX) are scaled, so steppers and buttons keep their size (>= 44 px).
+     Returns false when the geometry is hopeless (then the caller falls back to the stacked page). */
+  function fitPicture(m, stageH) {
+    var left = shell.left; if (!left || fitBusy) return true;
+    fitBusy = true;
+    try {
+      left.style.setProperty('--pic-max', 'none');         /* measure the picture unconstrained (a shrinking pane must not squeeze what we measure) */
+      var kids = [].filter.call(left.children, function (k) { return k.getClientRects().length > 0; }), cs = global.getComputedStyle(left);
+      function apply(f) { left.style.setProperty('--fmp-fit', String(Math.round(f * 1000) / 1000)); }
+      function span() { var t = 1e9, b = -1e9; kids.forEach(function (k) { var r = k.getBoundingClientRect(); t = Math.min(t, r.top); b = Math.max(b, r.bottom); }); return kids.length ? b - t : 0; }
+      function gfx() { var s = 0; [].forEach.call(left.querySelectorAll(GFX), function (g) { if (g.getClientRects().length) s += g.getBoundingClientRect().height; }); return s; }
+      function wideOver() { var o = 1, rs = left.querySelectorAll('.fm-root'), i; for (i = 0; i < rs.length; i++) if (rs[i].scrollWidth > rs[i].clientWidth + 1) o = Math.min(o, rs[i].clientWidth / rs[i].scrollWidth); return o; }
+      var chrome = (left.offsetHeight - left.clientHeight) + (parseFloat(cs.paddingTop) || 0) + (parseFloat(cs.paddingBottom) || 0);
+      /* shrink the graphics until the picture's content is no taller than `target` (and no wider than its pane) */
+      function tryFit(target) {
+        var f = 1, s, i, g, want, ov;
+        apply(f); s = span();
+        for (i = 0; i < 6; i++) {
+          ov = wideOver();
+          if (s <= target + 0.5 && ov >= 1) break;
+          g = gfx(); if (g <= 0 || f <= FIT_MIN) break;
+          want = target - (s - g);
+          var nf = want <= 0 ? FIT_MIN : f * want / g;
+          if (ov < 1) nf = Math.min(nf, f * ov * 0.98);
+          nf = Math.max(FIT_MIN, Math.min(f, nf));
+          if (Math.abs(nf - f) < 0.004) break;
+          f = nf; apply(f); s = span();
+        }
+        return { ok: s <= target + 0.5 && wideOver() >= 1, fit: f, span: s };
+      }
+      var res, picMax, flag = '';
+      if (m === 'split-v') {
+        var base = Math.round(0.45 * stageH), most = Math.max(base, Math.min(Math.round(0.62 * stageH), stageH - 230));
+        res = tryFit(base - chrome); picMax = base;
+        if (most > base && (!res.ok || (stageH >= 600 && (global.innerWidth || 0) >= 600 && res.fit < 0.7))) {   /* on a tablet prefer a taller picture pane over drawings smaller than 70% (on a phone the panel is the scarcer space) */
+          var r2 = tryFit(most - chrome);
+          if (!res.ok || (r2.ok && r2.fit > res.fit + 0.01)) { res = r2; picMax = most; }   /* nothing fits at 45%: give the picture the bigger pane, it is then flagged as scrolling if it still does not fit */
+        }
+        if (!res.ok) flag = 'scroll';
+        if (stageH - picMax < 170) return false;           /* no room left for the panel: old stacked page */
+        if (!res.ok && stageH < 420) return false;         /* a short screen (about 360x500) and a picture that will not fit in 45%: do not squeeze, use the old stacked page */
+        if (res.ok) picMax = Math.min(picMax, Math.ceil(res.span + chrome + 1));
+        left.style.setProperty('--pic-max', picMax + 'px');
+      } else {
+        res = tryFit(stageH - chrome);
+        if (!res.ok) flag = 'scroll';
+        left.style.removeProperty('--pic-max');
+      }
+      if (flag) left.setAttribute('data-fit', flag); else left.removeAttribute('data-fit');
+      apply(res.fit);
+      return true;
+    } finally { fitBusy = false; }
+  }
+  /* the panel's own scroll position must survive a re-fit (measuring the picture briefly resizes the panel, and a browser clamps scrollTop to 0 when it momentarily has room) */
+  function layoutSync() {
+    var box = shell.right, keep = box ? box.scrollTop : 0;
+    layoutSyncInner();
+    if (box && box.scrollTop !== keep && layout !== 'wide' && layout !== 'stack') box.scrollTop = keep;
+  }
+  /* Enlarged text (or a very narrow window): the compact top bar is forced onto one line, so its buttons can stick out past the screen edge and make the whole page
+     wider than the phone. html gets data-fmp-wrap when the text is larger than the player's own size, or when the page does not fit in its one-line form
+     (measured with the attribute off). The bar then wraps like the old page did. Text of normal size always fits, so nothing changes there. */
+  function textFit(m) {
+    var root = D.documentElement, hd = shell.header, sl = shell.stepline, on = root.hasAttribute('data-fmp-wrap'), want = false, fs = 16, norm;
+    if (!hd || m === 'wide') { if (on) root.removeAttribute('data-fmp-wrap'); return; }
+    if (on) root.removeAttribute('data-fmp-wrap');                  /* measure the one-line form again */
+    try {
+      fs = parseFloat(global.getComputedStyle(D.body).fontSize) || 16;
+      norm = Math.min(21, Math.max(16, 0.023 * Math.min(global.innerWidth || 0, global.innerHeight || 0)));   /* the player's own body size: clamp(16px, 2.3vmin, 21px) */
+      if (fs > norm + 0.75) want = true;                            /* enlarged text */
+      if (hd.getClientRects().length && hd.scrollWidth > hd.clientWidth + 1) want = true;
+      if (sl && sl.getClientRects().length && sl.scrollWidth > sl.clientWidth + 1) want = true;
+      if (root.scrollWidth > root.clientWidth + 1) want = true;
+    } catch (e) { want = false; }
+    if (want) root.setAttribute('data-fmp-wrap', '1');
+  }
+  function layoutSyncInner() {
+    var root = D.documentElement, m = baseLayout(), lk = level + ':' + si + ':' + global.innerWidth + 'x' + global.innerHeight;
+    if (m !== 'wide' && m !== 'stack' && stackLatch === lk) m = 'stack';   /* this scene did not fit the pinned layout at this size: stay stacked (flipping back and forth would also reset the page scroll) */
+    setLayout(m);
+    textFit(m);
+    if (!shell.main || shell.main.hidden || m === 'stack') { root.style.removeProperty('--stage-h'); clearFit(); return; }
+    if (m === 'wide' && global.scrollY) global.scrollTo(0, 0);
+    var top = shell.grid.getBoundingClientRect().top + (m === 'wide' ? 0 : (global.scrollY || 0)), fh = shell.footer.offsetHeight;
+    var hgt = Math.max(220, Math.round(global.innerHeight - top - fh - 14));
+    root.style.setProperty('--stage-h', hgt + 'px');
+    if (m === 'wide') { clearFit(); return; }
+    if (!fitPicture(m, hgt)) { stackLatch = lk; setLayout('stack'); root.style.removeProperty('--stage-h'); clearFit(); return; }   /* stacked page: the page keeps its own scroll position */
+    if (global.scrollY) global.scrollTo(0, 0);                    /* pane layouts never scroll the page */
+  }
+  function syncStage() { layoutSync(); }
+  var resizeTimer = 0;
+  function onResize() {
+    layoutSync();
+    if (!stacked() && !landscape()) { if (resizeTimer) global.clearTimeout(resizeTimer); resizeTimer = global.setTimeout(function () { resizeTimer = 0; paneReveal(lastKey, false, true); }, 60); }
+  }
+  global.addEventListener('resize', onResize); global.addEventListener('orientationchange', onResize);
+  try { if (global.visualViewport) global.visualViewport.addEventListener('resize', onResize); } catch (e) { /* ignore */ }
 
   /* ---------------- mascot ---------------- */
   function mascot(size, label) {
@@ -2172,8 +2510,40 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
   /* ---------------- focus helpers ---------------- */
   function focusable(e) { return e && !e.disabled && e.getAttribute('aria-hidden') !== 'true' && (e.offsetParent !== null || e === D.body); }
   function focusPanel() { var t = $('#fmp-ptitle') || $('#qlabel'); if (t) t.focus({ preventScroll: true }); }
+  /* Pane layouts (split-v / split-h): the panel is its own scroller. After an action keep the newest feedback AND the button row under it inside the
+     visible part of the panel; if the answers fit too, keep them in view. Nothing is scrolled on a new scene (top), a plain picture tap, or a resize
+     that changes nothing. Never smooth: instant, so reduced motion is respected. */
+  function paneReveal(keyName, isStepChange, resizing) {
+    var box = shell.right; if (!box || shell.main.hidden) return;
+    if (isStepChange) box.scrollTop = 0;
+    var tail = box.lastElementChild; if (!tail) return;
+    if (!isStepChange && !keyName) return;
+    if (isStepChange && !tail.querySelector('button')) return;   /* a new scene starts at its top, unless its button row (hint / next step) would be out of sight */
+    var fbs = box.querySelectorAll('.fmp-fb'), nf = fbs[fbs.length - 1], sts = box.querySelectorAll('.fmp-status'), ns = sts[sts.length - 1];
+    var ql = $('#qlabel', box), anchor = isStepChange ? ql : (nf || ns || ql), ch = box.querySelector('.fmp-choices');
+    var cr = box.getBoundingClientRect(), st = isStepChange ? 0 : box.scrollTop, ph = box.clientHeight;
+    function top(e) { return e.getBoundingClientRect().top - cr.top + box.scrollTop; }
+    function bottom(e) { return e.getBoundingClientRect().bottom - cr.top + box.scrollTop; }
+    var lo = bottom(tail) + 10 - ph;                    /* smallest scrollTop that shows the whole button row / newest feedback */
+    var hi = anchor ? top(anchor) - 6 : lo;             /* largest scrollTop that keeps the newest feedback (new scene: the question) in view */
+    if (ch && !isStepChange && keyName !== 'hint' && keyName !== 'worked') { var hc = top(ch) - 6; if (hc >= lo) hi = Math.min(hi, hc); }
+    /* keep the focused control in view too, as long as the feedback and the button row stay in view */
+    var fe = D.activeElement;
+    if (!isStepChange && fe && fe !== box && box.contains(fe)) { var hf = top(fe) - 6; if (hf >= lo) hi = Math.min(hi, hf); }
+    var want = Math.max(lo, Math.min(st, hi));
+    if (lo > hi) want = hi + Math.min(lo - hi, 30);     /* both cannot fit: the newest feedback / the question first, but give up up to 30 px of its top line to show the whole button row */
+    /* cut between blocks, never through a line of text: snap to the top of the first block that still leaves the button row in view */
+    if (want > 0.5 && want > st - 0.5) {
+      for (var i = 0; i < box.children.length; i++) { var tp = top(box.children[i]) - 4; if (tp >= lo - 0.5 && tp <= hi + 0.5) { want = Math.max(want, tp); break; } if (tp > hi) break; }
+    }
+    want = Math.max(0, Math.min(box.scrollHeight - ph, want));
+    if (isStepChange) { box.scrollTop = Math.round(want); return; }
+    if (Math.abs(want - st) > 0.5 && !(resizing && st >= lo && st <= hi)) box.scrollTop = Math.round(want);
+  }
   function afterRender(keyName, isStepChange) {
     var box = shell.right, t = null;
+    lastKey = isStepChange ? null : keyName;
+    if (baseLayout() === 'wide') setLayout('wide'); else layoutSync();   /* wide: sized by the syncStage() call after this function, exactly as before */
     if (isStepChange) { focusPanel(); if (!landscape() && global.scrollY) global.scrollTo(0, 0); }   /* portrait: a new scene starts at the top of the page (the page keeps its old scroll otherwise, and a tall picture's controls end up off-screen) */
     else if (keyName) {
       t = box.querySelector('[data-fk="' + keyName + '"]');
@@ -2200,7 +2570,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     }
     /* portrait: the PAGE scrolls, and the fixed footer can cover newly revealed content (review F-02).
        Scroll the last feedback/status line (or the question, if there is no feedback yet) above the footer. */
-    if (keyName === 'worked' && !landscape()) {
+    if (keyName === 'worked' && stacked()) {
       var lf = shell.left || D.querySelector('.fmp-left');
       if (lf) {
         /* "Show me": bring the picture into view (the tray moved). If the picture's top AND the button row under the newest feedback fit on one screen
@@ -2208,9 +2578,13 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
         var wl = lf.getBoundingClientRect(), wt = box.lastElementChild, wv = global.innerHeight - (shell.footer.hidden ? 0 : shell.footer.getBoundingClientRect().height);
         var wb = wt ? wt.getBoundingClientRect().bottom : 0;
         if (wt && wb - wl.top + 20 <= wv) { global.scrollBy({ top: Math.max(wb - wv + 12, Math.min(0, wl.top - 8)), left: 0, behavior: 'auto' }); }
+        /* PHONE / TABLET PORTRAIT (width < 900, portrait), picture and button row do not fit together (A80, 2026-10-11): "picture first" left "Next step" / "Try a new one"
+           100-1000 px under the footer. Reach the buttons instead: put the bottom of the button row 12 px above the footer. The step caption is repeated just above the row and the
+           lower part of the picture stays on screen when it fits; the page scrolls, so the rest of the picture is one swipe up. Landscape (>= 900 px) is a different branch, untouched. Only when picture-first would really hide the row (wb - wl.top + 12 > wv); otherwise picture-first as before. */
+        else if (wt && wb - wl.top + 12 > wv && global.matchMedia('(max-width:899px) and (orientation:portrait)').matches) { global.scrollBy({ top: wb - wv + 12, left: 0, behavior: 'auto' }); }
         else lf.scrollIntoView({ block: 'start' });
       }
-    } else if (!isStepChange && !landscape() && !(D.activeElement && shell.left && shell.left.contains(D.activeElement))) {   /* a tap on the picture's own controls (a stepper) must not move the page under the child's finger */
+    } else if (!isStepChange && stacked() && !(D.activeElement && shell.left && shell.left.contains(D.activeElement))) {   /* a tap on the picture's own controls (a stepper) must not move the page under the child's finger */
       var fbs = box.querySelectorAll('.fmp-fb'), sts = box.querySelectorAll('.fmp-status');   /* NOT :last-of-type - a hint button div after the feedback made that selector match nothing (F-02 root cause) */
       var reveal = fbs[fbs.length - 1] || sts[sts.length - 1] || ql;
       if (reveal) {
@@ -2228,11 +2602,11 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
         }
       }
     }
-    /* portrait, new scene: when a tall picture fills the first screen the question sits under the fixed footer - bring just enough of it above the footer */
-    if (isStepChange && !landscape() && ql && !shell.footer.hidden) {
+    /* stacked page, new scene: when a tall picture fills the first screen the question sits under the fixed footer - bring just enough of it above the footer */
+    if (isStepChange && stacked() && ql && !shell.footer.hidden) {
       var bringQuestion = function () {
         var qe = $('#qlabel', shell.right);   /* looked up again: the column may have been re-rendered since */
-        if (landscape() || shell.footer.hidden || !qe) return;
+        if (!stacked() || shell.footer.hidden || !qe) return;
         var qb = qe.getBoundingClientRect().bottom, qv = global.innerHeight - shell.footer.getBoundingClientRect().height;
         if (qb > qv) global.scrollBy({ top: qb - qv + 12, left: 0, behavior: 'auto' });
       };
@@ -2242,7 +2616,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     /* portrait story scenes: the "Next step" / "Watch again" row is the scene's main action - never leave it under the fixed footer
        (found by review: at 375x812 it sat at y 735-736, fully covered, so the child had to know to scroll) */
     var storyBtn = box.querySelector('[data-fk="nextstep"],[data-fk="again"]');
-    if (storyBtn && !landscape() && !shell.footer.hidden) {
+    if (storyBtn && stacked() && !shell.footer.hidden) {
       var rb = storyBtn.parentNode.getBoundingClientRect(), vb = global.innerHeight - shell.footer.getBoundingClientRect().height;
       if (rb.bottom > vb) global.scrollBy({ top: rb.bottom - vb + 12, left: 0, behavior: 'auto' });
     }
@@ -2274,6 +2648,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     refreshFooter();
     LV().si = si; save();
     syncStage();
+    if (!landscape() && !stacked()) paneReveal(lastKey, lastStep, false);   /* the step line / footer may have changed the stage size */
   }
   function paintStepline(c) {
     var n = steps.length, dots = h('span', { class: 'fmp-dots' });
@@ -2314,6 +2689,8 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     KINDS[c.step.kind].right(c);
     afterRender(fk, !!stepChange);
     syncStage();
+    lastStep = !!stepChange;
+    if (!landscape() && !stacked()) paneReveal(fk, !!stepChange, false);   /* after the final sizes of picture and panel are known */
   }
   function isDone(c) { var K = KINDS[c.step.kind]; return K.done ? K.done(c) : true; }
   function refreshFooter() {
@@ -2362,7 +2739,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     });
     st.appendChild(levels);
     var row = h('div', { class: 'fmp-row', style: 'justify-content:center' });
-    var go0 = h('button', { type: 'button', class: 'fmp-btn primary', id: 'fmp-go', style: 'min-width:180px', disabled: pending() ? true : null, onclick: function () { if (pending()) return; S.started = true; save(); steps = stepsFor(level); si = LV().si; t0 = Date.now(); renderAll(true); } }, started ? UI.cont : UI.start);
+    var go0 = h('button', { type: 'button', class: 'fmp-btn primary', id: 'fmp-go', style: 'min-width:min(180px,100%)', disabled: pending() ? true : null, onclick: function () { if (pending()) return; S.started = true; save(); steps = stepsFor(level); si = LV().si; t0 = Date.now(); renderAll(true); } }, started ? UI.cont : UI.start);
     row.appendChild(go0);
     var act = h('div', { class: 'fmp-start-act' });   /* the Start row (+ its hint) sits in one box that stays inside the screen on a short landscape screen (see player.css) */
     if (pending()) act.appendChild(h('p', { class: 'fmp-who-hint' }, 'Tap your animal first.'));
@@ -2375,6 +2752,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     }
     act.appendChild(row); st.appendChild(act);
     steps = stepsFor(level);
+    textFit(baseLayout());   /* the Start page has no stage to size, but its top bar must still fit the screen */
   }
 
   /* ================================================================
@@ -2427,7 +2805,7 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
       save(); say((r.wkN > 1 ? 'Step ' + r.wk + ' of ' + r.wkN + '. ' : '') + r.wkCap); c.rerender('worked'); } }, r.wk ? UI.nextStep : UI.showMe));
     if (!r.done && wrongs(r) >= 2 && s.variants && s.variants.length > 1 && !s.syncVariant) row.appendChild(h('button', { type: 'button', class: 'fmp-btn', 'data-fk': 'newq', onclick: function () {
       var keep = { v: ((r.v || 0) + 1) % s.variants.length, tags: r.tags, hints: r.hints };
-      var m = LV().rec; m[c.raw.id] = { v: keep.v, tags: keep.tags || [], hints: keep.hints || 0, retries: (r.retries || 0) + 1, carried: att(r) }; save(); mountStep(false); if (!landscape() && global.scrollY) global.scrollTo(0, 0); } }, UI.tryNew));
+      var m = LV().rec; m[c.raw.id] = { v: keep.v, tags: keep.tags || [], hints: keep.hints || 0, retries: (r.retries || 0) + 1, carried: att(r) }; save(); mountStep(false); if (!landscape() && global.scrollY) global.scrollTo(0, 0); if (!landscape() && !stacked()) paneReveal(null, true, false); } }, UI.tryNew));
     var cap = (r.wkCap && !r.done) ? fb('info', (r.wkN > 1 ? UI.stepOf(r.wk, r.wkN) + ': ' : '') + r.wkCap) : null;
     if (!cap && !row.childNodes.length) return null;
     var wrap = h('div', null); if (cap) wrap.appendChild(cap); if (row.childNodes.length) wrap.appendChild(row);
@@ -2850,7 +3228,19 @@ html.rm .fmp *,html.rm .fmp *::before,html.rm .fmp *::after{animation:none!impor
     if (global.FMMath) FMMath.setLang(lang);
     D.documentElement.lang = lang === 'zh' ? 'zh-Hans' : 'en';
     D.title = T(c.title);
+    setLayout(baseLayout());
     buildShell(); applyRM(); syncHeader();
+    /* the picture can change size without the panel being re-drawn (a child taps a stepper): fit it again, once per frame at most */
+    try {
+      if (global.ResizeObserver) {
+        var roPending = false;
+        new global.ResizeObserver(function () {
+          if (fitBusy || roPending || stacked() || landscape()) return;
+          roPending = true;
+          global.requestAnimationFrame(function () { roPending = false; if (!fitBusy && shell.main && !shell.main.hidden && !stacked() && !landscape()) layoutSync(); });
+        }).observe(shell.left);
+      }
+    } catch (e) { /* no observer: the fit is simply redone on the next render */ }
     steps = stepsFor(level); si = Math.min(LV().si || 0, steps.length - 1);
     renderAll(true);
     global.addEventListener('pagehide', sessionEnd);
