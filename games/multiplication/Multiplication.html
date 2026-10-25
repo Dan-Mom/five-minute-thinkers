@@ -197,7 +197,7 @@ const LEVELS = [
   {n:16, tables:[7,8],                    label:"Mix: 7 & 8",    color:"#F2C15C"},
   {n:17, tables:[1,2,3,4,5,6,9,10,11,12], label:"Mix: 10 tables",color:"#E88A6B"},
   {n:18, tables:[1,2,3,4,5,6,7,8,9,10,11,12], label:"All 12 tables", color:"#5B7FE0"},
-  {n:19, tables:[1,2,3,4,5,6,7,8,9,10,11,12], label:"All 12, round 2", color:"#E0527F"},
+  {n:19, tables:[1,2,3,4,5,6,7,8,9,10,11,12], label:"All 12, again", color:"#E0527F"},
   {n:20, tables:[1,2,3,4,5,6,7,8,9,10,11,12], label:"Final Boss",     color:"#2E2E52"},
 ];
 const QUESTIONS_PER_LEVEL = 30;
@@ -335,7 +335,7 @@ async function renderHome(){
   app.innerHTML = `
     <div class="card home-card">
       <h2>Who's playing?</h2>
-      <p class="sub">Pick your name to see your levels and best time.</p>
+      <p class="sub">Pick your name to see your rounds and best time.</p>
       <select id="nameSelect" disabled><option>Loading names…</option></select>
       <div id="addNameBox" style="display:none; margin-top:14px;">
         <input type="text" id="newNameInput" class="name-input" placeholder="Type your name" maxlength="30">
@@ -451,7 +451,7 @@ function renderLevels(){
     const borderColor = textColor === "#FBF7EE" ? "#FBF7EE" : "var(--ink)";
     const inner = `<div><div class="num">${lv.n}</div><div class="label">${lv.label}</div></div>
          <div class="time">${done ? "best "+fmtTime(rec.levelBestTimes[lv.n])+" · "+rec.levelPoints[lv.n]+" pts" : pointsPerCorrect+" pts/answer"}</div>`;
-    return `<div class="${cls}" role="button" tabindex="0" aria-label="Level ${lv.n}, ${lv.label}" style="background:${lv.color}; color:${textColor}; border-color:${borderColor};" data-level="${lv.n}">${inner}</div>`;
+    return `<div class="${cls}" role="button" tabindex="0" aria-label="Round ${lv.n}, ${lv.label}" style="background:${lv.color}; color:${textColor}; border-color:${borderColor};" data-level="${lv.n}">${inner}</div>`;
   }).join("");
 
   const completedCount = Object.keys(rec.levelBestTimes).length;
@@ -461,11 +461,11 @@ function renderLevels(){
     <div class="levels-header">
       <div class="who">Hi, ${esc(session.name)}! 👋</div>
       <div class="row" style="margin-top:0;">
-        <div class="totalpill">${completedCount}/${TOTAL_LEVELS} levels · ${fmtTime(totalTime)}</div>
+        <div class="totalpill">${completedCount}/${TOTAL_LEVELS} rounds · ${fmtTime(totalTime)}</div>
         <div class="totalpill" style="background:#F2A559;color:var(--ink);">⭐ ${totalPoints} pts</div>
       </div>
     </div>
-    <p class="sub" style="margin:0 0 16px;">Play any level, in any order — higher levels earn more points per answer.</p>
+    <p class="sub" style="margin:0 0 16px;">Play any round, in any order — higher rounds earn more points per answer.</p>
     <div class="grid">${cards}</div>
     <div class="row">
       ${FMT.profile ? "" : '<button class="btn secondary small" id="switchBtn">Switch kid</button>'}
@@ -526,11 +526,11 @@ function renderQuiz(){
   const answered = total - session.queue.length;
   const pct = Math.min(100, Math.round((answered/total)*100));
   const item = session.queue[0];
-  const roundNote = session.round > 1 ? `Round ${session.round} — practicing what you missed · ` : "";
+  const roundNote = session.round > 1 ? `Try ${session.round} — practicing what you missed · ` : "";
   const numpadButtons = [7,8,9,4,5,6,1,2,3].map(d=>`<button data-digit="${d}">${d}</button>`).join("");
   app.innerHTML = `
     <div class="quiz-top">
-      <div class="lvl-tag" style="background:${lv.color}; color:${textColorFor(lv.color)};">Level ${lv.n} · ${lv.label} · ${lv.n*10} pts/answer</div>
+      <div class="lvl-tag" style="background:${lv.color}; color:${textColorFor(lv.color)};">Round ${lv.n} · ${lv.label} · ${lv.n*10} pts/answer</div>
       <div class="row" style="margin-top:0; gap:12px;">
         <div class="timer" id="timerBox" style="${hideTimer?"display:none":""}">⏱ <span id="timerVal">${fmtTime(elapsedSec())}</span></div>
         <button class="btn secondary small" id="timerToggle" aria-pressed="${hideTimer}">${hideTimer?"Show timer":"Hide timer"}</button>
@@ -555,7 +555,7 @@ function renderQuiz(){
             <button class="btn" id="submitBtn" disabled>Check ✓</button>
           </div>
           <div class="feedback" id="feedback"></div>
-          <div class="redo-note">${roundNote}${answered} of ${total} answered this round · ${session.correctThisRound} correct</div>
+          <div class="redo-note">${roundNote}${answered} of ${total} answered this try · ${session.correctThisRound} correct</div>
         </div>
       </div>
     </div>`;
@@ -590,8 +590,8 @@ function renderGiveUpConfirm(){
   const lv = session.level;
   app.innerHTML = `
     <div class="card result-card">
-      <h2>Stop this level?</h2>
-      <p>You're on Level ${lv.n} · ${lv.label}. If you stop now, this attempt won't be saved — but any earlier best times and points stay safe.</p>
+      <h2>Stop this round?</h2>
+      <p>You're on Round ${lv.n} · ${lv.label}. If you stop now, this attempt won't be saved — but any earlier best times and points stay safe.</p>
       <div class="row">
         <button class="btn" id="keepGoingBtn">No, keep going</button>
         <button class="btn secondary" id="confirmGiveUpBtn">Yes, stop and go back</button>
@@ -654,7 +654,7 @@ function renderRoundReview(){
   const missedCount = session.missedQueue.length;
   app.innerHTML = `
     <div class="card result-card">
-      <h2>Round ${session.round} done! 👀</h2>
+      <h2>Try ${session.round} done! 👀</h2>
       <p>You missed <strong>${missedCount}</strong> question${missedCount===1?"":"s"} this round.</p>
       <p>Want to try ${missedCount===1?"it":"them"} again until you get ${missedCount===1?"it":"them all"} right?</p>
       ${mistakesListHtml(session.round)}
@@ -663,7 +663,7 @@ function renderRoundReview(){
         <button class="btn secondary" id="retryNo">No, I'm done</button>
       </div>
       <div class="row">
-        <button class="btn secondary small" id="giveUpBtnRound">Give up on this level ✕</button>
+        <button class="btn secondary small" id="giveUpBtnRound">Give up on this round ✕</button>
       </div>
     </div>`;
   document.getElementById("retryYes").addEventListener("click", ()=>{
@@ -727,7 +727,7 @@ function mistakesListHtml(onlyRound){
   if(onlyRound != null) entries = entries.filter(m=>m.round===onlyRound);
   if(entries.length===0) return "";
   const rows = entries.map(m=>{
-    const roundNote = m.round > 1 ? ` <span style="opacity:0.6;">(round ${m.round})</span>` : "";
+    const roundNote = m.round > 1 ? ` <span style="opacity:0.6;">(try ${m.round})</span>` : "";
     return `<div class="mistakes-row">
       <span class="q">${m.a} × ${m.b}${roundNote}</span>
       <span class="a"><span class="given">${m.given}</span><span class="correct">${m.correct}</span></span>
@@ -745,19 +745,19 @@ function renderLevelComplete(timeSec, n, isNewBestTime, nowFullyDone, totalTimeS
   const completedCount = Object.keys(rec.levelBestTimes).length;
   app.innerHTML = `
     <div class="card result-card">
-      <h2>${resolved ? "Level "+n+" complete! 🎉" : "Level "+n+": good practice! 💪"}</h2>
+      <h2>${resolved ? "Round "+n+" complete! 🎉" : "Round "+n+": good practice! 💪"}</h2>
       <div class="big">${fmtTime(timeSec)}</div>
-      ${resolved ? "" : '<p class="sub">Answer every question right to set a best time for this level.</p>'}
+      ${resolved ? "" : '<p class="sub">Answer every question right to set a best time for this round.</p>'}
       <div class="stat-row">
         <div class="stat"><div class="n">⭐ ${session.pointsThisLevel}</div><div class="l">points earned</div></div>
         <div class="stat"><div class="n">${session.mistakesThisLevel}</div><div class="l">retries needed</div></div>
         <div class="stat"><div class="n">${isNewBestTime?"⭐":"—"}</div><div class="l">${isNewBestTime?"new best time!":(resolved?"best time stands":"no best time yet")}</div></div>
       </div>
       ${mistakesListHtml()}
-      <p class="sub" style="margin-bottom:0;">${completedCount}/${TOTAL_LEVELS} levels completed · pick any level next</p>
+      <p class="sub" style="margin-bottom:0;">${completedCount}/${TOTAL_LEVELS} rounds completed · pick any round next</p>
       <div class="row">
-        <button class="btn" id="mapBtn">Level map</button>
-        <button class="btn secondary" id="againBtn">Play this level again</button>
+        <button class="btn" id="mapBtn">Round map</button>
+        <button class="btn secondary" id="againBtn">Play this round again</button>
       </div>
     </div>`;
   document.getElementById("mapBtn").addEventListener("click", renderLevels);
@@ -774,10 +774,10 @@ function renderAllComplete(totalTimeSoFar, totalPointsSoFar){
         <div class="stat"><div class="n">⭐ ${totalPointsSoFar}</div><div class="l">total points</div></div>
         <div class="stat"><div class="n">${rec.timesFullyCompleted}</div><div class="l">times all-completed</div></div>
       </div>
-      <p>Both your best time and your points can still improve — replay any level to try and beat them.</p>
+      <p>Both your best time and your points can still improve — replay any round to try and beat them.</p>
       ${mistakesListHtml()}
       <div class="row">
-        <button class="btn" id="mapBtn2">Level map</button>
+        <button class="btn" id="mapBtn2">Round map</button>
       </div>
     </div>`;
   document.getElementById("mapBtn2").addEventListener("click", renderLevels);

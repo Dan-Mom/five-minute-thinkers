@@ -375,7 +375,7 @@
 "use strict";
 
 /* =========================================================================
-   Static preview build of the Warning Label Detective course, per the owner's
+   Static preview build of the Warning Label Detective course, on
    request: no dev server / localhost — a single HTML file, open directly
    from disk. One agent per course builds its own preview; an integrating
    agent later merges the course previews into one site.
@@ -421,8 +421,8 @@ var UI = {
   startOverConfirmBody:{zh:"这会清除这台设备上的这次学习记录。",en:"This clears this practice run on this device."},
   confirm:{zh:"确定",en:"Yes, start over"},
   cancel:{zh:"取消",en:"Cancel"},
-  levelA:{zh:"一年级左右",en:"About Grade 1"},
-  levelB:{zh:"三年级左右",en:"About Grade 3"},
+  levelA:{zh:"入门（Starter）",en:"Starter"},
+  levelB:{zh:"挑战（Stretch）",en:"Stretch"},
   langZh:{zh:"中文",en:"中文"},
   langEn:{zh:"English",en:"English"},
   reducedMotionPreview:{zh:"预览减少动画",en:"Preview reduced motion"},
@@ -440,7 +440,7 @@ var UI = {
   notYet:{zh:"还没有，看看提示",en:"Not yet — see the hint"},
   reducedMotionNote:{zh:"已按你的设备设置，减少动画。",en:"Motion is reduced to match your device setting."},
   modelIsAModel:{zh:"这是一个模型：真正的化学物质分子太小了，眼睛根本看不见。我们用“棕色斑点”和“从土壤里爬上来的小圆点”来帮你想象它们是怎么进到食物里的。",en:"This is a model: the real chemical molecules are far too small to see. We use “brown specks” and “dots climbing up from the soil” to help you picture how they end up in food."},
-  startTitle:{zh:"选择年级和语言（中文或 English），然后开始",en:"Choose a level and language (中文 or English), then begin"},
+  startTitle:{zh:"选择难度和语言（中文或 English），然后开始",en:"Choose Starter or Stretch and a language (中文 or English), then begin"},
   startBegin:{zh:"开始学习",en:"Begin"},
   startBlurb:{zh:"大约 5 分钟。你要先猜一猜，再动手试一试，最后用自己的话说清楚。",en:"About 5 minutes. You will predict, try things, and then explain the idea in your own words."},
   noDataNote:{zh:"不收集姓名、声音或图像。进度只存在这台设备上。",en:"No name, voice, or photos are collected. Progress stays on this device only."},
@@ -707,7 +707,7 @@ var PARENT = {
   demoBanner:{zh:"这是本次样品运行的演示数据，只保存在这台设备上。不收集孩子的姓名、账号或云端资料。这不是医学或饮食建议——如果对具体的饮食安排有疑问，请咨询医生或营养师。",en:"This is demo data from this sample run, stored on this device only. No child name, account, or cloud data is collected. This is not medical or dietary advice — a doctor or dietitian can answer any specific concern about your family's diet."},
   reviewUsedFlag:{zh:"本次使用过“审阅模式”跳转场景，时间和作答可能不代表孩子的真实完成情况。",en:"Review mode was used to jump between scenes, so times and answers may not reflect a real child run."},
   rows:{
-    level:{zh:"年级层级",en:"Level"},
+    level:{zh:"难度",en:"Part"},
     language:{zh:"语言模式",en:"Language mode"},
     prediction:{zh:"最初的预测（不评分）",en:"Initial prediction (not scored)"},
     explanation:{zh:"最终解释",en:"Final explanation"},
