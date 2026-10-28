@@ -68,7 +68,7 @@
   .btn:active{ transform:translateY(3px); box-shadow:0 1px 0 rgba(46,46,82,0.35); }
   .btn:disabled{ opacity:0.4; cursor:not-allowed; }
   .btn.secondary{ background:#fff; }
-  .btn.small{ font-size:14px; padding:8px 16px; border-width:2px; }
+  .btn.small{ font-size:14px; padding:8px 16px; border-width:2px; min-height:44px; }
   .row{ display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:18px; }
 
   /* ---- LEVEL GRID (mirrors the binder-sheet layout) ---- */
@@ -148,6 +148,154 @@
   .mistakes-row .a{ font-family:'DM Mono',monospace; font-size:13px; }
   .mistakes-row .a .given{ color:#B23246; text-decoration:line-through; margin-right:6px; }
   .mistakes-row .a .correct{ color:#3E7A1F; font-weight:700; }
+  /* ---- DOZEN GALAXY (a game for the 12 times table; a dozen = 12) ---- */
+  .dz-promo{
+    display:flex; align-items:center; gap:14px; width:100%; min-height:72px; margin:0 0 18px; padding:12px 16px; text-align:left;
+    font-family:'Nunito',sans-serif; color:#F4F7FF; cursor:pointer;
+    background:#0E1B4D; border:3px solid var(--ink); border-radius:16px; box-shadow:var(--card-shadow);
+    background-image:radial-gradient(1.5px 1.5px at 18px 16px,#fff 60%,transparent),radial-gradient(1px 1px at 70px 40px,#cfe0ff 60%,transparent),radial-gradient(1.5px 1.5px at 120px 22px,#fff 60%,transparent);
+    background-size:150px 60px;
+  }
+  .dz-promo:focus-visible,.dz button:focus-visible{ outline:4px solid #FFE27A; outline-offset:2px; }
+  .dz-promo .ico{ font-size:34px; line-height:1; flex:none; }
+  .dz-promo .txt{ flex:1; min-width:0; }
+  .dz-promo .txt b{ display:block; font-family:'Baloo 2',cursive; font-size:22px; line-height:1.15; }
+  .dz-promo .txt small{ display:block; font-size:14px; font-weight:700; color:#C9D6FF; }
+  .dz-promo .sum{ flex:none; font-family:'DM Mono',monospace; font-size:14px; color:#FFE27A; text-align:right; }
+  .dz-promo .go{ flex:none; font-family:'Baloo 2',cursive; font-weight:700; background:#F5D949; color:var(--ink); border-radius:12px; padding:8px 14px; min-height:44px; display:flex; align-items:center; }
+  @media (max-width:520px){ .dz-promo{ flex-wrap:wrap; } .dz-promo .sum{ text-align:left; } }
+
+  .dz{ width:100%; }
+  .dz .btn{ min-height:48px; }
+  .dz .btn.small{ min-height:44px; min-width:44px; font-size:15px; }
+  .dz-card{
+    position:relative; overflow:hidden; padding:22px; color:#F4F7FF; background:#0E1B4D; border-color:#0B1438;
+    background-image:linear-gradient(180deg,#14246B 0%,#0E1B4D 55%,#0A133A 100%);
+  }
+  .dz-card::before{
+    content:""; position:absolute; inset:0; pointer-events:none; opacity:.55;
+    background-image:radial-gradient(1.5px 1.5px at 20px 30px,#fff 60%,transparent),radial-gradient(1px 1px at 90px 80px,#cfe0ff 60%,transparent),radial-gradient(1.5px 1.5px at 150px 40px,#fff 60%,transparent),radial-gradient(1px 1px at 60px 140px,#fff 60%,transparent),radial-gradient(1.5px 1.5px at 170px 120px,#cfe0ff 60%,transparent);
+    background-size:200px 170px; animation:dz-twinkle 5s ease-in-out infinite alternate;
+  }
+  .dz-card > *{ position:relative; z-index:1; }
+  @keyframes dz-twinkle{ from{ opacity:.35; } to{ opacity:.65; } }
+  .dz-card h2,.dz-card h3{ color:#fff; }
+  .dz-card p{ margin:8px 0; line-height:1.45; }
+  .dz-tag{ background:#0E1B4D; color:#fff; border-color:var(--ink); }
+  .dz-blue{ color:#7FD6FF; font-weight:800; }
+  .dz-pinkt{ color:#FF9CC4; font-weight:800; }
+  .dz-trick{ margin:12px 0; padding:10px 14px; border:2px dashed #8FA2FF; border-radius:12px; font-family:'DM Mono',monospace; font-size:15px; line-height:1.5; background:rgba(255,255,255,.06); }
+
+  /* pods and crystals */
+  .dz-pod{ width:92px; height:auto; display:block; }
+  .dz-pod-shell{ fill:#1C2C78; stroke:#9FB0FF; stroke-width:3; }
+  .dz-gem-b{ fill:#4FC3F7; stroke:#E8F7FF; stroke-width:1.2; }
+  .dz-gem-p{ fill:#FF7DB1; stroke:#FFE3EE; stroke-width:1.2; }
+  .dz-spark{ stroke:#fff; stroke-width:1.4; stroke-linecap:round; }
+  .dz-tray{ display:flex; flex-wrap:wrap; gap:8px; justify-content:center; padding:10px; border:2px solid #34469A; border-radius:14px; background:rgba(8,14,46,.55); }
+  .dz-tray[data-focus="blue"] .dz-g-pink,.dz-tray[data-focus="pink"] .dz-g-blue{ opacity:.25; }
+  .dz-tray[data-pop="blue"] .dz-g-blue,.dz-tray[data-pop="pink"] .dz-g-pink{ animation:dz-pop .5s ease-out; transform-box:fill-box; transform-origin:center; }
+  @keyframes dz-pop{ 0%{ transform:scale(1); } 40%{ transform:scale(1.25); } 100%{ transform:scale(1); } }
+  .dz-legend{ margin-top:8px; font-size:14px; font-weight:700; text-align:center; }
+  .dz-sealed{ padding:18px 12px; text-align:center; border:2px dashed #5C6FC9; border-radius:14px; background:rgba(8,14,46,.55); font-weight:700; }
+  .dz-words{ margin-top:8px; padding:8px 12px; border-radius:12px; background:rgba(255,255,255,.1); font-family:'DM Mono',monospace; font-size:14px; line-height:1.5; text-align:center; }
+  .dz-one{ display:flex; justify-content:center; padding:10px; border:2px solid #34469A; border-radius:14px; background:rgba(8,14,46,.55); }
+
+  /* captain */
+  .dz-captain{ display:flex; align-items:center; gap:12px; margin-bottom:12px; }
+  .dz-avatar{ flex:none; width:64px; height:64px; border-radius:50%; background:#22348C; border:3px solid #9FB0FF; display:flex; align-items:center; justify-content:center; font-size:36px; animation:dz-hello .5s ease-out; }
+  @keyframes dz-hello{ from{ transform:translateY(8px) scale(.85); opacity:.3; } to{ transform:none; opacity:1; } }
+  .dz-bubble{ position:relative; flex:1; padding:10px 14px; border-radius:16px; background:#fff; color:var(--ink); font-weight:700; line-height:1.35; }
+  .dz-bubble::before{ content:""; position:absolute; left:-9px; top:22px; border:9px solid transparent; border-left:0; border-right-color:#fff; }
+
+  /* layout of a flight */
+  .dz-top{ display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:14px; }
+  .dz-top .grp{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .dz-cols{ display:flex; gap:22px; align-items:flex-start; }
+  .dz-scene{ flex:1 1 55%; min-width:0; }
+  .dz-play{ flex:1 1 45%; min-width:0; text-align:center; }
+  @media (max-width:760px){ .dz-cols{ flex-direction:column; gap:14px; } .dz-scene,.dz-play{ flex:none; width:100%; } .dz-card{ padding:16px; } }
+  .dz-stepl{ font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.5px; color:#BFD0FF; }
+  .dz-big{ font-family:'Baloo 2',cursive; font-size:clamp(34px,7vw,52px); line-height:1.1; margin:4px 0 6px; color:#fff; }
+  .dz-sub{ font-size:15px; font-weight:700; color:#DCE6FF; margin:0 0 10px; }
+  .dz-chips{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:8px; }
+  .dz-chip{ padding:4px 10px; border-radius:999px; font-family:'DM Mono',monospace; font-size:14px; background:rgba(255,255,255,.12); border:1px solid #6F82D8; }
+  .dz-answer{ color:var(--ink); max-width:220px; }
+  .dz-answer.empty{ color:#6B6859; }
+  .dz-card h2:focus,.dz-big:focus{ outline:none; }          /* headings and the question take focus only from code (tabindex -1); a box around them would be noise */
+  .dz-capsvg{ width:1em; height:1em; vertical-align:-0.15em; display:inline-block; }
+  .dz-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin:12px 0 0; }
+  .dz-pad{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; max-width:320px; margin:14px auto 0; }
+  .dz-pad button{ font-family:'Baloo 2',cursive; font-size:28px; font-weight:700; min-height:56px; border-radius:14px; border:3px solid var(--ink); background:#fff; color:var(--ink); cursor:pointer; box-shadow:0 3px 0 rgba(0,0,0,.35); }
+  .dz-pad button:active{ transform:translateY(2px); }
+  .dz-pad button:disabled{ opacity:.45; cursor:not-allowed; }
+  .dz-pad .clear{ background:#FBD9DC; font-size:16px; }
+  .dz-pad .back{ background:#FFE8B8; font-size:22px; }
+  .dz-fb{ min-height:52px; margin-top:12px; font-size:17px; line-height:1.35; }
+  .dz-fb.ok{ color:#A8F0A0; }
+  .dz-fb.no{ color:#FFD0A8; }
+  .dz-fb.info{ color:#DCE6FF; }
+  .dz-combo{ font-family:'Baloo 2',cursive; font-weight:700; color:#FFE27A; min-width:110px; }
+  .dz-progress{ height:12px; border:2px solid var(--ink); border-radius:8px; background:#fff; overflow:hidden; margin-bottom:14px; }
+  .dz-progress > div{ height:100%; background:#4F6BE8; transition:width .25s; }
+
+  /* fuel tank + constellation dots + fuel gauge timer */
+  .dz-meters{ display:flex; gap:16px; align-items:center; flex-wrap:wrap; margin-bottom:12px; }
+  .dz-tankwrap{ display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px; }
+  .dz-tank{ position:relative; width:110px; height:22px; border:3px solid #9FB0FF; border-radius:12px; background:#0A133A; overflow:hidden; }
+  .dz-tank > i{ position:absolute; left:0; top:0; bottom:0; background:linear-gradient(90deg,#4FC3F7,#9BE8FF); transition:width .45s; }
+  .dz-dots{ display:flex; gap:3px; align-items:center; font-weight:800; font-size:14px; }
+  .dz-dots span{ font-size:17px; line-height:1; color:#8E9DE0; }
+  .dz-dots span.on{ color:#FFE27A; text-shadow:0 0 6px #FFE27A; }
+  .dz-gauge{ margin:8px 0 0; }
+  .dz-gauge .bar{ height:14px; border:2px solid #9FB0FF; border-radius:8px; background:#0A133A; overflow:hidden; }
+  .dz-gauge .bar > i{ display:block; height:100%; width:100%; background:#FFB54F; }
+  .dz-gauge small{ display:block; margin-top:4px; font-size:13px; font-weight:700; color:#DCE6FF; min-height:18px; }
+  .dz-fly{ position:fixed; z-index:50; pointer-events:none; font-size:22px; line-height:1; transition:transform .7s ease-in, opacity .7s ease-in; }
+  .dz-fly.blue{ color:#4FC3F7; } .dz-fly.pink{ color:#FF7DB1; }
+
+  /* hub */
+  .dz-flights{ display:grid; gap:12px; margin:14px 0; }
+  .dz-flight{
+    display:flex; align-items:center; gap:14px; width:100%; min-height:72px; padding:12px 14px; text-align:left; cursor:pointer;
+    font-family:'Nunito',sans-serif; color:#fff; background:#1B2A6B; border:3px solid #8FA2FF; border-radius:14px;
+  }
+  .dz-flight:hover{ background:#24369A; }
+  .dz-flight .no{ flex:none; width:44px; height:44px; border-radius:50%; background:#F5D949; color:var(--ink); font-family:'Baloo 2',cursive; font-weight:800; font-size:22px; display:flex; align-items:center; justify-content:center; }
+  .dz-flight .tx{ flex:1; min-width:0; }
+  .dz-flight .tx b{ display:block; font-family:'Baloo 2',cursive; font-size:19px; }
+  .dz-flight .tx small{ display:block; font-size:14px; font-weight:700; color:#C9D6FF; line-height:1.3; }
+  .dz-flight .st{ flex:none; font-size:22px; letter-spacing:2px; color:#FFE27A; }
+  .dz-badges{ display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin:10px 0; }
+  @media (max-width:520px){ .dz-badges{ grid-template-columns:repeat(2,1fr); } }
+  .dz-badge{ padding:10px 8px; text-align:center; border:2px solid #5C6FC9; border-radius:12px; background:rgba(255,255,255,.07); font-size:13px; font-weight:700; line-height:1.3; }
+  .dz-badge .i{ display:block; font-size:30px; line-height:1.2; }
+  .dz-badge.off{ opacity:.8; border-style:dashed; }
+  .dz-badge.off .i{ filter:grayscale(1) brightness(.7); }
+  .dz-badge.on{ border-color:#FFE27A; background:rgba(255,226,122,.12); }
+  .dz-map{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:10px 0; }
+  @media (max-width:640px){ .dz-map{ grid-template-columns:repeat(2,1fr); } }
+  .dz-map figure{ margin:0; text-align:center; }
+  .dz-map svg{ width:100%; height:auto; background:rgba(8,14,46,.55); border:2px solid #34469A; border-radius:10px; }
+  .dz-map figcaption{ font-size:13px; font-weight:700; margin-top:2px; }
+  .dz-map .full svg{ border-color:#FFE27A; }
+  .dz-bigstars{ font-size:44px; letter-spacing:6px; color:#FFE27A; margin:6px 0; }
+  .dz-bigstars .pop{ display:inline-block; animation:dz-pop .6s ease-out both; }
+  .dz-newbadge{ margin:10px auto; padding:10px 14px; max-width:380px; border:2px solid #FFE27A; border-radius:12px; background:rgba(255,226,122,.12); font-weight:800; }
+  .dz-statrow{ display:flex; justify-content:center; gap:26px; flex-wrap:wrap; margin:14px 0; }
+  .dz-statrow .n{ font-family:'Baloo 2',cursive; font-size:26px; }
+  .dz-statrow .l{ font-size:12px; text-transform:uppercase; letter-spacing:.5px; color:#C9D6FF; }
+  .dz-list{ max-width:380px; margin:10px auto; text-align:left; border:2px solid #34469A; border-radius:12px; overflow:hidden; }
+  .dz-list div{ padding:8px 12px; border-bottom:1px solid #34469A; font-size:15px; }
+  .dz-list div:last-child{ border-bottom:none; }
+  .dz-selftest li{ font-family:'DM Mono',monospace; font-size:14px; margin:4px 0; }
+  .dz-selftest .bad{ color:#B23246; font-weight:800; }
+  .dz-tag{ font-family:'Baloo 2',cursive; font-weight:700; padding:6px 14px; border-radius:20px; border:3px solid #8FA2FF; background:#0E1B4D; color:#fff; }
+  .dz-sr{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+  @media (prefers-reduced-motion: reduce){
+    .dz-card::before,.dz-avatar,.dz-tray .dz-g-blue,.dz-tray .dz-g-pink,.dz-bigstars .pop{ animation:none !important; }
+    .dz *,.dz-promo *,.dz-fly{ transition:none !important; animation:none !important; }
+  }
   footer{ margin-top:36px; font-size:12px; opacity:0.5; text-align:center; }
 </style>
 </head>
@@ -466,11 +614,13 @@ function renderLevels(){
       </div>
     </div>
     <p class="sub" style="margin:0 0 16px;">Play any round, in any order — higher rounds earn more points per answer.</p>
+    ${dzPromoHtml()}
     <div class="grid">${cards}</div>
     <div class="row">
       ${FMT.profile ? "" : '<button class="btn secondary small" id="switchBtn">Switch kid</button>'}
     </div>`;
   const sw = document.getElementById("switchBtn"); if(sw) sw.addEventListener("click", renderHome);
+  dzWireOpen();
   document.querySelectorAll(".lvl-card").forEach(el=>{
     el.addEventListener("click", ()=> startLevel(parseInt(el.dataset.level)) );
     el.addEventListener("keydown", (e)=>{ if(e.key==="Enter" || e.key===" "){ e.preventDefault(); startLevel(parseInt(el.dataset.level)); } });
@@ -759,8 +909,10 @@ function renderLevelComplete(timeSec, n, isNewBestTime, nowFullyDone, totalTimeS
         <button class="btn" id="mapBtn">Round map</button>
         <button class="btn secondary" id="againBtn">Play this round again</button>
       </div>
+      ${dzTryButtonHtml(n)}
     </div>`;
   document.getElementById("mapBtn").addEventListener("click", renderLevels);
+  dzWireOpen();
   document.getElementById("againBtn").addEventListener("click", ()=>startLevel(n));
 }
 function renderAllComplete(totalTimeSoFar, totalPointsSoFar){
@@ -779,8 +931,10 @@ function renderAllComplete(totalTimeSoFar, totalPointsSoFar){
       <div class="row">
         <button class="btn" id="mapBtn2">Round map</button>
       </div>
+      ${dzTryButtonHtml(session.level.n)}
     </div>`;
   document.getElementById("mapBtn2").addEventListener("click", renderLevels);
+  dzWireOpen();
 }
 
 document.addEventListener("keydown", (e)=>{            // type the answer on a keyboard too
@@ -793,6 +947,709 @@ document.addEventListener("keydown", (e)=>{            // type the answer on a k
   else if(e.key==="Enter"){ const b = document.getElementById("submitBtn"); if(b && !b.disabled){ e.preventDefault(); submitAnswer(); } }
 });
 
+/* =========================================================
+   DOZEN GALAXY — a game for the 12 times table (a dozen = 12).
+   Idea: 12 x n = 10 x n + 2 x n. Every cargo pod holds a dozen star crystals: 10 blue + 2 pink.
+   The block between DZ-CORE-START and DZ-CORE-END is pure logic (no page access): the built-in self-test
+   (open this page with #selftest on the end of the address) and node can run it on its own.
+   Words in the game: "flight" = one of the 3 shifts; "pod" = a box of 12; "crystal" = one star crystal.
+   ========================================================= */
+/* DZ-CORE-START */
+const DZ_FLIGHTS = [
+  {id:1, name:"Launch Training", blurb:"The pods are shown. Work out the blue crystals, then the pink, then add them."},
+  {id:2, name:"Space Mission",   blurb:"Orders arrive with the pods hidden. Scan them only if you need a look."},
+  {id:3, name:"Meteor Shower",   blurb:"A mix, and some orders come backwards: you know the crystals, find the pods."}
+];
+const DZ_ORDERS_PER_FLIGHT = 12;
+/* Twelve space characters (no animals). Plain, long-established emoji where possible; the ringed planet is drawn as a tiny inline picture
+   so it looks the same on every iPad, Android and Windows device. "e" is a piece of page markup (an emoji or an inline picture). */
+const DZ_PLANET_SVG = '<svg class="dz-capsvg" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g transform="rotate(-18 12 12)"><ellipse cx="12" cy="12" rx="11" ry="3.6" fill="none" stroke="#FFD27A" stroke-width="1.5"/><circle cx="12" cy="12" r="6.4" fill="#F4A259"/><path d="M6.2 10.6Q12 12 17.8 10.6" fill="none" stroke="#C8702A" stroke-width="1.1"/><path d="M1 12A11 3.6 0 0 0 23 12" fill="none" stroke="#FFD27A" stroke-width="1.8" stroke-linecap="round"/></g></svg>';
+const DZ_CAPTAINS = [
+  {e:"🧑‍🚀", n:"Captain Nova"}, {e:"👽", n:"Captain Zip"}, {e:"🤖", n:"Captain Bolt"}, {e:"👩‍🚀", n:"Captain Luna"},
+  {e:"👾", n:"Captain Blip"}, {e:"🛸", n:"Captain Orbit"}, {e:"🚀", n:"Captain Blaze"}, {e:DZ_PLANET_SVG, n:"Captain Ringo"},
+  {e:"☄️", n:"Captain Comet"}, {e:"🛰️", n:"Captain Beep"}, {e:"🌟", n:"Captain Twinkle"}, {e:"🌕", n:"Captain Crater"}
+];
+const DZ_CONSTELLATIONS = ["Comet Chaser","Little Rocket","Moon Whale","Crown of Stars","Ringed Planet","Star Lantern","Silver Ship","Sun Kite"];
+const DZ_STARS_PER_CONSTELLATION = 12;                       // a dozen stars light one constellation
+const DZ_MAP_SIZE = DZ_STARS_PER_CONSTELLATION * DZ_CONSTELLATIONS.length;   // 96
+const DZ_BADGES = [
+  {id:"cadet",     icon:"🚀", name:"Cadet",          how:"Finish Flight 1"},
+  {id:"pilot",     icon:"🛰️", name:"Pilot",          how:"Finish Flight 2"},
+  {id:"captain",   icon:"🧑‍🚀", name:"Captain",        how:"Finish Flight 3"},
+  {id:"mapper",    icon:"✨", name:"Star Mapper",    how:"Light a whole constellation"},
+  {id:"collector", icon:"⭐", name:"Star Collector", how:"Earn 6 stars on the flights"},
+  {id:"master",    icon:"🌌", name:"Galaxy Master",  how:"Earn 3 stars on every flight"}
+];
+
+function dzAnswer(n){ return 12*n; }
+function dzSplit(n){ return { tens:10*n, twos:2*n, total:12*n }; }
+function dzStepAnswers(n){ const s = dzSplit(n); return [s.tens, s.twos, s.total]; }
+/* a typed answer is only digits (1 to 3 of them, no leading zero) and must equal the expected number exactly. There are no choices, so no wrong "options" exist. */
+function dzIsExact(expected, typed){
+  if(typeof typed !== "string" || !/^[0-9]{1,3}$/.test(typed)) return false;
+  if(typed.length > 1 && typed.charAt(0) === "0") return false;
+  return parseInt(typed, 10) === expected;
+}
+function dzCheck(order, typed){ return dzIsExact(order.answer, typed); }
+/* typing: digits only, at most 3, and a leading 0 is ignored (no answer here is 0 or starts with 0) */
+function dzAddDigit(typed, k){
+  typed = String(typed === undefined || typed === null ? "" : typed); k = String(k);
+  if(!/^[0-9]$/.test(k) || typed.length >= 3) return typed;
+  if(typed === "" && k === "0") return typed;
+  return typed + k;
+}
+/* Launch Training: what one typed answer does to ONE step. cur = {step, stepMiss}. Returns "right", "hint" (first miss on this step: a hint and another go)
+   or "reveal" (second miss on this step: the answer is shown and play moves on). The miss count belongs to a step: a right answer and a reveal both start it again at 0,
+   so the first miss on every step always gets its hint. */
+function dzTrainStep(cur, n, typed){
+  const expected = dzStepAnswers(n)[cur.step - 1];
+  if(dzIsExact(expected, typed)){ cur.stepMiss = 0; return "right"; }
+  cur.stepMiss++;
+  if(cur.stepMiss < 2) return "hint";
+  cur.stepMiss = 0; return "reveal";
+}
+/* hint and reveal wording for a training step ("1 group", "1 ten" and so on, never "1 groups") */
+function dzTrainHint(step, n){
+  if(step === 1) return "Not quite. 10 × "+n+" means "+(n === 1 ? "1 group of 10: count the blue ones" : n+" groups of 10: count by tens")+". Try again!";
+  if(step === 2) return "Not quite. 2 × "+n+" means "+(n === 1 ? "1 pair: count the pink ones" : n+" pairs: count by twos")+". Try again!";
+  return "Not quite. Add the blue number and the pink number. Try again!";
+}
+function dzTrainReveal(step, n){
+  const sp = dzSplit(n);
+  return step === 1 ? "It's "+sp.tens+": "+(n === 1 ? "1 ten" : n+" tens")+"." : step === 2 ? "It's "+sp.twos+": "+(n === 1 ? "1 two" : n+" twos")+"." : "It's "+sp.total+": "+sp.tens+" + "+sp.twos+" = "+sp.total+".";
+}
+/* what finishing a flight tells the passport: ONE event per flight, "activity_completed". There is deliberately no "unit_completed" event: the passport counts that as a learned idea
+   (Times Tables lit, 10 sparks) and that must only come from the 20 rounds. Unit/activity names are 14 characters, the passport's limit. */
+function dzFinishEvents(flight, attempts, hints, hadBefore){
+  return [{ name:"activity_completed", data:{ unit:"dozen-galaxy-"+flight, activity:"dozen-galaxy-"+flight, attempts:attempts, hints:hints, repeat:!!hadBefore } }];
+}
+function dzShuffle(arr, rnd){
+  const a = arr.slice();
+  for(let i=a.length-1;i>0;i--){ const j = Math.floor(rnd()*(i+1)); const t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function dzOrderKey(o){ return o.kind + ":" + o.n; }
+/* kind "pods": n pods are ordered, the child types the crystals (12 x n). kind "reverse": the crystals are given (12 x n), the child types the pods (n). */
+function dzMakeOrder(kind, n, flight, idx){
+  return { id:"f"+flight+"-"+idx+"-"+kind+n, kind:kind, n:n, crystals:12*n, answer: kind === "reverse" ? n : 12*n, firstTry:true, retry:false, captain:0 };
+}
+function dzKinds(rnd){
+  for(let t=0;t<300;t++){
+    const k = dzShuffle(["pods","pods","pods","pods","pods","pods","reverse","reverse","reverse","reverse","reverse","reverse"], rnd);
+    let ok = k[0] === "pods";
+    for(let i=2;i<k.length && ok;i++) if(k[i] === k[i-1] && k[i] === k[i-2]) ok = false;
+    if(ok) return k;
+  }
+  return ["pods","reverse","pods","reverse","pods","reverse","pods","reverse","pods","reverse","pods","reverse"];
+}
+/* captains: each order gets a different captain from its neighbours (12 captains, 12 orders, so all different) */
+function dzAssignCaptains(orders, rnd){
+  const bag = dzShuffle(DZ_CAPTAINS.map((c,i)=>i), rnd);
+  orders.forEach((o,i)=>{ o.captain = bag[i % bag.length]; });
+  return orders;
+}
+function dzBuildOrders(flight, rnd){
+  rnd = rnd || Math.random;
+  const ns = dzShuffle([1,2,3,4,5,6,7,8,9,10,11,12], rnd);
+  if(flight === 1 && ns[0] > 5){ const k = ns.findIndex(x=>x<=5); const t = ns[0]; ns[0] = ns[k]; ns[k] = t; }   // training starts with a small number
+  const kinds = flight === 3 ? dzKinds(rnd) : ns.map(()=>"pods");
+  return dzAssignCaptains(ns.map((n,i)=>dzMakeOrder(kinds[i], n, flight, i+1)), rnd);
+}
+/* missed orders come back in a fresh order; the first one is never the order just served */
+function dzRetryQueue(missed, rnd, lastKey){
+  rnd = rnd || Math.random;
+  const q = dzShuffle(missed, rnd);
+  if(q.length > 1 && lastKey && dzOrderKey(q[0]) === lastKey){ const t = q[0]; q[0] = q[1]; q[1] = t; }
+  q.forEach(o=>{ o.retry = true; });
+  return q;
+}
+function dzStars(total, missedFirstTry, resolved){
+  if(!resolved) return 0;
+  if(missedFirstTry <= 1) return 3;
+  if(missedFirstTry <= 4) return 2;
+  return 1;
+}
+/* a miss only ends the combo. A correct first try adds one. A correct retry leaves it alone. */
+function dzNextCombo(combo, correct, firstTry){
+  if(!correct) return 0;
+  return firstTry ? combo + 1 : combo;
+}
+/* saved data: an additive field on the child's record. Anything missing or damaged is repaired, never thrown away wholesale. */
+function dzNum(v, lo, hi){ v = Math.floor(Number(v)); if(!isFinite(v)) v = 0; return Math.max(lo, Math.min(hi, v)); }
+function dzNormalise(d){
+  const src = (d && typeof d === "object") ? d : {};
+  const out = { v:1, flights:{}, pods:0, badges:[] };
+  for(let i=1;i<=3;i++){
+    const f = (src.flights && typeof src.flights === "object" && src.flights[i] && typeof src.flights[i] === "object") ? src.flights[i] : {};
+    out.flights[i] = { stars: dzNum(f.stars, 0, 3), plays: dzNum(f.plays, 0, 100000) };
+  }
+  out.pods = dzNum(src.pods, 0, 10000000);
+  const known = DZ_BADGES.map(b=>b.id);
+  (Array.isArray(src.badges) ? src.badges : []).forEach(id=>{ if(known.indexOf(id) >= 0 && out.badges.indexOf(id) < 0) out.badges.push(id); });
+  return out;
+}
+function dzTotalStars(d){ return d.flights[1].stars + d.flights[2].stars + d.flights[3].stars; }
+function dzBadgeIds(d){
+  const ids = [];
+  if(d.flights[1].stars > 0) ids.push("cadet");
+  if(d.flights[2].stars > 0) ids.push("pilot");
+  if(d.flights[3].stars > 0) ids.push("captain");
+  if(d.pods >= DZ_STARS_PER_CONSTELLATION) ids.push("mapper");
+  if(dzTotalStars(d) >= 6) ids.push("collector");
+  if(dzTotalStars(d) >= 9) ids.push("master");
+  return ids;
+}
+/* one more order delivered: one more star lights on the map */
+function dzAddPod(d){
+  const n = dzNormalise(d); n.pods += 1; n.badges = dzMergeBadges(n);
+  return n;
+}
+function dzMergeBadges(d){ const set = d.badges.slice(); dzBadgeIds(d).forEach(id=>{ if(set.indexOf(id) < 0) set.push(id); }); return set; }
+/* a finished flight (all orders right in the end): keeps the best stars ever earned; new badges are reported */
+function dzApplyFinish(d, flight, stars){
+  const n = dzNormalise(d), before = n.badges.slice();
+  const f = n.flights[flight];
+  f.stars = Math.max(f.stars, dzNum(stars, 0, 3)); f.plays += 1;
+  n.badges = dzMergeBadges(n);
+  return { d:n, newBadges: n.badges.filter(id=>before.indexOf(id) < 0) };
+}
+/* the star map: 8 constellations of 12 stars. Once all 96 are lit the map stays full (and counts how many times it was filled). */
+function dzMap(pods){
+  let lit = pods % DZ_MAP_SIZE; if(pods > 0 && lit === 0) lit = DZ_MAP_SIZE;
+  return { lit:lit, constellations: Math.floor(lit / DZ_STARS_PER_CONSTELLATION), mapsFilled: Math.floor(pods / DZ_MAP_SIZE) };
+}
+function dzMapPoints(k){            // the 12 star positions of constellation k (a wavy chain, a different shape for each k), inside a 100 x 60 box
+  const pts = [];
+  for(let i=0;i<DZ_STARS_PER_CONSTELLATION;i++){
+    const x = 8 + i * 7.6 + ((i*13 + k*7) % 5) - 2;
+    const y = 30 + (11 + (k % 4) * 3) * Math.sin(i * (0.55 + 0.11 * (k % 5)) + k * 1.3) + ((i*11 + k*3) % 5) - 2;
+    pts.push([Math.round(x*10)/10, Math.round(y*10)/10]);
+  }
+  return pts;
+}
+const DZ_CHEER = ["Pod launched!","Great flying, Captain!","Perfect landing!","Stellar work!","Mission Control says wow!","Crystals delivered!"];
+const DZ_KIND = ["Almost there!","Good try, Captain!","Close! Let's look inside the pods.","Space is tricky. We'll try again!"];
+function dzPick(arr, i){ return arr[Math.abs(i) % arr.length]; }
+
+/* ---- self-test: returns {pass, fail, results:[{name, ok, info}]} ---- */
+function dzSelfTest(){
+  const results = [];
+  function t(name, ok, info){ results.push({ name:name, ok:!!ok, info: ok ? "" : String(info === undefined ? "" : info) }); }
+  function seeded(seed){ let s = seed >>> 0; return function(){ s = (s + 0x6D2B79F5) >>> 0; let x = s; x = Math.imul(x ^ (x >>> 15), x | 1); x ^= x + Math.imul(x ^ (x >>> 7), x | 61); return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }; }
+  let all12 = true, split = true;
+  for(let n=1;n<=12;n++){ if(dzAnswer(n) !== 12*n) all12 = false; const s = dzSplit(n); if(s.tens + s.twos !== s.total || s.total !== 12*n || s.tens !== 10*n || s.twos !== 2*n) split = false; }
+  t("every n from 1 to 12: answer is 12 x n", all12);
+  t("every n from 1 to 12: 10 x n + 2 x n = 12 x n", split);
+  let stepsOk = true; for(let n=1;n<=12;n++){ const a = dzStepAnswers(n); if(a[0]+a[1] !== a[2] || a[2] !== 12*n) stepsOk = false; }
+  t("the 3 training steps add up to the answer", stepsOk);
+  let covers = true, revExact = true, noDup = true, sizes = true, noChoices = true, kindsOk = true, firstOk = true, capsOk = true, ansOk = true;
+  for(let flight=1;flight<=3;flight++){
+    for(let run=0;run<300;run++){
+      const rnd = run % 2 ? seeded(1000*flight+run) : Math.random;
+      const os = dzBuildOrders(flight, rnd);
+      if(os.length !== DZ_ORDERS_PER_FLIGHT) sizes = false;
+      const ns = os.map(o=>o.n).sort((a,b)=>a-b).join(",");
+      if(ns !== "1,2,3,4,5,6,7,8,9,10,11,12") covers = false;
+      for(let i=0;i<os.length;i++){
+        const o = os[i];
+        if(i > 0 && (dzOrderKey(o) === dzOrderKey(os[i-1]) || o.n === os[i-1].n)) noDup = false;
+        if(i > 0 && o.captain === os[i-1].captain) capsOk = false;
+        if(o.kind === "reverse"){ if(flight !== 3) kindsOk = false; if(o.crystals % 12 !== 0 || o.crystals / 12 !== o.answer || o.answer !== o.n || o.answer < 1 || o.answer > 12 || !Number.isInteger(o.answer)) revExact = false; }
+        else { if(o.answer !== 12*o.n) ansOk = false; }
+        if("choices" in o || "options" in o || "distractors" in o) noChoices = false;
+      }
+      if(flight === 1 && os[0].n > 5) firstOk = false;
+      if(flight === 3){ const rv = os.filter(o=>o.kind === "reverse").length; if(rv !== 6) kindsOk = false; if(os[0].kind !== "pods") kindsOk = false; for(let i=2;i<os.length;i++) if(os[i].kind === os[i-1].kind && os[i].kind === os[i-2].kind) kindsOk = false; }
+      if(flight !== 3 && os.some(o=>o.kind !== "pods")) kindsOk = false;
+    }
+  }
+  t("each flight has 12 orders", sizes);
+  t("each flight serves every n from 1 to 12 once", covers);
+  t("no two orders in a row are the same (or the same n)", noDup);
+  t("neighbouring orders have different captains", capsOk);
+  t("pod orders: answer is 12 x n", ansOk);
+  t("reverse orders divide exactly (crystals / 12 = whole pods, 1 to 12)", revExact);
+  t("only Meteor Shower has reverse orders (6 of 12, never 3 in a row, never first)", kindsOk);
+  t("Launch Training starts with a small number", firstOk);
+  t("orders carry no answer choices (typed answers only)", noChoices);
+  /* checking typed answers */
+  const o84 = dzMakeOrder("pods", 7, 2, 1), r7 = dzMakeOrder("reverse", 7, 3, 1);
+  t("typed 84 is right for 7 pods", dzCheck(o84, "84") && o84.answer === 84);
+  t("typed 7 is right for the reverse order 84 crystals", dzCheck(r7, "7") && r7.crystals === 84);
+  const bad = ["", " 84", "84 ", "8 4", "084", "84.0", "+84", "-84", "8a", "abc", "1234", "83", "85", "48"];
+  t("wrong or odd typed answers are refused", bad.every(s=>!dzCheck(o84, s)), bad.filter(s=>dzCheck(o84, s)).join("|"));
+  t("non-text input is refused", !dzCheck(o84, 84) && !dzCheck(o84, null) && !dzCheck(o84, undefined));
+  let exhaustive = true; for(let n=1;n<=12;n++){ const p = dzMakeOrder("pods", n, 2, 1), r = dzMakeOrder("reverse", n, 3, 1); if(!dzCheck(p, String(12*n)) || !dzCheck(r, String(n))) exhaustive = false; for(let m=0;m<=150;m++) if(m !== 12*n && dzCheck(p, String(m))) exhaustive = false; }
+  t("only the one right number passes, for every n", exhaustive);
+  /* retries */
+  const base = dzBuildOrders(2, seeded(7)); let rq = true;
+  for(let run=0;run<200;run++){ const m = base.slice(0, 2 + (run % 6)); const last = dzOrderKey(m[0]); const q = dzRetryQueue(m.map(o=>Object.assign({}, o)), seeded(run), last); if(q.length !== m.length) rq = false; for(let i=1;i<q.length;i++) if(dzOrderKey(q[i]) === dzOrderKey(q[i-1])) rq = false; if(q.length > 1 && dzOrderKey(q[0]) === last) rq = false; if(!q.every(o=>o.retry)) rq = false; }
+  t("retry queue: same orders, no repeat in a row, first is not the one just served", rq);
+  /* stars, combo */
+  t("stars: 0 or 1 miss = 3, up to 4 = 2, more = 1, unfinished = 0", dzStars(12,0,true) === 3 && dzStars(12,1,true) === 3 && dzStars(12,2,true) === 2 && dzStars(12,4,true) === 2 && dzStars(12,5,true) === 1 && dzStars(12,12,true) === 1 && dzStars(12,0,false) === 0);
+  t("combo: first-try right adds, retry-right keeps, a miss only resets", dzNextCombo(2,true,true) === 3 && dzNextCombo(2,true,false) === 2 && dzNextCombo(5,false,true) === 0 && dzNextCombo(0,false,false) === 0);
+  /* saved data */
+  const old = dzNormalise(undefined), junk = dzNormalise({ flights:{ 1:{ stars:"9", plays:-4 }, 2:"x", 3:{ stars:2.7, plays:"3" } }, pods:"abc", badges:["cadet","cadet","nope", 5] }), good = dzNormalise({ flights:{1:{stars:3,plays:2}}, pods:30, badges:["cadet"] });
+  t("old record without the new field becomes a clean empty one", old.pods === 0 && old.badges.length === 0 && [1,2,3].every(i=>old.flights[i].stars === 0 && old.flights[i].plays === 0));
+  t("damaged saved data is repaired, not crashed on", junk.flights[1].stars === 3 && junk.flights[1].plays === 0 && junk.flights[2].stars === 0 && junk.flights[3].stars === 2 && junk.flights[3].plays === 3 && junk.pods === 0 && junk.badges.join() === "cadet");
+  t("good saved data survives a round trip", JSON.stringify(dzNormalise(JSON.parse(JSON.stringify(good)))) === JSON.stringify(good) && good.pods === 30);
+  const a = dzApplyFinish(old, 1, 2), b = dzApplyFinish(a.d, 1, 1);
+  t("finishing a flight keeps the best stars (never lowers them) and reports the Cadet badge once", a.d.flights[1].stars === 2 && b.d.flights[1].stars === 2 && b.d.flights[1].plays === 2 && a.newBadges.join() === "cadet" && b.newBadges.length === 0);
+  let d = old; for(let i=0;i<12;i++) d = dzAddPod(d);
+  t("12 orders delivered light one whole constellation and the Star Mapper badge", d.pods === 12 && dzMap(d.pods).constellations === 1 && d.badges.indexOf("mapper") >= 0);
+  const full = dzNormalise({ flights:{1:{stars:3,plays:1},2:{stars:3,plays:1},3:{stars:3,plays:1}} });
+  t("badge ladder: Cadet, Pilot, Captain, Star Collector, Galaxy Master", dzBadgeIds(full).join() === "cadet,pilot,captain,collector,master");
+  t("star map: lit count, constellations, and a full map stays full", dzMap(0).lit === 0 && dzMap(5).lit === 5 && dzMap(96).lit === 96 && dzMap(96).mapsFilled === 1 && dzMap(100).lit === 4 && dzMap(30).constellations === 2);
+  const pts = dzMapPoints(3); t("each constellation has 12 star positions inside the box", pts.length === 12 && pts.every(p=>p[0] >= 0 && p[0] <= 100 && p[1] >= 0 && p[1] <= 60) && [0,1,2,3,4,5,6,7].every(k=>dzMapPoints(k).every(p=>p[0] >= 0 && p[0] <= 100 && p[1] >= 2 && p[1] <= 58)));
+  /* Launch Training: the first miss on EVERY step gives a hint and a second try (never an instant reveal), even straight after an earlier miss */
+  let hintFirst = true, afterMiss = true, afterReveal = true, secondReveals = true, hintBad = "";
+  for(let n=1;n<=12;n++){
+    const ans = dzStepAnswers(n), wrong = String(ans[0] + 1);
+    for(let s=1;s<=3;s++){                                                  // a fresh start: the first miss on step s is a hint, the second a reveal
+      const c = { step:s, stepMiss:0 };
+      if(dzTrainStep(c, n, "999") !== "hint") hintFirst = false;
+      if(dzTrainStep(c, n, "999") !== "reveal") secondReveals = false;
+    }
+    const c = { step:1, stepMiss:0 };                                       // miss once, then right, step by step: every later step still starts with a hint
+    for(let s=1;s<=3;s++){
+      c.step = s;
+      if(dzTrainStep(c, n, "998") !== "hint") afterMiss = false;
+      if(dzTrainStep(c, n, String(ans[s-1])) !== "right") afterMiss = false;
+    }
+    const d2 = { step:1, stepMiss:0 };                                      // miss twice (reveal), then the next step: its first miss is a hint again
+    for(let s=1;s<=3;s++){
+      d2.step = s;
+      if(dzTrainStep(d2, n, wrong === String(ans[s-1]) ? "997" : wrong) !== "hint") afterReveal = false;
+      if(dzTrainStep(d2, n, "996") !== "reveal") afterReveal = false;
+    }
+    for(let s=1;s<=3;s++){ const h = dzTrainHint(s, n), r = dzTrainReveal(s, n); if(/\b1 (groups|pairs|tens|twos|pods|crystals)\b/.test(h + " " + r)) hintBad = hintBad + s + "/" + n + " "; }
+  }
+  t("Launch Training: first miss on every step gives a hint and a second try", hintFirst && secondReveals);
+  t("Launch Training: a miss followed by a right answer does not take the hint from the next step", afterMiss);
+  t("Launch Training: after the answer was shown, the next step's first miss is a hint again", afterReveal);
+  t("training hints and reveals use '1 group / 1 pair / 1 ten / 1 two' (never '1 groups')", hintBad === "" && dzTrainHint(1, 1).indexOf("1 group of 10") >= 0 && dzTrainReveal(1, 1) === "It's 10: 1 ten." && dzTrainReveal(2, 1) === "It's 2: 1 two.", hintBad);
+  /* typing: a leading 0 is ignored, 3 digits at most */
+  t("typing: a leading 0 is ignored, never more than 3 digits, digits only", dzAddDigit("", "0") === "" && dzAddDigit("", "9") === "9" && dzAddDigit("9", "0") === "90" && dzAddDigit("123", "4") === "123" && dzAddDigit("5", "x") === "5" && dzAddDigit("", "00") === "" && dzAddDigit(undefined, "7") === "7");
+  /* the passport: one activity_completed per flight and NO unit_completed (that would light Times Tables as a learned idea) */
+  let evOk = true, evInfo = "";
+  for(let f=1;f<=3;f++) for(const had of [false, true]){
+    const evs = dzFinishEvents(f, 2, 1, had), e0 = evs[0];
+    if(evs.length !== 1 || e0.name !== "activity_completed" || e0.data.unit !== "dozen-galaxy-" + f || e0.data.activity !== e0.data.unit || e0.data.unit.length > 14 || e0.data.repeat !== had || e0.data.attempts !== 2 || e0.data.hints !== 1){ evOk = false; evInfo = JSON.stringify(evs); }
+  }
+  t("finishing a flight sends exactly one activity_completed (unit dozen-galaxy-1/2/3, 14 characters) and no unit_completed", evOk, evInfo);
+  /* captains: twelve different space characters, no animals */
+  const animals = ["🐙","🦄","🐢","🦉","🐼","🐶","🐱","🐻","🦊","🐸","🐧","🦁","🐵","🐰","🐯","🐨","🐷","🐮","🐔","🦖","🦕","🐬","🐳","🦋"];
+  t("captains: 12 different characters, each with a name, all from space (no animals)", DZ_CAPTAINS.length === 12 && new Set(DZ_CAPTAINS.map(c=>c.e)).size === 12 && new Set(DZ_CAPTAINS.map(c=>c.n)).size === 12 && DZ_CAPTAINS.every(c=>/^Captain \w+$/.test(c.n) && !animals.some(a=>c.e.indexOf(a) >= 0)));
+  const pass = results.filter(r=>r.ok).length;
+  return { pass:pass, fail:results.length - pass, results:results };
+}
+/* DZ-CORE-END */
+
+/* ---------- Dozen Galaxy: screens and game flow (uses the pure functions above) ---------- */
+const DZ_TIMER_KEY = "mathfacts_dozen_timer_v1";          // only remembers whether the optional fuel gauge is on
+const DZ_GAUGE_MS = 30000;
+let dzTimerOn = false; try{ dzTimerOn = localStorage.getItem(DZ_TIMER_KEY) === "1"; }catch(e){}
+let dz = { active:false };
+let dzKbd = false;                                         // true while the child is typing on a real keyboard
+let dzTimerHandle = null;
+let dzSayTimer = null;
+
+const $dz = (id)=>document.getElementById(id);
+function dzReduced(){ try{ return window.matchMedia("(prefers-reduced-motion: reduce)").matches; }catch(e){ return false; } }
+function dzPlural(n, one, many){ return n + " " + (n === 1 ? one : many); }
+function dzSay(text){
+  let l = $dz("dzLive");
+  if(!l){ l = document.createElement("div"); l.id = "dzLive"; l.className = "dz-sr"; l.setAttribute("role","status"); l.setAttribute("aria-live","polite"); document.body.appendChild(l); }
+  clearTimeout(dzSayTimer); l.textContent = ""; dzSayTimer = setTimeout(()=>{ l.textContent = text; }, 40);   // a newer message always replaces an older one that has not been read out yet
+}
+function dzRec(){ return dzNormalise(session.rec && session.rec.dozen); }
+function dzSave(d){ try{ session.rec.dozen = d; saveKidRecord(session.name, session.rec); }catch(e){} }
+function dzStarText(n){ return "★".repeat(n) + "☆".repeat(3 - n); }
+function dzStopTimer(){ if(dzTimerHandle){ clearInterval(dzTimerHandle); dzTimerHandle = null; } }
+function dzLeave(){ dzStopTimer(); dz.active = false; }
+
+/* ---- pictures ---- */
+function dzGem(cx, cy, pink){
+  const d = "M"+cx+" "+(cy-6.5)+"L"+(cx+5.5)+" "+cy+"L"+cx+" "+(cy+6.5)+"L"+(cx-5.5)+" "+cy+"Z";
+  const sp = pink ? '<path class="dz-spark" d="M'+(cx-2.2)+" "+cy+"H"+(cx+2.2)+"M"+cx+" "+(cy-2.2)+"V"+(cy+2.2)+'"/>' : '<path class="dz-spark" d="M'+(cx-1.6)+" "+(cy-2)+"L"+(cx+0.4)+" "+(cy-3.6)+'"/>';
+  return '<path class="'+(pink ? "dz-gem-p" : "dz-gem-b")+'" d="'+d+'"/>'+sp;
+}
+function dzPodSvg(){        // one pod: 6 columns x 2 rows = 12 crystals: the first 5 columns are blue (10), the last column is pink (2)
+  let blue = "", pink = "";
+  for(let c=0;c<6;c++) for(let r=0;r<2;r++){ const g = dzGem(15 + c*16.4, 15 + r*14, c === 5); if(c === 5) pink += g; else blue += g; }
+  return '<svg class="dz-pod" viewBox="0 0 112 44" aria-hidden="true" focusable="false"><rect class="dz-pod-shell" x="2" y="2" width="108" height="40" rx="16"/><g class="dz-g-blue">'+blue+'</g><g class="dz-g-pink">'+pink+'</g></svg>';
+}
+function dzTrayHtml(n, focus, pop){
+  let pods = ""; for(let i=0;i<n;i++) pods += dzPodSvg();
+  return '<div class="dz-tray" data-focus="'+(focus || "all")+'" data-pop="'+(pop || "")+'" role="img" aria-label="'+dzPlural(n,"pod","pods")+'. Every pod holds 10 blue crystals and 2 pink crystals.">'+pods+'</div>';
+}
+function dzMapHtml(pods){
+  const m = dzMap(pods); let figs = "";
+  for(let k=0;k<DZ_CONSTELLATIONS.length;k++){
+    const pts = dzMapPoints(k), lit = Math.max(0, Math.min(DZ_STARS_PER_CONSTELLATION, m.lit - k*DZ_STARS_PER_CONSTELLATION));
+    let lines = "", dots = "";
+    for(let i=0;i<pts.length;i++){
+      if(i > 0) lines += '<line x1="'+pts[i-1][0]+'" y1="'+pts[i-1][1]+'" x2="'+pts[i][0]+'" y2="'+pts[i][1]+'" stroke="'+(i < lit ? "#FFE27A" : "#3A4A99")+'" stroke-width="'+(i < lit ? 1.4 : 0.8)+'"'+(i < lit ? "" : ' stroke-dasharray="2 2"')+'/>';
+      dots += '<circle cx="'+pts[i][0]+'" cy="'+pts[i][1]+'" r="'+(i < lit ? 3 : 1.8)+'" fill="'+(i < lit ? "#FFE27A" : "#5C6BA8")+'"/>';
+    }
+    figs += '<figure class="'+(lit === DZ_STARS_PER_CONSTELLATION ? "full" : "")+'" aria-label="'+DZ_CONSTELLATIONS[k]+': '+lit+' of 12 stars lit"><svg viewBox="0 0 100 60" aria-hidden="true" focusable="false">'+lines+dots+'</svg><figcaption>'+DZ_CONSTELLATIONS[k]+" "+lit+"/12"+(lit === DZ_STARS_PER_CONSTELLATION ? " ✓" : "")+'</figcaption></figure>';
+  }
+  return '<div class="dz-map" role="group" aria-label="Your star map: '+m.lit+' of '+DZ_MAP_SIZE+' stars lit">'+figs+'</div>';
+}
+function dzBadgesHtml(d){
+  return '<div class="dz-badges">'+DZ_BADGES.map(b=>{
+    const on = d.badges.indexOf(b.id) >= 0;
+    return '<div class="dz-badge '+(on ? "on" : "off")+'" role="group" aria-label="'+b.name+' badge, '+(on ? "earned" : "not earned yet: "+b.how)+'"><span class="i" aria-hidden="true">'+b.icon+'</span><b>'+b.name+'</b><br>'+(on ? "Earned!" : b.how)+'</div>';
+  }).join("")+'</div>';
+}
+
+/* ---- the card on the round map, and the buttons on the finish screens ---- */
+function dzPromoHtml(){
+  const d = dzRec(), stars = dzTotalStars(d), played = stars > 0 || d.pods > 0;
+  const label = "Dozen Galaxy, a space game for the 12 times table. " + (played ? stars + " of 9 stars earned." : "Not played yet.");
+  return '<button class="dz-promo" id="dzOpen" aria-label="'+label+'"><span class="ico" aria-hidden="true">🚀</span><span class="txt"><b>Dozen Galaxy</b><small>A space game to help with the 12 times table</small></span>'
+    + '<span class="sum" aria-hidden="true">'+(played ? "⭐ "+stars+" / 9 stars" : "New!")+'</span><span class="go" aria-hidden="true">Play</span></button>';
+}
+function dzTryButtonHtml(n){
+  return (n === 10 || n === 14) ? '<div class="row"><button class="btn" id="dzTryBtn" style="min-height:48px;">🚀 Try Dozen Galaxy</button></div>' : "";
+}
+function dzWireOpen(){
+  const b = $dz("dzOpen") || $dz("dzTryBtn");
+  if(b) b.addEventListener("click", dzRenderHub);
+}
+
+/* ---- Mission Control (the Dozen Galaxy home) ---- */
+function dzRenderHub(){
+  dzLeave();
+  const d = dzRec(), app = $dz("app"), m = dzMap(d.pods);
+  const flights = DZ_FLIGHTS.map(f=>{
+    const st = d.flights[f.id].stars;
+    return '<button class="dz-flight" data-flight="'+f.id+'" aria-label="Flight '+f.id+', '+f.name+'. '+st+' of 3 stars. '+f.blurb.replace(/"/g,"")+'"><span class="no" aria-hidden="true">'+f.id+'</span><span class="tx"><b>'+f.name+'</b><small>'+f.blurb+'</small></span><span class="st" aria-hidden="true">'+dzStarText(st)+'</span></button>';
+  }).join("");
+  app.innerHTML = '<div class="dz dz-hub">'
+    + '<div class="dz-top"><div class="dz-tag">🚀 Dozen Galaxy</div><div class="grp"><button class="btn secondary small" id="dzToMap">Round map</button></div></div>'
+    + '<div class="card dz-card"><h2 id="dzTitle" tabindex="-1">Mission Control</h2>'
+    + '<p>A <b>dozen</b> is 12. Every cargo pod holds a dozen star crystals: <span class="dz-blue">10 blue</span> and <span class="dz-pinkt">2 pink</span>. Captains ask for pods and you work out the crystals.</p>'
+    + '<div class="dz-one" aria-hidden="true">'+dzPodSvg()+'</div>'
+    + '<div class="dz-trick"><b>The trick:</b> 12 × 7 = 10 × 7 + 2 × 7 = 70 + 14 = 84</div>'
+    + '<h3>Choose a flight</h3><div class="dz-flights">'+flights+'</div>'
+    + '<h3>Your badges</h3>'+dzBadgesHtml(d)
+    + '<h3>Your star map: '+m.lit+' of '+DZ_MAP_SIZE+' stars</h3><p class="dz-sub">Every order you deliver lights a star. A dozen stars finish a constellation.</p>'+dzMapHtml(d.pods)
+    + '</div></div>';
+  $dz("dzToMap").addEventListener("click", ()=>{ renderLevels(); });
+  document.querySelectorAll(".dz-flight").forEach(b=>b.addEventListener("click", ()=>dzStart(parseInt(b.dataset.flight, 10))));
+  window.scrollTo(0, 0);
+  $dz("dzTitle").focus({ preventScroll:true });
+}
+
+/* ---- a flight ---- */
+function dzStart(sh){
+  const orders = dzBuildOrders(sh);
+  dz = { active:true, sh:sh, orders:orders, missed:[], round:1, roundTotal:orders.length, delivered:0, firstTry:0, missedFirst:0, scans:0, combo:0, bestCombo:0,
+         cur:null, typed:"", phase:"ask", fb:null, next:null, token:0, lastKey:null, podsAtStart:dzRec().pods, confirm:false };
+  dzNextOrder();
+}
+function dzNextOrder(){
+  const o = dz.orders[0];
+  dz.cur = { order:o, step: dz.sh === 1 ? 1 : 0, stepMiss:0, stepsDone:0, orderMissed:false, done:false, scanned:false, pop:"", t0:performance.now() };
+  dz.typed = ""; dz.phase = "ask"; dz.fb = null; dz.next = null; dz.token++;
+  dzDraw(); dzFocusQuestion();
+  dzSay(dzSpeech(o) + (dz.sh === 1 ? " Step 1 of 3." : ""));
+}
+/* a child typing on a keyboard: after the screen is redrawn for the next question, keep the keyboard place at the question (not back at the top of the page) */
+function dzFocusQuestion(){
+  if(!dzKbd) return;
+  const q = $dz("dzBig"); if(q){ q.setAttribute("tabindex", "-1"); q.focus({ preventScroll:true }); }
+}
+/* Enter pressed again straight after a wrong answer must not skip the explanation (and a held-down Enter never does) */
+function dzTooSoonToSkip(){
+  return !!(dz.fb && dz.fb.cls !== "ok" && dz.fb.t && performance.now() - dz.fb.t < 800);
+}
+function dzSpeech(o){
+  const cap = DZ_CAPTAINS[o.captain];
+  return o.kind === "reverse" ? cap.n+" says: the station needs "+o.crystals+" crystals. How many pods?" : cap.n+" says: "+dzPlural(o.n,"pod","pods")+" for the space station, please!";
+}
+function dzTankPct(){
+  const c = dz.cur, partial = (dz.sh === 1 && c && !c.done) ? c.stepsDone / 3 : 0;
+  return Math.min(100, Math.round((dz.delivered + partial) / DZ_ORDERS_PER_FLIGHT * 100));
+}
+function dzDraw(){
+  dzStopTimer();
+  if(dz.phase === "fb" && dz.fb && !dz.fb.t) dz.fb.t = performance.now();       // when this feedback first appeared (see dzTooSoonToSkip)
+  const app = $dz("app"), cur = dz.cur, o = cur.order, cap = DZ_CAPTAINS[o.captain], sh = dz.sh, def = DZ_FLIGHTS[sh-1], n = o.n;
+  const sp = dzSplit(n), step = cur.step, answered = dz.roundTotal - dz.orders.length, pct = Math.min(100, Math.round(answered / dz.roundTotal * 100));
+  const orderNo = Math.min(dz.roundTotal, answered + (dz.phase === "ask" ? 1 : 0));
+  const tank = dzTankPct();
+  /* the scene: pods (or sealed), words */
+  const open = o.retry || cur.scanned || sh === 1;
+  let scene;
+  if(o.kind === "pods"){
+    if(open){
+      const focus = step === 1 ? "blue" : step === 2 ? "pink" : "all";
+      scene = dzTrayHtml(n, sh === 1 ? focus : "all", cur.pop);
+      scene += sh === 1
+        ? '<div class="dz-legend">Every pod: <span class="dz-blue">10 blue</span> + <span class="dz-pinkt">2 pink</span></div>'
+        : '<div class="dz-words">Every pod = 10 blue + 2 pink.<br>So '+dzPlural(n,"pod","pods")+' = 10 × '+n+' + 2 × '+n+'</div>';
+    } else scene = '<div class="dz-sealed">🔒 The pods are sealed.<br>Tap <b>Scan</b> to look inside.</div>';
+  } else {
+    scene = open ? '<div class="dz-one" role="img" aria-label="One pod: 10 blue crystals and 2 pink crystals, 12 in all.">'+dzPodSvg()+'</div><div class="dz-words">One pod = 10 blue + 2 pink = 12 crystals</div>'
+                 : '<div class="dz-sealed">🔒 The pods are sealed.<br>Tap <b>Scan</b> to look inside.</div>';
+  }
+  const speech = o.kind === "reverse" ? "“The station needs "+o.crystals+" crystals. How many pods?”" : "“"+dzPlural(n,"pod","pods")+" for the space station, please!”";
+  /* the question */
+  let label = "", big, sub, chips = "";
+  if(step > 0){
+    label = "Step "+step+" of 3";
+    if(step === 1){ big = "10 × "+n+" = ?"; sub = "Count the blue crystals. Every pod has 10 blue ones."; }
+    else if(step === 2){ big = "2 × "+n+" = ?"; sub = "Now the pink crystals. Every pod has 2 pink ones."; }
+    else { big = sp.tens+" + "+sp.twos+" = ?"; sub = "Add the blue and the pink. How many crystals in all?"; }
+    if(step >= 2) chips += '<span class="dz-chip">🔹 blue: '+sp.tens+'</span>';
+    if(step >= 3) chips += '<span class="dz-chip">🔸 pink: '+sp.twos+'</span>';
+  } else if(o.kind === "reverse"){
+    label = "Backwards order"; big = "12 × ? = "+o.crystals; sub = "Each pod holds 12 crystals. How many pods?";
+  } else {
+    label = "Order"; big = "12 × "+n+" = ?"; sub = dzPlural(n,"pod","pods")+", 12 crystals in each. How many crystals in all?";
+  }
+  const actions = dz.phase === "ask"
+    ? '<button class="btn" id="dzCheck" '+(dz.typed === "" ? "disabled" : "")+'>Check ✓</button>' + ((sh > 1 && !o.retry) ? '<button class="btn secondary" id="dzScan" aria-pressed="'+cur.scanned+'">🔍 '+(cur.scanned ? "Hide scan" : "Scan the pods")+'</button>' : "")
+    : '<button class="btn" id="dzNext">Next ▶</button>';
+  const pad = [7,8,9,4,5,6,1,2,3].map(k=>'<button data-k="'+k+'" '+(dz.phase !== "ask" ? "disabled" : "")+'>'+k+'</button>').join("")
+    + '<button class="clear" data-k="clear" aria-label="Clear the answer" '+(dz.phase !== "ask" ? "disabled" : "")+'>Clear</button><button data-k="0" '+(dz.phase !== "ask" ? "disabled" : "")+'>0</button><button class="back" data-k="back" aria-label="Backspace" '+(dz.phase !== "ask" ? "disabled" : "")+'>⌫</button>';
+  let dots = ""; for(let i=0;i<DZ_ORDERS_PER_FLIGHT;i++) dots += '<span class="'+(i < dz.delivered ? "on" : "")+'">★</span>';
+  const gauge = (sh === 3 && dzTimerOn) ? '<div class="dz-gauge"><div class="bar" role="img" aria-label="Fuel gauge. Only a gentle guide: nothing happens when it runs out."><i id="dzGaugeFill"></i></div><small id="dzGaugeNote"></small></div>' : "";
+  const answerShown = dz.typed === "" ? "?" : dz.typed;
+  app.innerHTML = '<div class="dz">'
+    + '<div class="dz-top"><div class="dz-tag">🚀 Flight '+sh+' · '+def.name+'</div><div class="grp">'
+    + (sh === 3 ? '<button class="btn secondary small" id="dzGaugeBtn" aria-pressed="'+dzTimerOn+'">Fuel gauge: '+(dzTimerOn ? "on" : "off")+'</button>' : '')
+    + '<button class="btn secondary small" id="dzLeaveBtn">Leave ✕</button></div></div>'
+    + '<div class="dz-progress" role="progressbar" aria-label="Orders this try" aria-valuemin="0" aria-valuemax="'+dz.roundTotal+'" aria-valuenow="'+answered+'"><div style="width:'+pct+'%"></div></div>'
+    + '<div class="card dz-card">'
+    + '<div class="dz-meters"><div class="dz-tankwrap"><span aria-hidden="true">⛽ Fuel</span><div class="dz-tank" id="dzTank" role="img" aria-label="Fuel tank '+tank+' percent full"><i style="width:'+tank+'%"></i></div></div>'
+    + '<div class="dz-dots" role="img" aria-label="Constellation this flight: '+dz.delivered+' of 12 stars lit">'+dots+'</div>'
+    + '<div class="dz-combo" id="dzCombo">'+(dz.combo >= 2 ? "🔥 Combo ×"+dz.combo : "")+'</div></div>'
+    + gauge
+    + '<div class="dz-cols"><div class="dz-scene" id="dzScene"><div class="dz-captain"><div class="dz-avatar" aria-hidden="true">'+cap.e+'</div><div class="dz-bubble"><b>'+cap.n+'</b><br>'+speech+'</div></div>'+scene+'</div>'
+    + '<div class="dz-play"><div class="dz-stepl">'+label+'</div><div class="dz-big" id="dzBig">'+big+'</div><p class="dz-sub">'+sub+'</p><div class="dz-chips">'+chips+'</div>'
+    + '<div class="answer-display dz-answer '+(dz.typed === "" ? "empty" : "")+(dz.fb && dz.phase === "fb" ? (dz.fb.cls === "ok" ? " correct" : dz.fb.cls === "no" ? " wrong" : "") : "")+'" id="dzAnswer" aria-label="Your answer: '+(dz.typed === "" ? "nothing typed yet" : dz.typed)+'">'+answerShown+'</div>'
+    + '<div class="dz-actions">'+actions+'</div>'
+    + '<div class="dz-fb '+(dz.fb ? dz.fb.cls : "")+'" id="dzFb">'+(dz.fb ? dz.fb.text : "")+'</div>'
+    + '<div class="dz-pad" id="dzPad">'+pad+'</div></div></div>'
+    + '<p class="redo-note" style="text-align:center;margin:12px 0 0;">Order '+orderNo+' of '+dz.roundTotal+(dz.round > 1 ? ' · Try '+dz.round+': orders that came back' : '')+'</p>'
+    + '</div>';
+  /* wiring */
+  $dz("dzLeaveBtn").addEventListener("click", dzRenderLeave);
+  const gb = $dz("dzGaugeBtn");
+  if(gb) gb.addEventListener("click", ()=>{ dzTimerOn = !dzTimerOn; try{ localStorage.setItem(DZ_TIMER_KEY, dzTimerOn ? "1" : "0"); }catch(e){} dzDraw(); });
+  document.querySelectorAll("#dzPad button").forEach(b=>b.addEventListener("click", (ev)=>{
+    const k = b.dataset.k;
+    if(k === "clear"){ dz.typed = ""; } else if(k === "back"){ dz.typed = dz.typed.slice(0,-1); } else { dz.typed = dzAddDigit(dz.typed, k); }
+    dzUpdateAnswer();
+    if(ev.detail > 0){ dzKbd = false; b.blur(); }          // a mouse or finger tap: keep Enter free to mean "check"
+  }));
+  const ck = $dz("dzCheck"); if(ck) ck.addEventListener("click", ()=>{ dzKbd = false; dzSubmit(); });
+  const sc = $dz("dzScan");
+  if(sc) sc.addEventListener("click", ()=>{ cur.scanned = !cur.scanned; if(cur.scanned) dz.scans++; dzDraw(); const b2 = $dz("dzScan"); if(b2) b2.focus({ preventScroll:true }); });
+  const nx = $dz("dzNext"); if(nx){ nx.addEventListener("click", (ev)=>{ if(ev.detail === 0 && dzTooSoonToSkip()) return; dzGo(); }); if(dz.fb && dz.fb.cls !== "ok") nx.focus({ preventScroll:true }); }   // a key-made click (detail 0) right after a wrong answer is ignored for a moment; a tap or mouse click always works
+  if(gauge && dz.phase === "ask") dzStartTimer();
+}
+function dzUpdateAnswer(){
+  const disp = $dz("dzAnswer"), ck = $dz("dzCheck");
+  if(disp){ disp.textContent = dz.typed === "" ? "?" : dz.typed; disp.classList.toggle("empty", dz.typed === ""); disp.setAttribute("aria-label", "Your answer: " + (dz.typed === "" ? "nothing typed yet" : dz.typed)); }
+  if(ck) ck.disabled = dz.typed === "";
+}
+function dzStartTimer(){
+  const fill = $dz("dzGaugeFill"), note = $dz("dzGaugeNote"); if(!fill) return;
+  const tick = ()=>{
+    const left = Math.max(0, 1 - (performance.now() - dz.cur.t0) / DZ_GAUGE_MS);
+    fill.style.width = Math.round(left * 100) + "%";
+    if(note) note.textContent = left <= 0 ? "Tank empty? No worries: take your time, Captain." : "";
+  };
+  tick(); dzTimerHandle = setInterval(tick, 250);
+}
+
+/* ---- checking an answer ---- */
+function dzFly(color, count){
+  if(dzReduced()) return;
+  const src = document.querySelector("#dzScene .dz-tray, #dzScene .dz-one, #dzScene .dz-sealed"), dst = $dz("dzTank");
+  if(!src || !dst) return;
+  const a = src.getBoundingClientRect(), b = dst.getBoundingClientRect();
+  for(let i=0;i<Math.min(count, 8);i++){
+    const s = document.createElement("span"); s.className = "dz-fly " + color; s.setAttribute("aria-hidden","true"); s.textContent = "◆";
+    const x = a.left + a.width * (0.2 + 0.6 * Math.random()), y = a.top + a.height * (0.2 + 0.6 * Math.random());
+    s.style.left = x + "px"; s.style.top = y + "px"; document.body.appendChild(s);
+    const dx = b.left + b.width / 2 - x, dy = b.top + b.height / 2 - y;
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{ s.style.transitionDelay = (i * 50) + "ms"; s.style.transform = "translate("+dx+"px,"+dy+"px) scale(.4)"; s.style.opacity = ".15"; }));
+    setTimeout(()=>{ if(s.parentNode) s.parentNode.removeChild(s); }, 1000 + i * 50);
+  }
+}
+function dzSetNext(fn, autoMs){
+  const my = ++dz.token; dz.next = fn;
+  if(autoMs) setTimeout(()=>{ if(dz.active && dz.token === my && dz.next === fn) dzGo(); }, autoMs);
+}
+function dzGo(){
+  if(!dz.active || dz.phase !== "fb" || !dz.next) return;
+  const fn = dz.next; dz.next = null; dz.token++; fn();
+}
+function dzAfterOrder(){          // what comes after an order is finished: next order, the comeback screen, or the finish screen
+  if(dz.orders.length > 0) dzNextOrder();
+  else if(dz.missed.length > 0) dzRenderReview();
+  else dzFinish(true);
+}
+/* an order is settled: clean = served without a miss (a star lights on the map); otherwise it is queued to come back */
+function dzSettle(clean){
+  const o = dz.cur.order; dz.cur.done = true; dz.orders.shift(); dz.lastKey = dzOrderKey(o);
+  let extra = "";
+  if(clean){
+    const before = dzRec(), after = dzAddPod(before);
+    dzSave(after); dz.delivered++;
+    if(o.firstTry) dz.firstTry++;
+    dz.combo = dzNextCombo(dz.combo, true, o.firstTry); dz.bestCombo = Math.max(dz.bestCombo, dz.combo);
+    extra = " ✨ A star lights up on your star map!";
+    if(Math.floor(after.pods / DZ_STARS_PER_CONSTELLATION) > Math.floor(before.pods / DZ_STARS_PER_CONSTELLATION)) extra += " You finished the " + DZ_CONSTELLATIONS[(Math.floor(after.pods / DZ_STARS_PER_CONSTELLATION) - 1) % DZ_CONSTELLATIONS.length] + " constellation!";
+  } else {
+    if(o.firstTry){ dz.missedFirst++; }
+    o.firstTry = false; dz.missed.push(o);
+    dz.combo = 0;
+  }
+  return extra;
+}
+function dzSubmit(){
+  if(!dz.active || dz.phase !== "ask" || dz.typed === "") return;
+  const cur = dz.cur, o = cur.order, n = o.n, sp = dzSplit(n), step = cur.step, typed = dz.typed, prevCombo = dz.combo;
+  const cheer = dzPick(DZ_CHEER, dz.delivered + dz.token + n);
+  if(step > 0){
+    const res = dzTrainStep(cur, n, typed);                     // "right", "hint" (first miss on this step) or "reveal" (second miss); the miss count is per step
+    if(res === "right"){
+      cur.stepsDone++;
+      if(step < 3){
+        dz.phase = "fb"; cur.pop = step === 1 ? "blue" : "pink";
+        dz.fb = { cls:"ok", text: step === 1 ? "Yes! "+sp.tens+" blue crystals fly to the fuel tank." : "Yes! "+sp.twos+" pink crystals join them." };
+        dz.typed = ""; dzSetNext(()=>{ cur.step++; cur.pop = ""; dz.phase = "ask"; dz.fb = null; dz.typed = ""; dzDraw(); dzFocusQuestion(); }, 1300);
+        dzDraw(); dzFly(step === 1 ? "blue" : "pink", step === 1 ? Math.min(n, 8) : 2);
+        dzSay(dz.fb.text);
+        return;
+      }
+      const clean = !cur.orderMissed, extra = dzSettle(clean);
+      dz.phase = "fb";
+      dz.fb = clean ? { cls:"ok", text: cheer+" "+dzPlural(n,"pod","pods")+" = "+sp.total+" crystals."+extra }
+                    : { cls:"info", text:"You worked it out: "+dzPlural(n,"pod","pods")+" = "+sp.total+" crystals. This order will come back at the end for one more try." };
+      dz.typed = ""; dzSetNext(dzAfterOrder, clean ? 1700 : 0); dzDraw(); if(clean) dzFly("blue", 6); dzSay(dz.fb.text);
+      return;
+    }
+    /* a miss while training: a hint first, then the answer is shown and we move on (never stuck) */
+    cur.orderMissed = true; dz.typed = "";
+    if(res === "hint"){
+      dz.fb = { cls:"no", text: dzTrainHint(step, n) };
+      dzDraw(); dzSay(dz.fb.text);
+      return;
+    }
+    cur.stepsDone++;
+    const reveal = dzTrainReveal(step, n);
+    if(step < 3){
+      dz.phase = "fb"; dz.fb = { cls:"no", text: reveal+" On we go!" };
+      dzSetNext(()=>{ cur.step++; dz.phase = "ask"; dz.fb = null; dz.typed = ""; dzDraw(); dzFocusQuestion(); }, 0);
+      dzDraw(); dzSay(dz.fb.text); return;
+    }
+    dzSettle(false);
+    dz.phase = "fb"; dz.fb = { cls:"no", text: reveal+" This order will come back at the end for one more try." + (prevCombo >= 2 ? " Your combo starts again: that's fine!" : "") };
+    dzSetNext(dzAfterOrder, 0); dzDraw(); dzSay(dz.fb.text);
+    return;
+  }
+  /* one-answer orders (Space Mission, Meteor Shower) */
+  if(dzCheck(o, typed)){
+    const retry = !o.firstTry, extra = dzSettle(true);
+    dz.phase = "fb";
+    dz.fb = { cls:"ok", text: (retry ? "Got it this time! " : cheer+" ") + (o.kind === "reverse" ? dzPlural(n,"pod","pods")+(n === 1 ? " holds " : " hold ")+o.crystals+" crystals." : dzPlural(n,"pod","pods")+" = "+o.crystals+" crystals.") + extra };
+    dz.typed = ""; dzSetNext(dzAfterOrder, 1700); dzDraw(); dzFly("blue", 6); dzSay(dz.fb.text);
+  } else {
+    dzSettle(false);
+    const kind = dzPick(DZ_KIND, n + dz.token);
+    const why = o.kind === "reverse" ? dzPlural(n,"pod","pods")+(n === 1 ? " holds " : " hold ")+o.crystals+" crystals, because 12 × "+n+" = "+o.crystals+"."
+                                     : dzPlural(n,"pod","pods")+": 10 × "+n+" = "+sp.tens+" blue, 2 × "+n+" = "+sp.twos+" pink. "+sp.tens+" + "+sp.twos+" = "+sp.total+".";
+    dz.phase = "fb";
+    dz.fb = { cls:"no", text: kind+" "+why+" This order will come back at the end."+(prevCombo >= 2 ? " Your combo starts again: that's fine!" : "") };
+    dz.typed = ""; dzSetNext(dzAfterOrder, 0); dzDraw(); dzSay(dz.fb.text);
+  }
+}
+
+/* ---- leaving, the comeback screen, the finish screen ---- */
+function dzRenderLeave(){
+  dzStopTimer(); dz.token++;
+  $dz("app").innerHTML = '<div class="dz"><div class="card dz-card" style="text-align:center;"><h2>Leave the flight?</h2><p>No problem. Your stars, badges and star map are all safe. Orders from this flight will start fresh next time.</p>'
+    + '<div class="row"><button class="btn" id="dzStay">Keep flying</button><button class="btn secondary" id="dzBye">Yes, back to Mission Control</button></div></div></div>';
+  $dz("dzStay").addEventListener("click", ()=>{ dzDraw(); });
+  $dz("dzBye").addEventListener("click", dzRenderHub);
+  $dz("dzStay").focus({ preventScroll:true });
+}
+function dzRenderReview(){
+  dzStopTimer(); dz.phase = "review";
+  const k = dz.missed.length;
+  const rows = dz.missed.map(o=>'<div>'+DZ_CAPTAINS[o.captain].e+' '+DZ_CAPTAINS[o.captain].n+': '+(o.kind === "reverse" ? dzPlural(o.crystals,"crystal","crystals")+' needed' : dzPlural(o.n,"pod","pods")+' ordered')+'</div>').join("");
+  $dz("app").innerHTML = '<div class="dz"><div class="card dz-card" style="text-align:center;"><h2 id="dzTitle" tabindex="-1">Nearly there, Captain!</h2>'
+    + '<p>'+dzPlural(k,"order is","orders are")+' waiting on the launch pad. Want to try '+(k === 1 ? "it" : "them")+' again? The pods will be open this time, so you can use the trick.</p>'
+    + '<div class="dz-list">'+rows+'</div>'
+    + '<div class="row"><button class="btn" id="dzRetryYes">Yes, launch '+(k === 1 ? "it" : "them")+'</button><button class="btn secondary" id="dzRetryNo">Not now</button></div></div></div>';
+  $dz("dzRetryYes").addEventListener("click", ()=>{
+    dz.orders = dzRetryQueue(dz.missed, Math.random, dz.lastKey); dz.missed = []; dz.round++; dz.roundTotal = dz.orders.length; dzNextOrder();
+  });
+  $dz("dzRetryNo").addEventListener("click", ()=>dzFinish(false));
+  $dz("dzTitle").focus({ preventScroll:true }); dzSay("Some orders are waiting to be tried again.");
+}
+function dzFinish(resolved){
+  dzStopTimer(); dz.phase = "done";
+  const sh = dz.sh, def = DZ_FLIGHTS[sh-1], stars = dzStars(DZ_ORDERS_PER_FLIGHT, dz.missedFirst, resolved);
+  let d = dzRec(), newBadges = [], hadBefore = d.flights[sh].plays > 0;
+  if(resolved){
+    const r = dzApplyFinish(d, sh, stars); d = r.d; newBadges = r.newBadges; dzSave(d);
+    /* one passport event per finished flight. No "unit_completed": the passport would count the whole game as a learned idea (Times Tables lit, 10 sparks) before the 20 rounds were done. */
+    dzFinishEvents(sh, dz.round, dz.scans, hadBefore).forEach(ev=>fmtHook(ev.name, ev.data));
+  }
+  const m = dzMap(d.pods), added = d.pods - dz.podsAtStart;
+  const starRow = resolved ? '<div class="dz-bigstars" role="img" aria-label="'+stars+' of 3 stars">' + [1,2,3].map(i=>'<span class="'+(i <= stars ? "pop" : "")+'" style="'+(i <= stars ? "animation-delay:"+(i*0.18)+"s" : "opacity:.35")+'">'+(i <= stars ? "★" : "☆")+'</span>').join("") + '</div>' : "";
+  const nb = newBadges.map(id=>{ const b = DZ_BADGES.filter(x=>x.id === id)[0]; return '<div class="dz-newbadge">'+b.icon+' New badge: <b>'+b.name+'</b>!</div>'; }).join("");
+  const msg = resolved ? (stars === 3 ? "Great flying, Captain! Every pod arrived." : stars === 2 ? "Nice flying! The trick is working." : "You got every order there in the end. That's what counts.") : "Good flying! Finish every order to earn this flight's stars. Every star you lit is kept.";
+  const nextBtn = (resolved && sh < 3) ? '<button class="btn" id="dzNextFlight">Next: Flight '+(sh+1)+'</button>' : "";
+  $dz("app").innerHTML = '<div class="dz"><div class="card dz-card" style="text-align:center;"><h2 id="dzTitle" tabindex="-1">'+(resolved ? "Flight "+sh+" complete! 🚀" : "Flight "+sh+": good practice! 💪")+'</h2>'
+    + '<p class="dz-sub">'+def.name+'</p>'+starRow+'<p>'+msg+'</p>' + nb
+    + '<div class="dz-statrow"><div><div class="n">'+dz.firstTry+' / '+DZ_ORDERS_PER_FLIGHT+'</div><div class="l">right first time</div></div>'
+    + '<div><div class="n">+'+added+'</div><div class="l">stars lit on the map</div></div>'
+    + (dz.bestCombo >= 2 ? '<div><div class="n">×'+dz.bestCombo+'</div><div class="l">best combo</div></div>' : '') + '</div>'
+    + '<h3>Your star map: '+m.lit+' of '+DZ_MAP_SIZE+'</h3>' + dzMapHtml(d.pods)
+    + '<div class="row">'+nextBtn+'<button class="btn '+(nextBtn ? "secondary" : "")+'" id="dzAgain">Fly this one again</button><button class="btn secondary" id="dzHubBtn">Mission Control</button><button class="btn secondary" id="dzMapBtn">Round map</button></div></div></div>';
+  if($dz("dzNextFlight")) $dz("dzNextFlight").addEventListener("click", ()=>dzStart(sh+1));
+  $dz("dzAgain").addEventListener("click", ()=>dzStart(sh));
+  $dz("dzHubBtn").addEventListener("click", dzRenderHub);
+  $dz("dzMapBtn").addEventListener("click", ()=>{ dzLeave(); renderLevels(); });
+  window.scrollTo(0, 0); $dz("dzTitle").focus({ preventScroll:true });
+  dzSay(resolved ? "Flight complete. "+stars+" of 3 stars." : "Flight ended. Your stars are kept.");
+}
+
+/* ---- keyboard: digits type, Backspace deletes, Enter checks (or goes to the next order) ---- */
+document.addEventListener("keydown", (e)=>{
+  if(!dz.active || !$dz("dzAnswer")) return;
+  if(e.target && /^(INPUT|SELECT|TEXTAREA)$/.test(e.target.tagName)) return;
+  if(e.ctrlKey || e.metaKey || e.altKey) return;
+  if(e.key.length === 1 && e.key >= "0" && e.key <= "9"){ dzKbd = true; if(dz.phase === "ask"){ dz.typed = dzAddDigit(dz.typed, e.key); dzUpdateAnswer(); } }
+  else if(e.key === "Backspace"){ dzKbd = true; if(dz.phase === "ask"){ dz.typed = dz.typed.slice(0,-1); dzUpdateAnswer(); } }
+  else if(e.key === "Enter"){
+    const t = e.target, onButton = t && t.tagName === "BUTTON";
+    if(onButton && !dzKbd) return;                               // a focused button: Enter presses it, as usual
+    e.preventDefault();
+    if(dz.phase === "ask") dzSubmit(); else if(dz.phase === "fb"){ if(e.repeat || dzTooSoonToSkip()) return; dzGo(); }
+  }
+  else if(e.key === "Tab"){ dzKbd = false; }
+});
+document.addEventListener("pointerdown", ()=>{ dzKbd = false; });
+
+/* ---- the built-in self-test: open this page with #selftest on the end of the address ---- */
+function dzRunSelfTest(){
+  const r = dzSelfTest(); window.__dzSelfTest = { pass:r.pass, fail:r.fail, failed:r.results.filter(x=>!x.ok).map(x=>x.name) };
+  $dz("app").innerHTML = '<div class="card result-card dz-selftest"><h2>Dozen Galaxy self-test</h2><p id="dzSelfTestSummary"><b>'+r.pass+' passed, '+r.fail+' failed</b></p><ul style="text-align:left;list-style:none;padding:0;">'
+    + r.results.map(x=>'<li class="'+(x.ok ? "" : "bad")+'">'+(x.ok ? "PASS" : "FAIL")+' · '+x.name+(x.ok ? "" : " → "+x.info)+'</li>').join("") + '</ul><div class="row"><button class="btn secondary small" id="dzSelfTestClose">Close the self-test</button></div></div>';
+  $dz("dzSelfTestClose").addEventListener("click", ()=>{ location.hash = ""; location.reload(); });
+  document.title = "Self-test: " + (r.fail ? r.fail + " FAILED" : "all " + r.pass + " passed");
+}
+
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch(() => {
@@ -801,7 +1658,8 @@ if ("serviceWorker" in navigator) {
   });
 }
 
-if(FMT.profile){
+if(location.hash === "#selftest"){ dzRunSelfTest(); }
+else if(FMT.profile){
   session.name = FMT.profile.charAt(0).toUpperCase()+FMT.profile.slice(1);   // the passport animal, never a typed name
   session.rec = getKidRecord(session.name);
   renderLevels();
